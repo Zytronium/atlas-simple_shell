@@ -6,5 +6,6 @@ int main(void)
 	printf("Enter a string: ");
 	scanf("%s", &num);
 	printf("You entered: %s\n", num);
+	/* TEST */
 	return (0);
 }
