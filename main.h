@@ -13,6 +13,8 @@
 /* ------------------- */
 /* ↓ FUNCTIONS ↓ */
 
+int shellLoop(void);
+
 /* ------------------- */
 
 #endif /* MAIN_H */

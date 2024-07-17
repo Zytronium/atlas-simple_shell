@@ -1,22 +1,14 @@
-#include <malloc.h>
 #include "main.h"
 
 int main(void)
 {
-	char input[1024]; /* user input */
-	pid_t fork_rtn;
-
-	printf("Enter a string: ");
-	scanf("%s", &input);
-	printf("You entered ");
-	printf("%s\n", input);
-	/* TEST */
+	shellLoop();
 
 	/* first token */
     char* tok = strtok(input, " ");
 
         while (tok != NULL) {
-        printf(" % s\n", tok); /* prints individually - should look into how to store all values instead of print */
+        printf(" %s\n", tok); /* prints individually - should look into how to store all values instead of print */
 		/* consider counting number of words after first word to keep track of arguments for a function */
 		/* if the number of arguments matches the number required for the command in the first argument: fork command and input arguments */
 		/* - if not either display an error, ignore the garbage words, or something else */
@@ -26,18 +18,18 @@ int main(void)
     }
 
 	/* run user-inputed commands - skeleton version */
-	fork_rtn = fork();
+//	fork_rtn = fork();
 	if (fork_rtn == 0) /* child */
 	{
-		
-		execve();
+
+//		execve();
 	}
 	else if (fork_rtn < 0) /* fork failed */
 		perror("fork failed");
 	else /* parent; fork_rtn contains pid of child process */
 	{
-		wait(); /* waits until child process completes */
-	}
+//		wait(); /* waits until child process completes */
+}
 
-	return (0);
+return (0);
 }

@@ -8,7 +8,7 @@
 A shell is a program that interprets and executes system commands,
 like `ls`, `git commit`, or `rm -rf`. (Tip: ***never*** run `rm -rf`)
 A shell should take text input; read and parse it; execute the command,
-if valid, print output, if there is any; and repeat. You can navigate
+if valid; print output, if there is any; and repeat. You can navigate
 a file system; create, edit, delete, and run files; and maybe even access
 the internet using a shell. A couple examples of a shell are Bash and
 PowerShell. Examples of things that may be confused with a shell, but 
@@ -20,7 +20,6 @@ Example input/output:
 ```
 Please enter a command. Type "help" for a list of commands.
 $ ls -la
-
 total 92
 drwxrwxrwx 1 lumi lumi   512 Jul 14 17:58 '!template_project_dir'
 drwxrwxrwx 1 lumi lumi   512 Jul 17 13:25  .
@@ -57,7 +56,6 @@ drwxrwxrwx 1 lumi lumi   512 Jun 26 17:51  variadic_functions
 
 Please enter a command. Type "help" for a list of commands.
 $ pwd
-
 mnt/c/Users/daste/CLionProjects/atlas-low_level_programming
 
 Please enter a command. Type "help" for a list of commands.
