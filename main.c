@@ -3,20 +3,14 @@
 
 int main(void)
 {
-	char *num = malloc(sizeof(char) * (unsigned) -1); /* allocate OVER 4 GB OF MEMORY AAAAA*/
-
-	if (num == NULL)
-	{
-		printf("failed to allocate %u bytes of memory\n", (unsigned) -1);
-		return (-1);
-	}
+	char input[1024]; /* user input */
 
 	printf("Enter a string: ");
-	scanf("%s", &num);
+	scanf("%s", &input);
 	printf("You entered ");
-	printf("%s\n", num);
+	printf("%s\n", input);
 	/* TEST */
-	free(num);
+
 	/* snewby changes */
 	/* branch change? */
 
