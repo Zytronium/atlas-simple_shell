@@ -13,7 +13,7 @@
 /* ------------------- */
 /* ↓ FUNCTIONS ↓ */
 
-int shellLoop(void);
+void shellLoop(void);
 
 /* ------------------- */
 
