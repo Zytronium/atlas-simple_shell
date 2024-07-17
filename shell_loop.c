@@ -2,11 +2,7 @@
 #include <stdlib.h>
 
 /**
- * shellLoop - main loop for input/output
- *
- * @param1:
- *
- * Return: 0 (success)
+ * shellLoop - main loop for input/output.
  */
 void shellLoop(void)
 {
