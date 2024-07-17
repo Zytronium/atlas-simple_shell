@@ -2,7 +2,10 @@
 #define MAIN_H
 
 /* ↓ LIBRARIES ↓ */
-
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <fcntl.h>
 /* ------------------- */
 /* ↓ STRUCTS AND MISC ↓ */
 
