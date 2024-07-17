@@ -11,14 +11,15 @@
 void shellLoop(void)
 {
 	char *input; /* user input */
+	char *path = "User"; //= getcwd();
 	size_t *__restrict size;
 	pid_t fork_rtn;
 
 	/* get & save input */
 	printf("%s $ ", path);
 	getline(&input, size, stdin);
-	printf("You entered ");
-	printf("%s\n", input);
+	printf("Command: ");
+//	printf("%s\n", input);
 
 	/* parse the input */
 
@@ -26,7 +27,7 @@ void shellLoop(void)
 	char* tok = strtok(input, " ");
 
 	while (tok != NULL) {
-		printf(" %s\n", tok); /* prints individually - should look into how to store all values instead of print */
+		printf("%s\n", tok); /* prints individually - should look into how to store all values instead of print */
 		/* consider counting number of words after first word to keep track of arguments for a function */
 		/* if the number of arguments matches the number required for the command in the first argument: fork command and input arguments */
 		/* - if not either display an error, ignore the garbage words, or something else */
@@ -51,5 +52,6 @@ void shellLoop(void)
 
 	/* print any output (maybe)? */
 
+//	shellLoop();
 	/* handle errors | while loop or recursive function? */
 }
