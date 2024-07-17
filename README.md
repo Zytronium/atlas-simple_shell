@@ -26,3 +26,7 @@ Goodbye, user. I must terminate now. It's been a
 
 Program terminated with exit code 0.
 ```
+
+Back to Atlas Low Level Programming Readme:
+
+[@Zytronium](https://github.com/Zytronium/atlas-low_level_programming?tab=readme-ov-file#c---simple-shell-but-not-io-task-number-7-right)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[@TheSnewby](https://github.com/TheSnewby/atlas-low_level_programming?tab=readme-ov-file#atlas-low_level_programming)
