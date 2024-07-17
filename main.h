@@ -6,10 +6,11 @@
 #include <stdlib.h>
 #include <string.h>
 #include <fcntl.h>
-#include <unistd.h> 
+#include <unistd.h>
+#include <errno.h>
 /* ------------------- */
 /* ↓ STRUCTS AND MISC ↓ */
-char *paths[3] = {".", "/bin/bash", "usr/bin/env bash"}; /* first draft */
+char *paths[3] = {".", "/bin/bash", "/usr/bin/env bash"}; /* first draft */
 /* ------------------- */
 /* ↓ FUNCTIONS ↓ */
 

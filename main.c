@@ -7,18 +7,15 @@ int main(void)
 	pid_t fork_rtn, wait_rtn; /* return values of fork_rtn; also counts as process IDs */
 	int exec_rtn = 0; /* return value of execve; default to 0 */
 	int child_status;
+	char *tok;
 
-	printf("Enter a string: ");
-	scanf("%s", &input);
-	printf("You entered ");
-	printf("%s\n", input);
-	/* TEST */
+	input = shellloop();
 
-	/* first token */
-    char* tok = strtok(input, " ");
+	/* PARSING */
+    tok = strtok(input, " "); /* first token */
 
-        while (tok != NULL) {
-        printf(" % s\n", tok); /* prints individually - should look into how to store all values instead of print */
+    while (tok != NULL) {
+		
 		/* consider counting number of words after first word to keep track of arguments for a function */
 		/* if the number of arguments matches the number required for the command in the first argument: fork command and input arguments */
 		/* - if not either display an error, ignore the garbage words, or something else */
@@ -28,6 +25,10 @@ int main(void)
     }
 
 	/* run user-inputed commands - skeleton version */
+
+	if (tok == "q" || tok == "quit")
+		exit(EXIT_SUCCESS);
+
 	fork_rtn = fork();
 	if (fork_rtn < 0) /* fork failed */
 	{
@@ -48,7 +49,7 @@ int main(void)
 		wait_rtn = waitpid(fork_rtn, &child_status, 0); /* waits until child process terminates */
 		if (wait_rtn == -1)
 		{
-			perror("waiting failed");
+			perror("wait failed");
 			exit(EXIT_FAILURE);
 		}
 	}
