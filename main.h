@@ -14,6 +14,8 @@ char *paths[3] = {".", "/bin/bash", "/usr/bin/env bash"}; /* first draft */
 /* ------------------- */
 /* ↓ FUNCTIONS ↓ */
 
+int shellLoop(void);
+
 /* ------------------- */
 
 #endif /* MAIN_H */

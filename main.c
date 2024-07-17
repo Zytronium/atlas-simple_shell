@@ -8,8 +8,7 @@ int main(void)
 	int exec_rtn = 0; /* return value of execve; default to 0 */
 	int child_status;
 	char *tok;
-
-	input = shellloop();
+	int tok_count = 0;
 
 	/* PARSING */
     tok = strtok(input, " "); /* first token */
