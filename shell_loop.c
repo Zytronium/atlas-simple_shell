@@ -15,7 +15,10 @@ void shellLoop(void)
 	char *cmd_token;
 	char **tokens = malloc(64 * sizeof(char *));
 	int tokens_count = 0;
-	char *paths[3] = {".", "/bin/bash", "/usr/bin/env bash"}; /* first draft */
+	char *paths[1] = {NULL};
+	char *cmd;
+	char *bash_dir = "/usr/bin/";
+	/* consider changing to multiple locations that will be searched with algo that combines cmd_token and if (access ... true) */
 
 	getcwd(path, sizeof(path));
 
@@ -29,6 +32,26 @@ void shellLoop(void)
 
 	/* PARSING */
 	cmd_token = strtok(input, " "); /* first token */
+	cmd_token[strcspn(cmd_token, "\n")] = 0; /* removed \n char if exists */
+
+	cmd = malloc(strlen(bash_dir) + strlen(cmd_token) + 1);
+	if (cmd == NULL)
+		exit(0); /* consider different error for malloc failure */
+	strcpy(cmd, bash_dir);
+	strcat(cmd, cmd_token);
+
+/*Nicole TESTING*/
+/*==========================================
+	char cmd[] = "/usr/bin/ls";
+	char * argV[] = {"ls", "-l", NULL};
+	char * envp[] = {NULL} ;
+	printf("Running EXECV: %d\n", 1);
+	exec_rtn = execve(cmd, argV, envp);
+/*=======================================*/
+/*Noticed you never make it to the if statement where execv happens*/
+/**/
+/*Will send in Slack T1 useful video*/
+
 
     while (cmd_token != NULL)
 	{
@@ -43,10 +66,20 @@ void shellLoop(void)
 			printf("command: %s\n", tokens[0]);
 
 		cmd_token = strtok(NULL, " ");
+		//cmd_token[strcspn(cmd_token, "\n")] = 0; <-- HERE IS WHERE TO REMOVE \n, seg faults currently
 		tokens_count++;
 	}
 	tokens[tokens_count] = NULL;
 	printf("\n"); /* visually separate debug prints from output */
+	/* keep an eye out for special characters that can change the meaning */
+
+	/* RUN USER COMMANDS - skeleton version */
+
+	/* ↓----------------- custom command "exit" -----------------↓ */
+	if (tokens[0] != NULL && (strcmp(tokens[0], "exit") == 0 || strcmp(tokens[0], "quit") == 0))
+		exit(EXIT_SUCCESS);
+	/* ↑----------------- custom command "exit" -----------------↑ */
+
 
 	/* ↓------------- custom command "self-destruct" -------------↓ */
 	if (tokens[0] != NULL && strcmp(tokens[0], "self-destruct") == 0)
@@ -67,45 +100,33 @@ void shellLoop(void)
 	}
 	/* ↑------------- custom command "self-destruct" -------------↑ */
 
-	if (tokens[0] != NULL && strcmp(tokens[0], "exit") == 0)
-		exit(EXIT_SUCCESS);
-
-	/* consider counting number of words after first word to keep track of arguments for a function */
-	/* if the number of arguments matches the number required for the command in the first argument: fork command and input arguments */
-	/* - if not either display an error, ignore the garbage words, or something else */
-	/* keep an eye out for special characters that can change the meaning */
-
-	/* run user-inputed commands - skeleton version */
-
-	/*if (strcmp(cmd_token, "q") == 0 || strcmp(cmd_token, "exit") == 0)
-		exit(EXIT_SUCCESS);
 
 	fork_rtn = fork();
-	if (fork_rtn < 0) *//* fork failed *//*
+	if (fork_rtn < 0) /* fork failed */
 	{
 		perror("fork failed");
-		exit(EXIT_FAILURE); *//* consider changing exits to continues to return to the user input *//*
+		exit(EXIT_FAILURE); /* consider changing exits to continues to return to the user input */
 	}
-	else if (fork_rtn == 0) *//* child *//*
+	else if (fork_rtn == 0) /* child */
 	{
-		exec_rtn = execve(cmd_token, tokens, paths);
+		exec_rtn = execve(cmd, tokens, paths);
 		if (exec_rtn == -1)
 		{
 			perror("execute failure");
 			exit(EXIT_FAILURE);
 		}
 	}
-	else *//* parent; fork_rtn contains pid of child process *//*
+	else /* parent; fork_rtn contains pid of child process */
 	{
-		wait_rtn = waitpid(fork_rtn, &child_status, 0); *//* waits until child process terminates *//*
+		wait_rtn = waitpid(fork_rtn, &child_status, 0); /* waits until child process terminates */
 		if (wait_rtn == -1)
 		{
 			perror("wait failed");
 			exit(EXIT_FAILURE);
 		}
-	}*/
+	}
 
-	shellLoop();
+	shellLoop(); /* exit doesn't exit. consider changing to while loop and including attie as a condition */
 }
 
 /**
