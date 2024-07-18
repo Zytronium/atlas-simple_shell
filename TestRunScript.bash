@@ -1,4 +1,4 @@
-#!//bin/env bash
+#!//bin/bash
 gcc *.c -o testRun -std=gnu89
 if ! test -f ./testRun
 then

@@ -45,6 +45,7 @@ void shellLoop(void)
 		tokens_count++;
 	}
 	tokens[tokens_count] = NULL;
+	printf("\n"); /* visually separate debug prints from output */
 
 	/* ↓------------- custom command "self-destruct" -------------↓ */
 	if (tokens[0] != NULL && strcmp(tokens[0], "self-destruct") == 0)

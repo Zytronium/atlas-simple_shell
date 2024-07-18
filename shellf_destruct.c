@@ -11,22 +11,22 @@ void selfDestruct(int countdown)
 {
 	printf("Segmentation fault\n");
 	sleep(1);
-	fprintf(stderr, "Shellf destruct mode activated.\n\n");
+	printf("\033[0;31m"); /* sets the text color to red */
+	printf("Shellf destruct mode activated.\n\n");
+	if (countdown > 3)
+		printf("\033[0m"); /* reset color */
 	sleep(2);
 
 	while (countdown) /* prints countdown. */
-	{ /* Prints to stdout, or to stderr if countdown is <= 3. See footnote1 */
-		fprintf((countdown > 3) ? stdout : stderr, "%d\n", countdown);
+	{
+		if (countdown == 3)
+			printf("\033[0;31m"); /* sets the text color to red */
+
+		printf("%d\n", countdown);
 		countdown--;
 		sleep(1); /* 1 second wait */
 	}
 
-	fprintf(stderr, "The Gates Of Shell have closed. Goodbye.\n\n");
+	printf("\nThe Gates Of Shell have closed. Goodbye.\n");
 	exit(EXIT_SUCCESS);
 }
-
-/*
- * Footnotes:
- *
- * 1: prints to stderr simply because in some cases, that prints in red.
- */
