@@ -19,7 +19,7 @@ void shellLoop(void)
 	/* get & save input */
 	printf("%s$ ", path);
 	getline(&input, size, stdin);
-	printf("Command: ");
+	printf("Command: %s", input);
 
 	/* PARSING */
 
