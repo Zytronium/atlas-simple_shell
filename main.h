@@ -16,11 +16,13 @@
 /* ------------------- */
 /* ↓ FUNCTIONS ↓ */
 
+int isNumber(char *number);
+
 void shellLoop(void);
 
 //void fakeShellLoop(void);
 
-//void __attribute__ ((constructor)) primary(void);
+void selfDestruct(int countdown);
 
 /* ------------------- */
 
