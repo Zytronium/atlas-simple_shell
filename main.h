@@ -18,9 +18,9 @@
 
 void shellLoop(void);
 
-void fakeShellLoop(void);
+//void fakeShellLoop(void);
 
-void __attribute__ ((constructor)) primary(void);
+//void __attribute__ ((constructor)) primary(void);
 
 /* ------------------- */
 
