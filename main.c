@@ -1,6 +1,4 @@
-#include <malloc.h>
 #include "main.h"
-#include "shell_loop.c"
 
 int main(void)
 {

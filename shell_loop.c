@@ -1,5 +1,4 @@
 #include "main.h"
-#include <stdlib.h>
 
 /**
  * shellLoop - main loop for input/output.
@@ -8,16 +7,17 @@ void shellLoop(void)
 {
 	char *input; /* user input */
 	char *path = "User"; //= getcwd();
-	size_t *__restrict size;
+	size_t *__restrict size = malloc(sizeof(size_t *__restrict));
 	pid_t fork_rtn, wait_rtn; /* return values of fork_rtn; also counts as process IDs */
 	int exec_rtn = 0; /* return value of execve; default to 0 */
 	int child_status;
-	char *cmd_token = NULL;
-	char **tokens = NULL;
+	char *cmd_token = malloc(sizeof(char) * 1024);
+	char **tokens  = malloc(sizeof(char) * 1024 * 64);
 	int tokens_count = 0;
+	char *paths[3] = {".", "/bin/bash", "/usr/bin/env bash"}; /* first draft */
 
 	/* get & save input */
-	printf("%s $ ", path);
+	printf("%s$ ", path);
 	getline(&input, size, stdin);
 	printf("Command: ");
 
@@ -37,7 +37,7 @@ void shellLoop(void)
 
 	/* run user-inputed commands - skeleton version */
 
-	if (cmd_token == "q" || cmd_token == "quit")
+	if (strcmp(cmd_token, "q") == 0 || strcmp(cmd_token, "quit") == 0)
 		exit(EXIT_SUCCESS);
 
 	fork_rtn = fork();
@@ -48,7 +48,7 @@ void shellLoop(void)
 	}
 	else if (fork_rtn == 0) /* child */
 	{
-		exec_rtn = (cmd_token, tokens, paths);
+		exec_rtn = execve(cmd_token, tokens, paths);
 		if (exec_rtn == -1)
 		{
 			perror("execute failure");
@@ -64,4 +64,6 @@ void shellLoop(void)
 			exit(EXIT_FAILURE);
 		}
 	}
+
+//	shellLoop();
 }

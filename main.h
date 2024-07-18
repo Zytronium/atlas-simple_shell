@@ -8,13 +8,16 @@
 #include <fcntl.h>
 #include <unistd.h>
 #include <errno.h>
+#include <sys/wait.h>
 /* ------------------- */
 /* ↓ STRUCTS AND MISC ↓ */
-char *paths[3] = {".", "/bin/bash", "/usr/bin/env bash"}; /* first draft */
+
 /* ------------------- */
 /* ↓ FUNCTIONS ↓ */
 
 void shellLoop(void);
+
+void __attribute__ ((constructor)) primary(void);
 
 /* ------------------- */
 
