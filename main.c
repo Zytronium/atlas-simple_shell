@@ -2,16 +2,16 @@
 
 int main(void)
 {
-	printf("Welcome to the Gates Of Shell. Type \"help\" for a list of commands.\n\n"); /* only say once. (added touch, not required) */
+	printf("Welcome to the Gates Of Shell. Type \"help\" for a list of commands. Type \"quit\" to exit.\n\n"); /* only say once. (added touch, not required) */
 
-	fakeShellLoop();
+	shellLoop();
 
 	return (EXIT_SUCCESS);
 }
-
+/*
 void fakeShellLoop(void)
 {
-	char *input, path[PATH_MAX]; /* user input */
+	char *input, path[PATH_MAX]; /* user input *//*
 	size_t size = 0;
 
 	if (getcwd(path, sizeof(path)) != NULL)
@@ -23,4 +23,4 @@ void fakeShellLoop(void)
 	system(input);
 
 	fakeShellLoop();
-}
+} */

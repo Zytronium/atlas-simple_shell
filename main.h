@@ -5,6 +5,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <limits.h>
+#include <linux/limits.h>
 #include <string.h>
 #include <fcntl.h>
 #include <unistd.h>
@@ -20,7 +21,7 @@ void shellLoop(void);
 
 void fakeShellLoop(void);
 
-void __attribute__ ((constructor)) primary(void);
+//void __attribute__ ((constructor)) primary(void);
 
 /* ------------------- */
 
