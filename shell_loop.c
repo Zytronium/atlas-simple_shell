@@ -13,7 +13,7 @@ void shellLoop(void)
 	char *cmd_token;
 	char **tokens = malloc(64 * sizeof(char *));
 	int tokens_count = 0;
-	char *paths[1] = {"#/bin/bash"}; /* first draft */
+	char *paths[2] = {"/usr/bin", NULL}; /* first draft */
 	/*
 	for (int j = 0; j < 1; j++)
 	{
@@ -21,7 +21,7 @@ void shellLoop(void)
 	}
 	*/
 	//printf("getenv: %s\n", getenv("PATH"));
-
+ 
 	/* test getenv */
 	char *pathz = getenv("PATH");
 	char *pathz_token = strtok(pathz, ":");
@@ -35,7 +35,7 @@ void shellLoop(void)
 	}
 	pathzz[pathz_count] = NULL;
 	for (int j = 0; pathzz[j] != NULL; j++)
-		printf("env[%d]: %s\n", j, pathzz[j]);
+		//printf("env[%d]: %s\n", j, pathzz[j]);
 	/* end test getenv */
 
 	getcwd(path, sizeof(path));
@@ -47,7 +47,21 @@ void shellLoop(void)
 
 	/* PARSING */
 	cmd_token = strtok(input, " "); /* first token */
-	printf("1: %s\n", cmd_token);
+	//printf("1: %s\n", cmd_token);
+  
+  
+/*Nicole TESTING*/
+/*==========================================*/
+	char cmd[] = "/usr/bin/ls";
+	char * argV[] = {"ls", "-l", NULL};
+	char * envp[] = {NULL} ;
+	printf("Running EXECV: %d\n", 1);
+	exec_rtn = execve(cmd, argV, envp);
+/*=======================================*/
+/*Noticed you never make it to the if statement where execv happens*/
+/**/
+/*Will send in Slack T1 useful video*/
+
 
     while (cmd_token != NULL)
 	{
@@ -56,20 +70,20 @@ void shellLoop(void)
 			tokens = realloc(tokens, (tokens_count + 64) * sizeof(char *));
 		}
 		tokens[tokens_count] = strdup(cmd_token);
-		printf("2: %s\n", tokens[tokens_count]);
+		//printf("2: %s\n", tokens[tokens_count]);
 		if (tokens_count != 0)
 			printf("arg %d: %s\n", tokens_count, tokens[tokens_count]);
 		else
 			printf("command: %s\n", tokens[0]);
 		cmd_token = strtok(NULL, " ");
-		printf("3: %s\n", cmd_token);
+		//printf("3: %s\n", cmd_token);
 		tokens_count++;
 	}
 	tokens[tokens_count] = NULL;
 	/* keep an eye out for special characters that can change the meaning */
 
 	/* RUN USER COMMANDS - skeleton version */
-	printf("4: %s\n", cmd_token);
+	//printf("4: %s\n", cmd_token);
 	if (tokens[0] != NULL && (strcmp(tokens[0], "q") == 0 || strcmp(tokens[0], "quit") == 0))
 		exit(EXIT_SUCCESS);
 
@@ -81,7 +95,10 @@ void shellLoop(void)
 	}
 	else if (fork_rtn == 0) /* child */
 	{
-		exec_rtn = execve(tokens[0], tokens, pathzz);
+
+		/*exec_rtn = execve(tokens[0], tokens, paths);*/
+
+		
 		if (exec_rtn == -1)
 		{
 			perror("execute failure");
