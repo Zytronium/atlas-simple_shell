@@ -6,7 +6,7 @@
 void shellLoop(void)
 {
 	char *input; /* user input */
-	char *path = "User"; // = getcwd();
+	char path[PATH_MAX];
 	size_t size = 0; /* size variable for getline */
 	pid_t fork_rtn, wait_rtn; /* return values of fork_rtn; also counts as process IDs */
 	int exec_rtn = 0; /* return value of execve; default to 0 */
@@ -15,6 +15,8 @@ void shellLoop(void)
 	char **tokens = malloc(64 * sizeof(char *));
 	int tokens_count = 0;
 	char *paths[3] = {".", "/bin/bash", "/usr/bin/env bash"}; /* first draft */
+
+	getcwd(path, sizeof(path));
 
 	/* get & save input */
 	printf("%s$ ", path);

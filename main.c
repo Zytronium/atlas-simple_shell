@@ -4,7 +4,23 @@ int main(void)
 {
 	printf("Welcome to the Gates Of Shell. Type \"help\" for a list of commands.\n\n"); /* only say once. (added touch, not required) */
 
-	shellLoop();
+	fakeShellLoop();
 
 	return (EXIT_SUCCESS);
+}
+
+void fakeShellLoop(void)
+{
+	char *input, path[PATH_MAX]; /* user input */
+	size_t size = 0;
+
+	if (getcwd(path, sizeof(path)) != NULL)
+	{
+		printf("%s$ ", path);
+	}
+	getline(&input, &size, stdin);
+
+	system(input);
+
+	fakeShellLoop();
 }
