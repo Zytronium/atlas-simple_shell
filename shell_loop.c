@@ -1,4 +1,5 @@
 #include "main.h"
+#include "colors.h"
 
 /**
  * shellLoop - main loop for input/output.
@@ -19,9 +20,9 @@ void shellLoop(void)
 	getcwd(path, sizeof(path));
 
 	/* get & save input */
-	printf("\033[0;34m"); /* sets the text color to blue */
+	printf(SET_CLR_BLUE_BOLD); /* sets the text color to blue */
 	printf("%s", path); /* prints the path in blue */
-	printf("\033[0m$ "); /* rests text color and prints '$' */
+	printf("%s$ ", SET_CLR_DEFAULT); /* rests text color and prints '$' */
 	getline(&input, &size, stdin);
 	printf("Input: %s", input);
 	input[strlen(input) - 1] = '\0'; /* delete newline at end of string */

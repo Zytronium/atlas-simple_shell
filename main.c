@@ -1,29 +1,17 @@
 #include "main.h"
+#include "colors.h"
 
 int main(void)
 {
-	printf("Welcome to the Gates Of Shell. Type \"help\" for a list of commands. Type \"exit\" to quit.\n\n"); /* only say once. (added touch, not required) */
+	/* ------------------- On entry - one time execution ------------------- */
+	printf("%sWelcome to the %sGates Of Shell%s. Type \"help\" for a list of "
+		   "commands. Type \"exit\" to quit.\n\n",
+		   SET_CLR_YELLOW_BOLD, SET_CLR_RED_BOLD, SET_CLR_YELLOW_BOLD);
+	/* --------------------------------------------------------------------- */
 
-	shellLoop();
+	shellLoop(); /* main shell loop. (what else?) */
 
+	/* ------------------- On exit - one time execution ------------------- */
 	return (EXIT_SUCCESS);
+	/* -------------------------------------------------------------------- */
 }
-
-/*
-void fakeShellLoop(void)
-{
-	char *input, path[PATH_MAX]; *//* user input *//*
-
-	size_t size = 0;
-
-	if (getcwd(path, sizeof(path)) != NULL)
-	{
-		printf("%s$ ", path);
-	}
-	getline(&input, &size, stdin);
-
-	system(input);
-
-	fakeShellLoop();
-}
-*/

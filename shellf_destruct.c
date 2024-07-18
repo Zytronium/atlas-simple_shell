@@ -1,4 +1,5 @@
 #include "main.h"
+#include "colors.h"
 
 /**
  * selfDestruct - a fun way of slowly exiting the shell with a
@@ -11,22 +12,23 @@ void selfDestruct(int countdown)
 {
 	printf("Segmentation fault\n");
 	sleep(1);
-	printf("\033[0;31m"); /* sets the text color to red */
+	printf(SET_CLR_RED_BOLD); /* sets the text color to red */
 	printf("Shellf destruct mode activated.\n\n");
 	if (countdown > 3)
-		printf("\033[0m"); /* reset color */
+		printf(SET_CLR_DEFAULT); /* reset color */
 	sleep(2);
 
 	while (countdown) /* prints countdown. */
 	{
 		if (countdown == 3)
-			printf("\033[0;31m"); /* sets the text color to red */
+			printf(SET_CLR_RED); /* sets the text color to red */
 
 		printf("%d\n", countdown);
 		countdown--;
 		sleep(1); /* 1 second wait */
 	}
 
-	printf("\nThe Gates Of Shell have closed. Goodbye.\n");
+	printf("%s\nThe %sGates Of Shell%s have closed. Goodbye.\n",
+		   SET_CLR_YELLOW_BOLD, SET_CLR_RED_BOLD, SET_CLR_YELLOW_BOLD);
 	exit(EXIT_SUCCESS);
 }

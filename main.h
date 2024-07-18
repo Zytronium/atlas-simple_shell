@@ -20,8 +20,6 @@ int isNumber(char *number);
 
 void shellLoop(void);
 
-//void fakeShellLoop(void);
-
 void selfDestruct(int countdown);
 
 /* ------------------- */
