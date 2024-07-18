@@ -60,6 +60,7 @@ void shellLoop(void)
 		else
 			printf("command: %s\n", tokens[0]);
 		cmd_token = strtok(NULL, " ");
+		//cmd_token[strcspn(cmd_token, "\n")] = 0; <-- HERE IS WHERE TO REMOVE \n, seg faults currently
 		tokens_count++;
 	}
 	tokens[tokens_count] = NULL;
