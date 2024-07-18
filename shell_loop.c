@@ -6,11 +6,11 @@
 void shellLoop(void)
 {
 	char *input; /* user input */
-	char path[PATH_MAX];
+	char path[PATH_MAX]; /* current working dir path */
 	size_t size = 0; /* size variable for getline */
 	pid_t fork_rtn, wait_rtn; /* return values of fork_rtn; also counts as process IDs */
 	int exec_rtn = 0; /* return value of execve; default to 0 */
-	int child_status, i;
+	int child_status;
 	char *cmd_token;
 	char **tokens = malloc(64 * sizeof(char *));
 	int tokens_count = 0;
@@ -65,7 +65,7 @@ void shellLoop(void)
 	}
 	/* ↑------------- custom command "self-destruct" -------------↑ */
 
-	if (tokens[0] != NULL && strcmp(tokens[0], "quit") == 0)
+	if (tokens[0] != NULL && strcmp(tokens[0], "exit") == 0)
 		exit(EXIT_SUCCESS);
 
 	/* consider counting number of words after first word to keep track of arguments for a function */
@@ -75,7 +75,7 @@ void shellLoop(void)
 
 	/* run user-inputed commands - skeleton version */
 
-	/*if (strcmp(cmd_token, "q") == 0 || strcmp(cmd_token, "quit") == 0)
+	/*if (strcmp(cmd_token, "q") == 0 || strcmp(cmd_token, "exit") == 0)
 		exit(EXIT_SUCCESS);
 
 	fork_rtn = fork();

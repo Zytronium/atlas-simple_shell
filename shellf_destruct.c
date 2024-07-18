@@ -22,7 +22,7 @@ void selfDestruct(int countdown)
 	}
 
 	fprintf(stderr, "The Gates Of Shell have closed. Goodbye.\n\n");
-	exit(0);
+	exit(EXIT_SUCCESS);
 }
 
 /*
