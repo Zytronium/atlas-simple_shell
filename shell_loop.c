@@ -20,9 +20,9 @@ void shellLoop(void)
 	getcwd(path, sizeof(path));
 
 	/* get & save input */
-	printf(SET_CLR_BLUE_BOLD); /* sets the text color to blue */
+	printf(CLR_BLUE_BOLD); /* sets the text color to blue */
 	printf("%s", path); /* prints the path in blue */
-	printf("%s$ ", SET_CLR_DEFAULT); /* rests text color and prints '$' */
+	printf("%s$ ", CLR_DEFAULT); /* rests text color and prints '$' */
 	getline(&input, &size, stdin);
 	printf("Input: %s", input);
 	input[strlen(input) - 1] = '\0'; /* delete newline at end of string */

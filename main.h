@@ -11,17 +11,17 @@
 #include <errno.h>
 #include <sys/wait.h>
 /* ------------------- */
+
 /* ↓ STRUCTS AND MISC ↓ */
 
 /* ------------------- */
-/* ↓ FUNCTIONS ↓ */
 
+/* ↓ FUNCTIONS ↓ */
 int isNumber(char *number);
 
 void shellLoop(void);
 
 void selfDestruct(int countdown);
-
 /* ------------------- */
 
 #endif /* MAIN_H */
