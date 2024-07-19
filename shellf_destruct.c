@@ -20,7 +20,7 @@ void selfDestruct(int countdown)
 	sleep1args[1] = "1";
 	sleep2args[1] = "2";*/
 
-	printf("Segmentation fault(fake)\n");
+	printf("Segmentation fault\n");
 	sleep(1);
 	/*execve(sleepcmd, sleep1args, NULL);*/ /* sys call to sleep for 1 sec */
 	printf(CLR_RED_BOLD); /* sets the text color to red */
@@ -42,8 +42,8 @@ void selfDestruct(int countdown)
 		/*execve(sleepcmd, sleep1args, NULL);*/ /* 1 second wait */
 	}
 
-	printf("%s\nThe %sGates Of Shell%s have closed. Goodbye.\n",
-		   CLR_YELLOW_BOLD, CLR_RED_BOLD, CLR_YELLOW_BOLD);
+	printf("%s\nThe %sGates Of Shell%s have closed. Goodbye.\n%s",
+		   CLR_YELLOW_BOLD, CLR_RED_BOLD, CLR_YELLOW_BOLD, CLR_DEFAULT);
 
 	/*free(sleep1args);
 	free(sleep2args);*/
