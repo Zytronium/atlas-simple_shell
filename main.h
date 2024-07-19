@@ -11,6 +11,7 @@
 #include <unistd.h>
 #include <errno.h>
 #include <sys/wait.h>
+#include <stdarg.h>
 /* ------------------- */
 
 /* ↓ STRUCTS AND MISC ↓ */
@@ -22,6 +23,8 @@ int isNumber(char *number);
 void shellLoop(void);
 
 void selfDestruct(int countdown);
+
+void free_all(char **, ...);
 /* ------------------- */
 
 #endif /* MAIN_H */

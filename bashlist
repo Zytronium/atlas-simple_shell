@@ -13,6 +13,7 @@ head -n
 tail
 tail -n
 chmod
+cp
 
 * --help
 

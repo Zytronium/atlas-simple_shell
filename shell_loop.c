@@ -32,6 +32,7 @@ void shellLoop(void)
 	if (getline_rtn == -1)
 	{
 		printf("Ctrl-D Entered. Thank you for playing.\n");
+		free_all(tokens, input, NULL);
 		exit(EXIT_SUCCESS);
 	}
 	input[strlen(input) - 1] = '\0'; /* delete newline at end of string */
@@ -41,7 +42,10 @@ void shellLoop(void)
 
 	cmd = malloc(strlen(bash_dir) + strlen(cmd_token) + 1);
 	if (cmd == NULL)
+	{
+		free_all(tokens, cmd, input, NULL);
 		exit(EXIT_FAILURE);/* TODO: maybe consider different error for malloc failure */
+	}
 
 	if (cmd_token[0] != '/')
 		strcpy(cmd, bash_dir);
@@ -63,7 +67,10 @@ void shellLoop(void)
 
 	/* ↓----------------- custom command "exit" -----------------↓ */
 	if (tokens[0] != NULL && (strcmp(tokens[0], "exit") == 0 || strcmp(tokens[0], "quit") == 0))
+	{
+		free_all(tokens, cmd, input, NULL);
 		exit(EXIT_SUCCESS);
+	}
 	/* ↑----------------- custom command "exit" -----------------↑ */
 
 
@@ -91,6 +98,7 @@ void shellLoop(void)
 	if (fork_rtn < 0) /* fork failed */
 	{
 		perror("fork failed");
+		free_all(tokens, cmd, input, NULL);
 		exit(EXIT_FAILURE); /* TODO: consider changing exits to continues to return to the user input */
 	}
 	else if (fork_rtn == 0) /* child */
@@ -99,6 +107,7 @@ void shellLoop(void)
 		if (exec_rtn == -1)
 		{
 			perror("execute failure");
+			free_all(tokens, cmd, input, NULL);
 			exit(EXIT_FAILURE);
 		}
 	}
@@ -108,16 +117,40 @@ void shellLoop(void)
 		if (wait_rtn == -1)
 		{
 			perror("wait failed");
+			free_all(tokens, cmd, input, NULL);
 			exit(EXIT_FAILURE);
 		}
 	}
 
+	free_all(tokens, cmd, input, NULL);
 	shellLoop(); /* NOTE: exit doesn't exit. TODO: consider changing to while loop and including attie as a condition */
 				/* NOTE: what do you mean exit doesn't exit? it seems to work for me. - Daniel */
+}
+
+
+/**
+ * free_all - frees all dynamically allotted memory
+ * 
+ */
+void free_all(char **tokens, ...)
+{
+	va_list vars;
+	int i;
+	char *free_me;
+
+	fflush(NULL);
 	for (i = 0; tokens[i] != NULL; i++)
 		free(tokens[i]);
 	free(tokens);
-	free(cmd);
+	va_start(vars, tokens);
+	free_me = va_arg(vars, char *);
+	while (free_me != NULL)
+	{
+		if (free_me != NULL)
+			free(free_me);
+		free_me = va_arg(vars, char*);
+	}
+	va_end(vars);
 }
 
 /**
