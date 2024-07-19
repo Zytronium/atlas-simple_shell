@@ -10,43 +10,42 @@
  */
 void selfDestruct(int countdown)
 {
-	/*char *paths[1] = {NULL};
-	char *sleepcmd = "/usr/bin/sleep";
-	char **sleep1args = malloc(sizeof(char *) * 2);
-	char **sleep2args = malloc(sizeof(char *) * 2);
+	char *paths[1] = {NULL}; /* environment for execve */
+	char **sleep1args = malloc(sizeof(char *) * 2); /* sleep command args for execve */
+	char **sleep2args = malloc(sizeof(char *) * 2); /* sleep command args for execve */
 
-	sleep1args[0] = sleepcmd;
-	sleep2args[0] = sleepcmd;
-	sleep1args[1] = "1";
-	sleep2args[1] = "2";*/
+	/* execve sleep command arguments setup */
+	sleep1args[0] = "sleep"; /* command to pass to execve */
+	sleep2args[0] = "sleep"; /* command to pass to execve */
+	sleep1args[1] = "1"; /* specifies how many seconds to sleep (1) */
+	sleep2args[1] = "2"; /* specifies how many seconds to sleep (2) */
 
-	printf("Segmentation fault\n");
-	sleep(1);
-	/*execve(sleepcmd, sleep1args, NULL);*/ /* sys call to sleep for 1 sec */
+	printf("Segmentation fault\n"); /* fake seg fault */
+	runCommand("/usr/bin/sleep", sleep1args, paths); /* 1 second delay */
 	printf(CLR_RED_BOLD); /* sets the text color to red */
 	printf("Shellf destruct mode activated.\n\n");
+
 	if (countdown > 3)
-		printf(CLR_DEFAULT); /* reset color */
+		printf(CLR_DEFAULT); /* reset color so it's no still red bold */
 
-	sleep(2);
-	/*execve(sleepcmd, sleep2args, NULL);*/ /* sys call to sleep for 2 secs */
+	runCommand("/usr/bin/sleep", sleep2args, paths); /* 2 second delay */
 
-	while (countdown) /* prints countdown. */
+	while (countdown) /* prints countdown */
 	{
 		if (countdown == 3)
-			printf(CLR_RED); /* sets the text color to red */
+			printf(CLR_RED); /* sets the text color to red for last 3 seconds */
 
 		printf("%d\n", countdown);
 		countdown--;
-		sleep(1);
-		/*execve(sleepcmd, sleep1args, NULL);*/ /* 1 second wait */
+		runCommand("/usr/bin/sleep", sleep1args, paths); /* 1 second delay */
 	}
 
 	printf("%s\nThe %sGates Of Shell%s have closed. Goodbye.\n%s",
 		   CLR_YELLOW_BOLD, CLR_RED_BOLD, CLR_YELLOW_BOLD, CLR_DEFAULT);
 
-	/*free(sleep1args);
-	free(sleep2args);*/
+	/* free memory */
+	free(sleep1args);
+	free(sleep2args);
 
 	exit(EXIT_SUCCESS);
 }

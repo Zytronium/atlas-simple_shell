@@ -80,8 +80,7 @@ void shellLoop(void)
 	if (tokens[0] != NULL && (strcmp(tokens[0], "exit") == 0 || strcmp(tokens[0], "quit") == 0))
 		exit(EXIT_SUCCESS);
 	/* ↑----------------- custom command "exit" -----------------↑ */
-
-
+	else
 	/* ↓------------- custom command "self-destruct" -------------↓ */
 	if (tokens[0] != NULL && (strcmp(tokens[0], "self-destruct") == 0 || strcmp(tokens[0], "selfdestr") == 0))
 	{
@@ -100,32 +99,8 @@ void shellLoop(void)
 		/* TODO: should we handle the condition if the cmd has too many arguments? */
 	}
 	/* ↑------------- custom command "self-destruct" -------------↑ */
-
-
-	fork_rtn = fork();
-	if (fork_rtn < 0) /* fork failed */
-	{
-		perror("fork failed");
-		exit(EXIT_FAILURE); /* TODO: consider changing exits to continues to return to the user input */
-	}
-	else if (fork_rtn == 0) /* child */
-	{
-		exec_rtn = execve(cmd, tokens, paths);
-		if (exec_rtn == -1)
-		{
-			perror("execute failure");
-			exit(EXIT_FAILURE);
-		}
-	}
-	else /* parent; fork_rtn contains pid of child process */
-	{
-		wait_rtn = waitpid(fork_rtn, &child_status, 0); /* waits until child process terminates */
-		if (wait_rtn == -1)
-		{
-			perror("wait failed");
-			exit(EXIT_FAILURE);
-		}
-	}
+	else
+		runCommand(cmd, tokens, paths);
 
 	shellLoop(); /* NOTE: exit doesn't exit. TODO: consider changing to while loop and including attie as a condition */
 				/* NOTE: what do you mean exit doesn't exit? it seems to work for me. - Daniel */
@@ -151,4 +126,46 @@ int isNumber(char *number)
 	}
 
 	return (1);
+}
+
+/**
+ * runCommand - runs execve on a commandPath, handles forking and errors.
+ *
+ * @commandPath: command to run, including path(?)
+ * @args: array of args for commandPath, including the commandPath (without path)
+ * @envPaths: paths for the environment(?)
+ *
+ * Return: 0 on success, -1 on failure.
+ */
+int runCommand(char *commandPath, char **args, char **envPaths)
+{
+	int exec_rtn = 0, child_status;
+	pid_t fork_rtn, wait_rtn;
+
+	fork_rtn = fork();
+	if (fork_rtn == -1) /* Fork! It failed */
+	{
+		perror("An error occurred while running command"); /* error message */
+		return (-1); /* indicate error */
+	}
+	else if (fork_rtn == 0) /* child process */
+	{
+		exec_rtn = execve(commandPath, args, envPaths); /* sys call to sleep for 1 sec */
+		if (exec_rtn == -1)
+		{
+			perror("An error occurred while running command"); /* error message */
+			return (-1); /* indicate error */
+		}
+	}
+	else /* parent process; fork_rtn contains pid of child process */
+	{
+		wait_rtn = waitpid(fork_rtn, &child_status, 0);
+		if (wait_rtn == -1)
+		{
+			perror("An error occurred while running command"); /* error message */
+			return (-1); /* indicate error */
+		}
+	}
+
+	return (0); /* success */
 }

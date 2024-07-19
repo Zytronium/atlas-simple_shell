@@ -22,6 +22,8 @@ int isNumber(char *number);
 void shellLoop(void);
 
 void selfDestruct(int countdown);
+
+int runCommand(char *commandPath, char **args, char **envPaths);
 /* ------------------- */
 
 #endif /* MAIN_H */
