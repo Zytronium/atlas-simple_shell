@@ -1,0 +1,26 @@
+Successful Bash Commands:
+ls
+ls -l
+mkdir
+rmdir
+echo
+touch
+mv
+locate
+cat
+head
+head -n
+tail
+tail -n
+chmod
+
+* --help
+
+
+Moderately Successful Bash Commands:
+less
+
+Failing Bash Commands:
+grep
+rm
+cd

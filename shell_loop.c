@@ -25,7 +25,7 @@ void shellLoop(void)
 	/* get & save input */
 	printf(CLR_BLUE_BOLD); /* sets the text color to blue */
 	printf("%s", path); /* prints the path in blue */
-	printf("%s$ ", CLR_DEFAULT); /* rests text color and prints '$' */
+	printf("%s$ ", CLR_DEFAULT); /* resets text color and prints '$' */
 	getline(&input, &size, stdin);
 	input[strlen(input) - 1] = '\0'; /* delete newline at end of string */ /* TODO: consider checking if this char acutally is a newline */
 	/*printf("Input: %s\n", input);*/
@@ -136,6 +136,9 @@ void shellLoop(void)
 
 	shellLoop(); /* NOTE: exit doesn't exit. TODO: consider changing to while loop and including attie as a condition */
 				/* NOTE: what do you mean exit doesn't exit? it seems to work for me. - Daniel */
+
+	free(tokens);
+	free(cmd);
 }
 
 /**
