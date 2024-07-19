@@ -30,22 +30,15 @@ void shellLoop(void)
 	input[strlen(input) - 1] = '\0'; /* delete newline at end of string */ /* TODO: consider checking if this char acutally is a newline */
 	/*printf("Input: %s\n", input);*/
 
-	/*if (atoi(input)) //exit test
-	{
-		printf(CLR_CYAN_BOLD);
-		printf("exiting...\n");
-		exit(EXIT_SUCCESS);
-	}*/
-
 	/* PARSING */
 	cmd_token = strtok(input, " "); /* first token */
 	/*cmd_token[strcspn(cmd_token, "\n")] = 0;*/ /* removed \n char if exists */ /* NOTE: probably not needed; check line 30. */
 
 	cmd = malloc(strlen(bash_dir) + strlen(cmd_token) + 1);
 	if (cmd == NULL)
-		exit(EXIT_FAILURE);/* TODO: maybe consider different error for malloc failure */
+		exit(EXIT_FAILURE); /* TODO: might want to consider printing an error message and skipping to the end of loop instead of terminating program */
 
-	if (cmd_token[0] != '/')
+	if (cmd_token[0] != '/' && cmd_token[0] != '.')
 		strcpy(cmd, bash_dir);
 	strcat(cmd, cmd_token);
 
@@ -90,7 +83,7 @@ void shellLoop(void)
 
 
 	/* ↓------------- custom command "self-destruct" -------------↓ */
-	if (tokens[0] != NULL && strcmp(tokens[0], "self-destruct") == 0)
+	if (tokens[0] != NULL && (strcmp(tokens[0], "self-destruct") == 0 || strcmp(tokens[0], "selfdestr") == 0))
 	{
 		int countdown = 5; /* number of seconds to countdown from */
 		/* initialized to 5 in case user doesn't give a number */

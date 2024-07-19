@@ -11,8 +11,8 @@ int main(void)
 
 	shellLoop(); /* main shell loop. (what else?) */
 
-	printf(CLR_DEFAULT); /* reset output text color */
 	/* ------------------- On exit - one time execution ------------------- */
+	printf(CLR_DEFAULT); /* reset output text color */
 	return (EXIT_SUCCESS);
 	/* -------------------------------------------------------------------- */
 }
