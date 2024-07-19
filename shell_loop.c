@@ -37,7 +37,6 @@ void shellLoop(void)
 	}
 	input[strlen(input) - 1] = '\0'; /* delete newline at end of string *//* TODO: consider checking if this char acutally is a newline */
 
-
 	/* PARSING */
 	cmd_token = strtok(input, " "); /* first token */
 
@@ -47,7 +46,6 @@ void shellLoop(void)
 		free_all(tokens, cmd, input, NULL);
 		exit(EXIT_FAILURE); /* TODO: might want to consider printing an error message and skipping to the end of loop instead of terminating program */
 	}
-
 
 	if (cmd_token[0] != '/' && cmd_token[0] != '.')
 		strcpy(cmd, bash_dir);
