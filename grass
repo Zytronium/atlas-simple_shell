@@ -1,3 +1,0 @@
-gcc gitAddCommitPush.c -Wall -Wextra -std=gnu89 -o gacp
-./gacp
-
