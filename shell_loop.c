@@ -28,7 +28,7 @@ void shellLoop(void)
 	printf("%s$ ", CLR_DEFAULT); /* rests text color and prints '$' */
 	getline(&input, &size, stdin);
 	input[strlen(input) - 1] = '\0'; /* delete newline at end of string */ /* TODO: consider checking if this char acutally is a newline */
-	printf("Input: %s\n", input);
+	/*printf("Input: %s\n", input);*/
 
 	/*if (atoi(input)) //exit test
 	{
@@ -44,7 +44,9 @@ void shellLoop(void)
 	cmd = malloc(strlen(bash_dir) + strlen(cmd_token) + 1);
 	if (cmd == NULL)
 		exit(EXIT_FAILURE);/* TODO: maybe consider different error for malloc failure */
-	strcpy(cmd, bash_dir);
+
+	if (cmd_token[0] != '/')
+		strcpy(cmd, bash_dir);
 	strcat(cmd, cmd_token);
 
 /*Nicole TESTING*/
