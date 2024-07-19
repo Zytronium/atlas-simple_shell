@@ -11,12 +11,12 @@
 void selfDestruct(int countdown)
 {
 	printf("Segmentation fault\n");
-	sleep(1);
+	system("sleep 1");
 	printf(CLR_RED_BOLD); /* sets the text color to red */
 	printf("Shellf destruct mode activated.\n\n");
 	if (countdown > 3)
 		printf(CLR_DEFAULT); /* reset color */
-	sleep(2);
+	system("sleep 2");
 
 	while (countdown) /* prints countdown. */
 	{
@@ -25,7 +25,7 @@ void selfDestruct(int countdown)
 
 		printf("%d\n", countdown);
 		countdown--;
-		sleep(1); /* 1 second wait */
+		system("sleep 1"); /* 1 second wait */
 	}
 
 	printf("%s\nThe %sGates Of Shell%s have closed. Goodbye.\n",
