@@ -35,7 +35,8 @@ void shellLoop(void)
 		free_all(tokens, input, NULL);
 		exit(EXIT_SUCCESS);
 	}
-	input[strlen(input) - 1] = '\0'; /* delete newline at end of string */
+	input[strlen(input) - 1] = '\0'; /* delete newline at end of string *//* TODO: consider checking if this char acutally is a newline */
+
 
 	/* PARSING */
 	cmd_token = strtok(input, " "); /* first token */
@@ -44,10 +45,11 @@ void shellLoop(void)
 	if (cmd == NULL)
 	{
 		free_all(tokens, cmd, input, NULL);
-		exit(EXIT_FAILURE);/* TODO: maybe consider different error for malloc failure */
+		exit(EXIT_FAILURE); /* TODO: might want to consider printing an error message and skipping to the end of loop instead of terminating program */
 	}
 
-	if (cmd_token[0] != '/')
+
+	if (cmd_token[0] != '/' && cmd_token[0] != '.')
 		strcpy(cmd, bash_dir);
 	strcat(cmd, cmd_token);
 
@@ -72,10 +74,9 @@ void shellLoop(void)
 		exit(EXIT_SUCCESS);
 	}
 	/* ↑----------------- custom command "exit" -----------------↑ */
-
-
+	else
 	/* ↓------------- custom command "self-destruct" -------------↓ */
-	if (tokens[0] != NULL && strcmp(tokens[0], "self-destruct") == 0)
+	if (tokens[0] != NULL && (strcmp(tokens[0], "self-destruct") == 0 || strcmp(tokens[0], "selfdestr") == 0))
 	{
 		int countdown = 5; /* number of seconds to countdown from */
 		/* initialized to 5 in case user doesn't give a number */
@@ -92,35 +93,8 @@ void shellLoop(void)
 		/* TODO: should we handle the condition if the cmd has too many arguments? */
 	}
 	/* ↑------------- custom command "self-destruct" -------------↑ */
-
-
-	fork_rtn = fork();
-	if (fork_rtn < 0) /* fork failed */
-	{
-		perror("fork failed");
-		free_all(tokens, cmd, input, NULL);
-		exit(EXIT_FAILURE); /* TODO: consider changing exits to continues to return to the user input */
-	}
-	else if (fork_rtn == 0) /* child */
-	{
-		exec_rtn = execve(cmd, tokens, paths);
-		if (exec_rtn == -1)
-		{
-			perror("execute failure");
-			free_all(tokens, cmd, input, NULL);
-			exit(EXIT_FAILURE);
-		}
-	}
-	else /* parent; fork_rtn contains pid of child process */
-	{
-		wait_rtn = waitpid(fork_rtn, &child_status, 0); /* waits until child process terminates */
-		if (wait_rtn == -1)
-		{
-			perror("wait failed");
-			free_all(tokens, cmd, input, NULL);
-			exit(EXIT_FAILURE);
-		}
-	}
+	else
+		runCommand(cmd, tokens, paths);
 
 	free_all(tokens, cmd, input, NULL);
 	shellLoop(); /* NOTE: exit doesn't exit. TODO: consider changing to while loop and including attie as a condition */
@@ -173,4 +147,46 @@ int isNumber(char *number)
 	}
 
 	return (1);
+}
+
+/**
+ * runCommand - runs execve on a commandPath, handles forking and errors.
+ *
+ * @commandPath: command to run, including path(?)
+ * @args: array of args for commandPath, including the commandPath (without path)
+ * @envPaths: paths for the environment(?)
+ *
+ * Return: 0 on success, -1 on failure.
+ */
+int runCommand(char *commandPath, char **args, char **envPaths)
+{
+	int exec_rtn = 0, child_status;
+	pid_t fork_rtn, wait_rtn;
+
+	fork_rtn = fork();
+	if (fork_rtn == -1) /* Fork! It failed */
+	{
+		perror("An error occurred while running command"); /* error message */
+		return (-1); /* indicate error */
+	}
+	else if (fork_rtn == 0) /* child process */
+	{
+		exec_rtn = execve(commandPath, args, envPaths); /* sys call to sleep for 1 sec */
+		if (exec_rtn == -1)
+		{
+			perror("An error occurred while running command"); /* error message */
+			return (-1); /* indicate error */
+		}
+	}
+	else /* parent process; fork_rtn contains pid of child process */
+	{
+		wait_rtn = waitpid(fork_rtn, &child_status, 0); /* waits until child process terminates */
+		if (wait_rtn == -1)
+		{
+			perror("An error occurred while running command"); /* error message */
+			return (-1); /* indicate error */
+		}
+	}
+
+	return (0); /* success */
 }
