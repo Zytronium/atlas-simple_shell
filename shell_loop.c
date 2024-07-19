@@ -18,7 +18,7 @@ void shellLoop(void)
 	char *paths[1] = {NULL};
 	char *cmd;
 	char *bash_dir = "/usr/bin/";
-	/* consider changing to multiple locations that will be searched with algo that combines cmd_token and if (access ... true) */
+	/* TODO: consider changing to multiple locations that will be searched with algo that combines cmd_token and if (access ... true) */
 
 	getcwd(path, sizeof(path));
 
@@ -27,26 +27,33 @@ void shellLoop(void)
 	printf("%s", path); /* prints the path in blue */
 	printf("%s$ ", CLR_DEFAULT); /* rests text color and prints '$' */
 	getline(&input, &size, stdin);
-	input[strlen(input) - 1] = '\0'; /* delete newline at end of string */
-	/*printf("Input: %s\n", input);*/
+	input[strlen(input) - 1] = '\0'; /* delete newline at end of string */ /* TODO: consider checking if this char acutally is a newline */
+	printf("Input: %s\n", input);
+
+	/*if (atoi(input)) //exit test
+	{
+		printf(CLR_CYAN_BOLD);
+		printf("exiting...\n");
+		exit(EXIT_SUCCESS);
+	}*/
 
 	/* PARSING */
 	cmd_token = strtok(input, " "); /* first token */
-	cmd_token[strcspn(cmd_token, "\n")] = 0; /* removed \n char if exists */
+	/*cmd_token[strcspn(cmd_token, "\n")] = 0;*/ /* removed \n char if exists */ /* NOTE: probably not needed; check line 30. */
 
 	cmd = malloc(strlen(bash_dir) + strlen(cmd_token) + 1);
 	if (cmd == NULL)
-		exit(0); /* consider different error for malloc failure */
+		exit(EXIT_FAILURE);/* TODO: maybe consider different error for malloc failure */
 	strcpy(cmd, bash_dir);
 	strcat(cmd, cmd_token);
 
 /*Nicole TESTING*/
-/*==========================================
-	char cmd[] = "/usr/bin/ls";
+/*==========================================*/
+	/*char cmd[] = "/usr/bin/ls";
 	char * argV[] = {"ls", "-l", NULL};
 	char * envp[] = {NULL} ;
 	printf("Running EXECV: %d\n", 1);
-	exec_rtn = execve(cmd, argV, envp);
+	exec_rtn = execve(cmd, argV, envp);*/
 /*=======================================*/
 /*Noticed you never make it to the if statement where execv happens*/
 /**/
@@ -70,7 +77,7 @@ void shellLoop(void)
 	}
 	tokens[tokens_count] = NULL;
 	/*printf("\n");*/ /* visually separate debug prints from output */
-	/* keep an eye out for special characters that can change the meaning */
+	/* NOTE: keep an eye out for special characters that can change the meaning */
 
 	/* RUN USER COMMANDS - skeleton version */
 
@@ -90,12 +97,12 @@ void shellLoop(void)
 		if (tokens[1] != NULL && isNumber(tokens[1]) && atoi(tokens[1]) > 0)
 			countdown = atoi(tokens[1]); /* set countdown to given number */
 			/*
-			 * note: I'd use abs() instead of checking if its positive, but
+			 * NOTE: I'd use abs() instead of checking if its positive, but
 			 * abs() is not an allowed function and I don't want to code it.
 			 */
 
 		selfDestruct(countdown);
-		/* should we handle the condition if the cmd has too many arguments? */
+		/* TODO: should we handle the condition if the cmd has too many arguments? */
 	}
 	/* ↑------------- custom command "self-destruct" -------------↑ */
 
@@ -104,7 +111,7 @@ void shellLoop(void)
 	if (fork_rtn < 0) /* fork failed */
 	{
 		perror("fork failed");
-		exit(EXIT_FAILURE); /* consider changing exits to continues to return to the user input */
+		exit(EXIT_FAILURE); /* TODO: consider changing exits to continues to return to the user input */
 	}
 	else if (fork_rtn == 0) /* child */
 	{
@@ -125,7 +132,8 @@ void shellLoop(void)
 		}
 	}
 
-	shellLoop(); /* exit doesn't exit. consider changing to while loop and including attie as a condition */
+	shellLoop(); /* NOTE: exit doesn't exit. TODO: consider changing to while loop and including attie as a condition */
+				/* NOTE: what do you mean exit doesn't exit? it seems to work for me. - Daniel */
 }
 
 /**

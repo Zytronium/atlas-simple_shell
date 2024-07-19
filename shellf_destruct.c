@@ -10,13 +10,26 @@
  */
 void selfDestruct(int countdown)
 {
-	printf("Segmentation fault\n");
-	system("sleep 1");
+	/*char *paths[1] = {NULL};
+	char *sleepcmd = "/usr/bin/sleep";
+	char **sleep1args = malloc(sizeof(char *) * 2);
+	char **sleep2args = malloc(sizeof(char *) * 2);
+
+	sleep1args[0] = sleepcmd;
+	sleep2args[0] = sleepcmd;
+	sleep1args[1] = "1";
+	sleep2args[1] = "2";*/
+
+	printf("Segmentation fault(fake)\n");
+	sleep(1);
+	/*execve(sleepcmd, sleep1args, NULL);*/ /* sys call to sleep for 1 sec */
 	printf(CLR_RED_BOLD); /* sets the text color to red */
 	printf("Shellf destruct mode activated.\n\n");
 	if (countdown > 3)
 		printf(CLR_DEFAULT); /* reset color */
-	system("sleep 2");
+
+	sleep(2);
+	/*execve(sleepcmd, sleep2args, NULL);*/ /* sys call to sleep for 2 secs */
 
 	while (countdown) /* prints countdown. */
 	{
@@ -25,11 +38,15 @@ void selfDestruct(int countdown)
 
 		printf("%d\n", countdown);
 		countdown--;
-		system("sleep 1"); /* 1 second wait */
+		sleep(1);
+		/*execve(sleepcmd, sleep1args, NULL);*/ /* 1 second wait */
 	}
 
 	printf("%s\nThe %sGates Of Shell%s have closed. Goodbye.\n",
 		   CLR_YELLOW_BOLD, CLR_RED_BOLD, CLR_YELLOW_BOLD);
+
+	/*free(sleep1args);
+	free(sleep2args);*/
 
 	exit(EXIT_SUCCESS);
 }
