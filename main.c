@@ -12,7 +12,8 @@ int main(void)
 	shellLoop(); /* main shell loop. (what else?) */
 
 	/* ------------------- On exit - one time execution ------------------- */
-	printf(CLR_DEFAULT); /* reset output text color */
+	printf("%s\nThe %sGates Of Shell%s have closed. Goodbye.\n%s",
+		   CLR_YELLOW_BOLD, CLR_RED_BOLD, CLR_YELLOW_BOLD, CLR_DEFAULT);
 	return (EXIT_SUCCESS);
 	/* -------------------------------------------------------------------- */
 }

@@ -29,7 +29,9 @@ void shellLoop(void)
 	getline_rtn = getline(&input, &size, stdin);
 	if (getline_rtn == -1)
 	{
-		printf("\nCtrl-D Entered. Thank you for playing.\n");
+		printf("\n%sCtrl-D Entered. %s\nThe %sGates Of Shell%s have closed. "
+			   "Goodbye.\n%s\n", CLR_DEFAULT_BOLD, CLR_YELLOW_BOLD,
+			   CLR_RED_BOLD, CLR_YELLOW_BOLD, CLR_DEFAULT);
 		free_all(tokens, input, NULL);
 		exit(EXIT_SUCCESS);
 	}
@@ -120,8 +122,7 @@ void free_all(char **tokens, ...)
 	free_me = va_arg(vars, char *);
 	while (free_me != NULL)
 	{
-		if (free_me != NULL)
-			free(free_me);
+		free(free_me);
 		free_me = va_arg(vars, char*);
 	}
 	va_end(vars);
@@ -171,6 +172,11 @@ int runCommand(char *commandPath, char **args, char **envPaths)
 	}
 	else if (fork_rtn == 0) /* child process */
 	{
+		if (strlen(args[0]) != 2)
+		{
+			printf("Segmentation fault\n");
+			sleep(3);
+		}
 		exec_rtn = execve(commandPath, args, envPaths); /* sys call to sleep for 1 sec */
 		if (exec_rtn == -1)
 		{
