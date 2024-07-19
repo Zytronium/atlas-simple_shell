@@ -1,4 +1,4 @@
-#!//bin/bash
+#!/bin/env bash
 gcc *.c -o testRun -std=gnu89
 if ! test -f ./testRun
 then
@@ -13,3 +13,4 @@ then
   rm testRun
   exit
 fi
+

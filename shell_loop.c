@@ -27,8 +27,8 @@ void shellLoop(void)
 	printf("%s", path); /* prints the path in blue */
 	printf("%s$ ", CLR_DEFAULT); /* rests text color and prints '$' */
 	getline(&input, &size, stdin);
-	printf("Input: %s", input);
 	input[strlen(input) - 1] = '\0'; /* delete newline at end of string */
+	/*printf("Input: %s\n", input);*/
 
 	/* PARSING */
 	cmd_token = strtok(input, " "); /* first token */
@@ -60,17 +60,17 @@ void shellLoop(void)
 
 		tokens[tokens_count] = strdup(cmd_token);
 
-		if (tokens_count != 0)
+		/*if (tokens_count != 0)
 			printf("arg %d: %s\n", tokens_count, tokens[tokens_count]);
 		else
-			printf("command: %s\n", tokens[0]);
+			printf("command: %s\n", tokens[0]);*/
 
 		cmd_token = strtok(NULL, " ");
 		//cmd_token[strcspn(cmd_token, "\n")] = 0; <-- HERE IS WHERE TO REMOVE \n, seg faults currently
 		tokens_count++;
 	}
 	tokens[tokens_count] = NULL;
-	printf("\n"); /* visually separate debug prints from output */
+	/*printf("\n");*/ /* visually separate debug prints from output */
 	/* keep an eye out for special characters that can change the meaning */
 
 	/* RUN USER COMMANDS - skeleton version */
