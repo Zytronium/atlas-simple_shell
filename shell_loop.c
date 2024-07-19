@@ -3,22 +3,20 @@
 
 /**
  * shellLoop - main loop for input/output.
+ *
+ * Return: void
  */
 void shellLoop(void)
 {
 	char *input; /* user input */
 	char path[PATH_MAX]; /* current working dir path */
 	size_t size = 0; /* size variable for getline */
-	pid_t fork_rtn, wait_rtn; /* return values of fork_rtn; also counts as process IDs */
-	int exec_rtn = 0; /* return value of execve; default to 0 */
-	int child_status;
 	char *cmd_token;
 	char **tokens = malloc(64 * sizeof(char *));
 	int tokens_count = 0;
 	char *paths[1] = {NULL};
 	char *cmd;
 	char *bash_dir = "/usr/bin/";
-	int i;
 	int getline_rtn = 0;
 	/* TODO: consider changing to multiple locations that will be searched with algo that combines cmd_token and if (access ... true) */
 
@@ -41,7 +39,11 @@ void shellLoop(void)
 
 	/* PARSING */
 	cmd_token = strtok(input, " "); /* first token */
-
+	if (cmd_token == NULL)
+	{
+		free_all(tokens, input, NULL);
+		shellLoop();
+	}
 	cmd = malloc(strlen(bash_dir) + strlen(cmd_token) + 1);
 	if (cmd == NULL)
 	{
@@ -74,7 +76,7 @@ void shellLoop(void)
 		exit(EXIT_SUCCESS);
 	}
 	/* ↑----------------- custom command "exit" -----------------↑ */
-	else
+
 	/* ↓------------- custom command "self-destruct" -------------↓ */
 	if (tokens[0] != NULL && (strcmp(tokens[0], "self-destruct") == 0 || strcmp(tokens[0], "selfdestr") == 0))
 	{
@@ -88,14 +90,12 @@ void shellLoop(void)
 			 * NOTE: I'd use abs() instead of checking if its positive, but
 			 * abs() is not an allowed function and I don't want to code it.
 			 */
-
+		free_all(tokens, cmd, input, NULL);
 		selfDestruct(countdown);
 		/* TODO: should we handle the condition if the cmd has too many arguments? */
 	}
 	/* ↑------------- custom command "self-destruct" -------------↑ */
-	else
-		runCommand(cmd, tokens, paths);
-
+	runCommand(cmd, tokens, paths);
 	free_all(tokens, cmd, input, NULL);
 	shellLoop(); /* NOTE: exit doesn't exit. TODO: consider changing to while loop and including attie as a condition */
 				/* NOTE: what do you mean exit doesn't exit? it seems to work for me. - Daniel */
@@ -104,7 +104,9 @@ void shellLoop(void)
 
 /**
  * free_all - frees all dynamically allotted memory
- * 
+ * @tokens: array of strings needing free()
+ *
+ * Return: void
  */
 void free_all(char **tokens, ...)
 {
@@ -184,7 +186,7 @@ int runCommand(char *commandPath, char **args, char **envPaths)
 	}
 	else /* parent process; fork_rtn contains pid of child process */
 	{
-		wait_rtn = waitpid(fork_rtn, &child_status, 0); /* waits until child process terminates */
+		wait_rtn = waitpid(fork_rtn, &child_status, WUNTRACED); /* waits until child process terminates */
 		if (wait_rtn == -1)
 		{
 			perror("An error occurred while running command"); /* error message */
