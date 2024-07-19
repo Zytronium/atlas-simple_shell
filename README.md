@@ -18,48 +18,35 @@ are **not** are: the terminal/console, Vim, Ubuntu, or the Sandbox/VM.
 
 Example input/output:
 ```
-Please enter a command. Type "help" for a list of commands.
-$ ls -la
-total 92
-drwxrwxrwx 1 lumi lumi   512 Jul 14 17:58 '!template_project_dir'
-drwxrwxrwx 1 lumi lumi   512 Jul 17 13:25  .
-drwxrwxrwx 1 lumi lumi   512 Jul 16 13:29  ..
-drwxrwxrwx 1 lumi lumi   512 Jun 30 21:22  .cache
-drwxrwxrwx 1 lumi lumi   512 Jul 17 13:25  .git
--rwxrwxrwx 1 lumi lumi  3471 Jul 10 15:43  .gitignore
-drwxrwxrwx 1 lumi lumi   512 Jul 17 13:49  .idea
-drwxrwxrwx 1 lumi lumi   512 Jun 18 10:21  .vscode
--rwxrwxrwx 1 lumi lumi   491 Jul 15 21:48  CMakeLists.txt
--rwxrwxrwx 1 lumi lumi  4026 Jul 17 13:25  README.md
--rwxrwxrwx 1 lumi lumi   222 Jul 10 17:43  TestRunScript.bash
-drwxrwxrwx 1 lumi lumi   512 Jun 12 16:43  argc_argv
-drwxrwxrwx 1 lumi lumi   512 Jul 10 16:20  bit_manipulation
-drwxrwxrwx 1 lumi lumi   512 Jul 15 21:59  cmake-build-debug
-drwxrwxrwx 1 lumi lumi   512 Jul 15 13:46  doubly_linked_lists
-drwxrwxrwx 1 lumi lumi   512 Jul 10 13:48  file_io
-drwxrwxrwx 1 lumi lumi   512 Jul 15 17:57  function_pointers
-drwxrwxrwx 1 lumi lumi   512 Jun 29 12:13  functions_nested_loops
-drwxrwxrwx 1 lumi lumi   512 Jul 16 10:29  hash_tables
-drwxrwxrwx 1 lumi lumi   512 Jun 29 12:13  hello_world
-drwxrwxrwx 1 lumi lumi   512 Jun 18 10:21  malloc_free
-drwxrwxrwx 1 lumi lumi   512 Jun 29 12:13  more_functions_nested_loops
-drwxrwxrwx 1 lumi lumi   512 Jun 18 10:21  more_malloc_free
-drwxrwxrwx 1 lumi lumi   512 Jul  8 19:11  more_singly_linked_lists
-drwxrwxrwx 1 lumi lumi   512 Jun 19 17:45  pointers_arrays_strings
-drwxrwxrwx 1 lumi lumi   512 Jun 18 10:21  preprocessor
-drwxrwxrwx 1 lumi lumi   512 Jun 25 11:16  recursion
-drwxrwxrwx 1 lumi lumi   512 Jul 10 16:20  singly_linked_lists
-drwxrwxrwx 1 lumi lumi   512 Jun 11 12:27  static_libraries
-drwxrwxrwx 1 lumi lumi   512 Jun 25 11:16  structures_typedef
-drwxrwxrwx 1 lumi lumi   512 Jun  7 15:34  variables_if_else_while
-drwxrwxrwx 1 lumi lumi   512 Jun 26 17:51  variadic_functions
+Welcome to the Gates Of Shell. Type "help" for a list of commands. Type "exit" to quit.
 
-Please enter a command. Type "help" for a list of commands.
-$ pwd
-mnt/c/Users/daste/CLionProjects/atlas-low_level_programming
-
-Please enter a command. Type "help" for a list of commands.
-$|
+/mnt/c/Users/Owner/CLionProjects/atlas-simple_shell$ ls la 
+ls: cannot access 'la': No such file or directory
+/mnt/c/Users/Owner/CLionProjects/atlas-simple_shell$ ls -la  
+total 44
+drwxrwxrwx 1 zytronium zytronium  4096 Jul 18 20:25 .
+drwxrwxrwx 1 zytronium zytronium  4096 Jul 18 14:18 ..
+drwxrwxrwx 1 zytronium zytronium  4096 Jul 18 20:17 .git
+-rwxrwxrwx 1 zytronium zytronium    71 Jul 18 18:43 .gitignore
+-rwxrwxrwx 1 zytronium zytronium  3687 Jul 18 14:18 README.md
+-rwxrwxrwx 1 zytronium zytronium   218 Jul 18 19:51 TestRunScript.bash
+-rwxrwxrwx 1 zytronium zytronium  3228 Jul 18 18:42 colors.h
+-rwxrwxrwx 1 zytronium zytronium   632 Jul 18 18:44 main.c
+-rwxrwxrwx 1 zytronium zytronium   509 Jul 18 18:46 main.h
+-rwxrwxrwx 1 zytronium zytronium  4696 Jul 18 20:00 shell_loop.c
+-rwxrwxrwx 1 zytronium zytronium   955 Jul 18 20:20 shellf_destruct.c
+-rwxrwxrwx 1 zytronium zytronium 17048 Jul 18 20:25 testRun
+/mnt/c/Users/Owner/CLionProjects/atlas-simple_shell$ touch grass
+/mnt/c/Users/Owner/CLionProjects/atlas-simple_shell$ ls
+CMakeLists.txt  TestRunScript.bash  colors.h  main.c  shell_loop.c       testRun
+README.md       cmake-build-debug   grass     main.h  shellf_destruct.c
+/mnt/c/Users/Owner/CLionProjects/atlas-simple_shell$ echo Hello, World! This is a simple shell
+Hello, World! This is a simple shell
+/mnt/c/Users/Owner/CLionProjects/atlas-simple_shell$ pwd 
+/mnt/c/Users/Owner/CLionProjects/atlas-simple_shell
+/mnt/c/Users/Owner/CLionProjects/atlas-simple_shell$ whoami
+zytronium
+/mnt/c/Users/Owner/CLionProjects/atlas-simple_shell$ █
 ```
 
 ###### Everything below (except the last two lines) is a placeholder.
