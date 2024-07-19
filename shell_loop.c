@@ -18,6 +18,8 @@ void shellLoop(void)
 	char *paths[1] = {NULL};
 	char *cmd;
 	char *bash_dir = "/usr/bin/";
+	int i;
+	int getline_rtn = 0;
 	/* TODO: consider changing to multiple locations that will be searched with algo that combines cmd_token and if (access ... true) */
 
 	getcwd(path, sizeof(path));
@@ -25,35 +27,31 @@ void shellLoop(void)
 	/* get & save input */
 	printf(CLR_BLUE_BOLD); /* sets the text color to blue */
 	printf("%s", path); /* prints the path in blue */
-	printf("%s$ ", CLR_DEFAULT); /* rests text color and prints '$' */
-	getline(&input, &size, stdin);
-	input[strlen(input) - 1] = '\0'; /* delete newline at end of string */ /* TODO: consider checking if this char acutally is a newline */
-	/*printf("Input: %s\n", input);*/
+	printf("%s$ ", CLR_DEFAULT); /* resets text color and prints '$' */
+	getline_rtn = getline(&input, &size, stdin);
+	if (getline_rtn == -1)
+	{
+		printf("Ctrl-D Entered. Thank you for playing.\n");
+		free_all(tokens, input, NULL);
+		exit(EXIT_SUCCESS);
+	}
+	input[strlen(input) - 1] = '\0'; /* delete newline at end of string *//* TODO: consider checking if this char acutally is a newline */
+
 
 	/* PARSING */
 	cmd_token = strtok(input, " "); /* first token */
-	/*cmd_token[strcspn(cmd_token, "\n")] = 0;*/ /* removed \n char if exists */ /* NOTE: probably not needed; check line 30. */
 
 	cmd = malloc(strlen(bash_dir) + strlen(cmd_token) + 1);
 	if (cmd == NULL)
+	{
+		free_all(tokens, cmd, input, NULL);
 		exit(EXIT_FAILURE); /* TODO: might want to consider printing an error message and skipping to the end of loop instead of terminating program */
+	}
+
 
 	if (cmd_token[0] != '/' && cmd_token[0] != '.')
 		strcpy(cmd, bash_dir);
 	strcat(cmd, cmd_token);
-
-/*Nicole TESTING*/
-/*==========================================*/
-	/*char cmd[] = "/usr/bin/ls";
-	char * argV[] = {"ls", "-l", NULL};
-	char * envp[] = {NULL} ;
-	printf("Running EXECV: %d\n", 1);
-	exec_rtn = execve(cmd, argV, envp);*/
-/*=======================================*/
-/*Noticed you never make it to the if statement where execv happens*/
-/**/
-/*Will send in Slack T1 useful video*/
-
 
     while (cmd_token != NULL)
 	{
@@ -62,23 +60,19 @@ void shellLoop(void)
 
 		tokens[tokens_count] = strdup(cmd_token);
 
-		/*if (tokens_count != 0)
-			printf("arg %d: %s\n", tokens_count, tokens[tokens_count]);
-		else
-			printf("command: %s\n", tokens[0]);*/
-
 		cmd_token = strtok(NULL, " ");
 		tokens_count++;
 	}
 	tokens[tokens_count] = NULL;
-	/*printf("\n");*/ /* visually separate debug prints from output */
-	/* NOTE: keep an eye out for special characters that can change the meaning */
 
-	/* RUN USER COMMANDS - skeleton version */
+	/* RUN USER COMMANDS */
 
 	/* ↓----------------- custom command "exit" -----------------↓ */
 	if (tokens[0] != NULL && (strcmp(tokens[0], "exit") == 0 || strcmp(tokens[0], "quit") == 0))
+	{
+		free_all(tokens, cmd, input, NULL);
 		exit(EXIT_SUCCESS);
+	}
 	/* ↑----------------- custom command "exit" -----------------↑ */
 	else
 	/* ↓------------- custom command "self-destruct" -------------↓ */
@@ -102,8 +96,35 @@ void shellLoop(void)
 	else
 		runCommand(cmd, tokens, paths);
 
+	free_all(tokens, cmd, input, NULL);
 	shellLoop(); /* NOTE: exit doesn't exit. TODO: consider changing to while loop and including attie as a condition */
 				/* NOTE: what do you mean exit doesn't exit? it seems to work for me. - Daniel */
+}
+
+
+/**
+ * free_all - frees all dynamically allotted memory
+ * 
+ */
+void free_all(char **tokens, ...)
+{
+	va_list vars;
+	int i;
+	char *free_me;
+
+	fflush(NULL);
+	for (i = 0; tokens[i] != NULL; i++)
+		free(tokens[i]);
+	free(tokens);
+	va_start(vars, tokens);
+	free_me = va_arg(vars, char *);
+	while (free_me != NULL)
+	{
+		if (free_me != NULL)
+			free(free_me);
+		free_me = va_arg(vars, char*);
+	}
+	va_end(vars);
 }
 
 /**
@@ -159,7 +180,7 @@ int runCommand(char *commandPath, char **args, char **envPaths)
 	}
 	else /* parent process; fork_rtn contains pid of child process */
 	{
-		wait_rtn = waitpid(fork_rtn, &child_status, 0);
+		wait_rtn = waitpid(fork_rtn, &child_status, 0); /* waits until child process terminates */
 		if (wait_rtn == -1)
 		{
 			perror("An error occurred while running command"); /* error message */
