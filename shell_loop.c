@@ -18,6 +18,8 @@ void shellLoop(void)
 	char *paths[1] = {NULL};
 	char *cmd;
 	char *bash_dir = "/usr/bin/";
+	int i;
+	int getline_rtn = 0;
 	/* TODO: consider changing to multiple locations that will be searched with algo that combines cmd_token and if (access ... true) */
 
 	getcwd(path, sizeof(path));
@@ -26,20 +28,16 @@ void shellLoop(void)
 	printf(CLR_BLUE_BOLD); /* sets the text color to blue */
 	printf("%s", path); /* prints the path in blue */
 	printf("%s$ ", CLR_DEFAULT); /* resets text color and prints '$' */
-	getline(&input, &size, stdin);
-	input[strlen(input) - 1] = '\0'; /* delete newline at end of string */ /* TODO: consider checking if this char acutally is a newline */
-	/*printf("Input: %s\n", input);*/
-
-	/*if (atoi(input)) //exit test
+	getline_rtn = getline(&input, &size, stdin);
+	if (getline_rtn == -1)
 	{
-		printf(CLR_CYAN_BOLD);
-		printf("exiting...\n");
+		printf("Ctrl-D Entered. Thank you for playing.\n");
 		exit(EXIT_SUCCESS);
-	}*/
+	}
+	input[strlen(input) - 1] = '\0'; /* delete newline at end of string */
 
 	/* PARSING */
 	cmd_token = strtok(input, " "); /* first token */
-	/*cmd_token[strcspn(cmd_token, "\n")] = 0;*/ /* removed \n char if exists */ /* NOTE: probably not needed; check line 30. */
 
 	cmd = malloc(strlen(bash_dir) + strlen(cmd_token) + 1);
 	if (cmd == NULL)
@@ -49,19 +47,6 @@ void shellLoop(void)
 		strcpy(cmd, bash_dir);
 	strcat(cmd, cmd_token);
 
-/*Nicole TESTING*/
-/*==========================================*/
-	/*char cmd[] = "/usr/bin/ls";
-	char * argV[] = {"ls", "-l", NULL};
-	char * envp[] = {NULL} ;
-	printf("Running EXECV: %d\n", 1);
-	exec_rtn = execve(cmd, argV, envp);*/
-/*=======================================*/
-/*Noticed you never make it to the if statement where execv happens*/
-/**/
-/*Will send in Slack T1 useful video*/
-
-
     while (cmd_token != NULL)
 	{
 		if (tokens_count >= 64)
@@ -69,19 +54,12 @@ void shellLoop(void)
 
 		tokens[tokens_count] = strdup(cmd_token);
 
-		/*if (tokens_count != 0)
-			printf("arg %d: %s\n", tokens_count, tokens[tokens_count]);
-		else
-			printf("command: %s\n", tokens[0]);*/
-
 		cmd_token = strtok(NULL, " ");
 		tokens_count++;
 	}
 	tokens[tokens_count] = NULL;
-	/*printf("\n");*/ /* visually separate debug prints from output */
-	/* NOTE: keep an eye out for special characters that can change the meaning */
 
-	/* RUN USER COMMANDS - skeleton version */
+	/* RUN USER COMMANDS */
 
 	/* ↓----------------- custom command "exit" -----------------↓ */
 	if (tokens[0] != NULL && (strcmp(tokens[0], "exit") == 0 || strcmp(tokens[0], "quit") == 0))
@@ -136,7 +114,8 @@ void shellLoop(void)
 
 	shellLoop(); /* NOTE: exit doesn't exit. TODO: consider changing to while loop and including attie as a condition */
 				/* NOTE: what do you mean exit doesn't exit? it seems to work for me. - Daniel */
-
+	for (i = 0; tokens[i] != NULL; i++)
+		free(tokens[i]);
 	free(tokens);
 	free(cmd);
 }
