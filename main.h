@@ -24,11 +24,13 @@
 /* ↓ FUNCTIONS ↓ */
 int isNumber(char *number);
 
-void shellLoop(char *[]);
+void shellLoop(char *argv[]);
 
 void selfDestruct(int countdown);
 
-void free_all(char **, ...);
+void freeAll(char **tokens, ...);
+
+int customCmd(char **tokens, char *input, char *cmd);
 
 int runCommand(char *commandPath, char **args, char **envPaths, char *argv[]);
 /* ------------------- */

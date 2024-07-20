@@ -15,7 +15,7 @@ void shellLoop(char *argv[])
 	char *cmd;
 	char *bash_dir = "/usr/bin/";
 	char *paths[1] = {NULL};
-	int getline_rtn;
+	int custom_cmd_rtn, getline_rtn;
 	int i;
 	/* TODO: consider changing to multiple locations that will be searched with algo that combines cmd_token and if (access ... true) */
 
@@ -51,7 +51,7 @@ void shellLoop(char *argv[])
 				printf("\n%sCtrl-D Entered. %s\nThe %sGates Of Shell%s have closed. "
 					"Goodbye.\n%s\n", CLR_DEFAULT_BOLD, CLR_YELLOW_BOLD,
 					CLR_RED_BOLD, CLR_YELLOW_BOLD, CLR_DEFAULT);
-			free_all(tokens, input, NULL);
+			freeAll(tokens, input, NULL);
 			exit(EXIT_SUCCESS);
 		}
 		input[strlen(input) - 1] = '\0'; /* delete newline at end of string *//* TODO: consider checking if this char acutally is a newline */
@@ -60,13 +60,13 @@ void shellLoop(char *argv[])
 		cmd_token = strtok(input, " "); /* first token */
 		if (cmd_token == NULL) /* blank command - only spaces or newline */
 		{
-			free_all(tokens, input, NULL);
+			freeAll(tokens, input, NULL);
 			continue;
 		}
 		cmd = malloc(strlen(bash_dir) + strlen(cmd_token) + 1);
 		if (cmd == NULL) /* malloc fail check */
 		{
-			free_all(tokens, cmd, input, NULL);
+			freeAll(tokens, cmd, input, NULL);
 			exit(EXIT_FAILURE); /* TODO: might want to consider printing an error message and skipping to the end of loop instead of terminating program */
 		}
 		/* initialize cmd to the command to pass to execve */
@@ -90,39 +90,16 @@ void shellLoop(char *argv[])
 		}
 		tokens[tokens_count] = NULL;
 
-		/* RUN USER COMMANDS */
+		/* ------------------- RUN USER COMMANDS -------------------  */
 
-		/* ↓----------------- custom command "exit" -----------------↓ */
-		if (tokens[0] != NULL && (strcmp(tokens[0], "exit") == 0 || strcmp(tokens[0], "quit") == 0))
-		{
-			free_all(tokens, cmd, input, NULL);
-			exit(EXIT_SUCCESS);
-		}
-		/* ↑----------------- custom command "exit" -----------------↑ */
-
-		/* ↓------------- custom command "self-destruct" -------------↓ */
-		if (tokens[0] != NULL && (strcmp(tokens[0], "self-destruct") == 0 || strcmp(tokens[0], "selfdestr") == 0))
-		{
-			int countdown = 5; /* number of seconds to countdown from */
-			/* initialized to 5 in case user doesn't give a number */
-
-			/* check if user gave any args and if it's a valid positive number */
-			if (tokens[1] != NULL && isNumber(tokens[1]) && atoi(tokens[1]) > 0)
-				countdown = atoi(tokens[1]); /* set countdown to given number */
-				/*
-				* NOTE: I'd use abs() instead of checking if its positive, but
-				* abs() is not an allowed function and I don't want to code it.
-				*/
-			free_all(tokens, cmd, input, NULL);
-			selfDestruct(countdown);
-			/* TODO: should we handle the condition if the cmd has too many arguments? */
-		}
-		/* ↑------------- custom command "self-destruct" -------------↑ */
+		/* check for custom commands */
+		custom_cmd_rtn = customCmd(tokens, input, cmd);
 
 		/* run command; if child process fails, stop the child process from re-entering loop */
-		runCommand(cmd, tokens, paths, argv);
+		if (custom_cmd_rtn == 0) /* input is not a custom command */
+			runCommand(cmd, tokens, paths, argv);
 
-		free_all(tokens, cmd, input, NULL);
+		freeAll(tokens, cmd, input, NULL);
 	}
 }
 
@@ -130,7 +107,7 @@ void shellLoop(char *argv[])
  * free_all - frees all dynamically allotted memory
  * @tokens: array of strings needing free()
  */
-void free_all(char **tokens, ...)
+void freeAll(char **tokens, ...)
 {
 	va_list vars;
 	int i;
@@ -178,6 +155,7 @@ int isNumber(char *number)
  * @commandPath: command to run, including path(?)
  * @args: array of args for commandPath, including the commandPath (without path)
  * @envPaths: paths for the environment(?)
+ * @argv TODO: this
  *
  * Return: 0 on success, -1 on failure, -2 on failure from child process.
  */
@@ -213,4 +191,46 @@ int runCommand(char *commandPath, char **args, char **envPaths, char *argv[])
 	}
 
 	return (0); /* success */
+}
+
+/**
+ * customCmd - checks if the given input is a custom command. If so, executes it.
+ *
+ * @tokens: tokens.
+ * @input: the user's input, aka the
+ * @cmd: cmd variable (needs to be freed in some commands)
+ * Return: 1 if it was a custom command and it was successfully executed,
+ * 0 if it's not a custom command,
+ * -1 on error (which currently can never happen because all current custom
+ * cmds can't encounter errors because they all just exit anyway)
+ */
+int customCmd(char **tokens, char *input, char *cmd)
+{
+	/* ↓----------------- custom command "exit" -----------------↓ */
+	if (tokens[0] != NULL && (strcmp(tokens[0], "exit") == 0 || strcmp(tokens[0], "quit") == 0))
+	{
+		freeAll(tokens, cmd, input, NULL);
+		exit(EXIT_SUCCESS);
+	}
+	/* ↑----------------- custom command "exit" -----------------↑ */
+
+	/* ↓------------- custom command "self-destruct" -------------↓ */
+	if (tokens[0] != NULL && (strcmp(tokens[0], "self-destruct") == 0 || strcmp(tokens[0], "selfdestr") == 0))
+	{
+		int countdown = 5; /* number of seconds to countdown from */
+		/* initialized to 5 in case user doesn't give a number */
+
+		/* check if user gave any args and if it's a valid positive number */
+		if (tokens[1] != NULL && isNumber(tokens[1]) && atoi(tokens[1]) > 0)
+			countdown = atoi(tokens[1]); /* set countdown to given number */
+		/*
+		* NOTE: I'd use abs() instead of checking if its positive, but
+		* abs() is not an allowed function and I don't want to code it.
+		*/
+		freeAll(tokens, cmd, input, NULL);
+		selfDestruct(countdown); /* runs exit() when done */
+		/* TODO: should we handle the condition if the cmd has too many arguments? */
+	}
+	/* ↑------------- custom command "self-destruct" -------------↑ */
+	return (0);
 }
