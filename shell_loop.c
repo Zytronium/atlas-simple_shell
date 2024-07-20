@@ -28,6 +28,7 @@ void shellLoop(void)
 		tokens_count = 0;
 		getline_rtn = 0;
 		size = 0;
+		input = "";
 
 		for (i = 0; i < 64; i++)
 			tokens[i] = NULL;
@@ -194,7 +195,8 @@ int runCommand(char *commandPath, char **args, char **envPaths)
 		exec_rtn = execve(commandPath, args, envPaths); /* sys call to sleep for 1 sec */
 		if (exec_rtn == -1)
 		{
-			perror("An error occurred while running command"); /* error message */
+			/* perror("An error occurred while running command"); /* error message */
+			fprintf(stderr, "%s: %s\n", commandPath, strerror(errno));
 			return (-2); /* indicate error */
 		}
 	}
