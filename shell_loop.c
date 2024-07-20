@@ -16,6 +16,7 @@ void shellLoop(void)
 	char *bash_dir = "/usr/bin/";
 	char *paths[1] = {NULL};
 	int getline_rtn;
+	int i;
 	/* TODO: consider changing to multiple locations that will be searched with algo that combines cmd_token and if (access ... true) */
 
 	while (1)
@@ -27,6 +28,8 @@ void shellLoop(void)
 		getline_rtn = 0;
 		size = 0;
 
+		for (i = 0; i < 64; i++)
+			tokens[i] = NULL;
 
 		getcwd(path, sizeof(path));
 
@@ -124,14 +127,17 @@ void free_all(char **tokens, ...)
 
 	//fflush(NULL);
 	for (i = 0; tokens[i] != NULL; i++)
-		free(tokens[i]);
+		{
+		if (tokens[i] != NULL)
+			free(tokens[i]);
+	}
 	free(tokens);
 	va_start(vars, tokens);
 	free_me = va_arg(vars, char *);
 	while (free_me != NULL)
 	{
 		free(free_me);
-		free_me = va_arg(vars, char*);
+		free_me = va_arg(vars, char *);
 	}
 	va_end(vars);
 }
@@ -178,13 +184,8 @@ int runCommand(char *commandPath, char **args, char **envPaths)
 		perror("An error occurred while running command"); /* error message */
 		return (-1); /* indicate error */
 	}
-	else if (fork_rtn == 0) /* child process */
+	if (fork_rtn == 0) /* child process */
 	{
-		if (strlen(args[0]) != 2)
-		{
-			printf("Segmentation fault\n");
-			sleep(3);
-		}
 		exec_rtn = execve(commandPath, args, envPaths); /* sys call to sleep for 1 sec */
 		if (exec_rtn == -1)
 		{
