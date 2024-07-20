@@ -37,7 +37,6 @@ void shellLoop(void)
 		/*printf(CLR_BLUE_BOLD); #1# sets the text color to blue #1#
 		printf("%s", path); #1# prints the path in blue #1#
 		printf("%s$ ", CLR_DEFAULT); #1# resets text color and prints '$' #1#*/
-		/*printf("$ ");*/
 		getline_rtn = getline(&input, &size, stdin);
 		if (getline_rtn == -1)
 		{
@@ -63,9 +62,12 @@ void shellLoop(void)
 			exit(EXIT_FAILURE); /* TODO: might want to consider printing an error message and skipping to the end of loop instead of terminating program */
 		}
 
-		if (cmd_token[0] != '/' && (cmd_token[0] != '.' && cmd_token[1] != '/'))
-			strcpy(cmd, bash_dir);
+		if (cmd_token != NULL)
+		{
+			if (cmd_token[0] != '/' && cmd_token[0] != '.')
+				strcpy(cmd, bash_dir);
 		strcat(cmd, cmd_token);
+		}
 
 		while (cmd_token != NULL)
 		{
@@ -184,7 +186,7 @@ int runCommand(char *commandPath, char **args, char **envPaths)
 		if (exec_rtn == -1)
 		{
 			perror("An error occurred while running command"); /* error message */
-			return (-1); /* indicate error */
+			exit(EXIT_FAILURE); /* indicate error */
 		}
 	}
 	else /* parent process; fork_rtn contains pid of child process */
