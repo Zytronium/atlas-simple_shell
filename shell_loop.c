@@ -62,12 +62,13 @@ void shellLoop(void)
 			exit(EXIT_FAILURE); /* TODO: might want to consider printing an error message and skipping to the end of loop instead of terminating program */
 		}
 
-		if (cmd_token != NULL)
+		if (cmd_token[0] != '/' && cmd_token[0] != '.')
 		{
-			if (cmd_token[0] != '/' && cmd_token[0] != '.')
-				strcpy(cmd, bash_dir);
-		strcat(cmd, cmd_token);
+			strcpy(cmd, bash_dir);
+			strcat(cmd, cmd_token);
 		}
+		else
+			strcpy(cmd, cmd_token);
 
 		while (cmd_token != NULL)
 		{
