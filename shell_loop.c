@@ -34,15 +34,19 @@ void shellLoop(void)
 
 		getcwd(path, sizeof(path));
 		/* get & save input */
-		/*printf(CLR_BLUE_BOLD); #1# sets the text color to blue #1#
-		printf("%s", path); #1# prints the path in blue #1#
-		printf("%s$ ", CLR_DEFAULT); #1# resets text color and prints '$' #1#*/
+		if (stylePrints)
+		{
+			printf(CLR_BLUE_BOLD); /* sets the text color to blue */
+			printf("%s", path); /* prints the path in blue */
+			printf("%s$ ", CLR_DEFAULT); /* resets text color and prints '$' */
+		}
 		getline_rtn = getline(&input, &size, stdin);
 		if (getline_rtn == -1)
 		{
-			/*printf("\n%sCtrl-D Entered. %s\nThe %sGates Of Shell%s have closed. "
-				"Goodbye.\n%s\n", CLR_DEFAULT_BOLD, CLR_YELLOW_BOLD,
-				CLR_RED_BOLD, CLR_YELLOW_BOLD, CLR_DEFAULT);*/
+			if (stylePrints)
+				printf("\n%sCtrl-D Entered. %s\nThe %sGates Of Shell%s have closed. "
+					"Goodbye.\n%s\n", CLR_DEFAULT_BOLD, CLR_YELLOW_BOLD,
+					CLR_RED_BOLD, CLR_YELLOW_BOLD, CLR_DEFAULT);
 			free_all(tokens, input, NULL);
 			exit(EXIT_SUCCESS);
 		}
