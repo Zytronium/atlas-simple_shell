@@ -24,13 +24,13 @@
 /* ↓ FUNCTIONS ↓ */
 int isNumber(char *number);
 
-void shellLoop(void);
+void shellLoop(char *[]);
 
 void selfDestruct(int countdown);
 
 void free_all(char **, ...);
 
-int runCommand(char *commandPath, char **args, char **envPaths);
+int runCommand(char *commandPath, char **args, char **envPaths, char *argv[]);
 /* ------------------- */
 
 #endif /* MAIN_H */
