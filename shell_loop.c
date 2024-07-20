@@ -35,15 +35,19 @@ void shellLoop(void)
 
 		getcwd(path, sizeof(path));
 		/* get & save input */
-		/*printf(CLR_BLUE_BOLD); #1# sets the text color to blue #1#
-		printf("%s", path); #1# prints the path in blue #1#
-		printf("%s$ ", CLR_DEFAULT); #1# resets text color and prints '$' #1#*/
+		if (stylePrints)
+		{
+			printf(CLR_BLUE_BOLD); /* sets the text color to blue */
+			printf("%s", path); /* prints the path in blue */
+			printf("%s$ ", CLR_DEFAULT); /* resets text color and prints '$' */
+		}
 		getline_rtn = getline(&input, &size, stdin);
 		if (getline_rtn == -1)
 		{
-			/*printf("\n%sCtrl-D Entered. %s\nThe %sGates Of Shell%s have closed. "
-				"Goodbye.\n%s\n", CLR_DEFAULT_BOLD, CLR_YELLOW_BOLD,
-				CLR_RED_BOLD, CLR_YELLOW_BOLD, CLR_DEFAULT);*/
+			if (stylePrints)
+				printf("\n%sCtrl-D Entered. %s\nThe %sGates Of Shell%s have closed. "
+					"Goodbye.\n%s\n", CLR_DEFAULT_BOLD, CLR_YELLOW_BOLD,
+					CLR_RED_BOLD, CLR_YELLOW_BOLD, CLR_DEFAULT);
 			free_all(tokens, input, NULL);
 			exit(EXIT_SUCCESS);
 		}
@@ -113,8 +117,7 @@ void shellLoop(void)
 		/* ↑------------- custom command "self-destruct" -------------↑ */
 
 		/* run command; if child process fails, stop the child process from re-entering loop */
-		if (runCommand(cmd, tokens, paths) == -2)
-			break;
+		runCommand(cmd, tokens, paths);
 
 		free_all(tokens, cmd, input, NULL);
 	}
@@ -188,12 +191,12 @@ int runCommand(char *commandPath, char **args, char **envPaths)
 	}
 	if (fork_rtn == 0) /* child process */
 	{
-		exec_rtn = execve(commandPath, args, envPaths); /* sys call to sleep for 1 sec */
+		exec_rtn = execve(commandPath, args, envPaths); /* executes user-command */
 		if (exec_rtn == -1)
 		{
 			/* perror("An error occurred while running command"); error message */
-			fprintf(stderr, "%s: %s\n", commandPath, strerror(errno));
-			return (-2); /* indicate error */
+			fprintf(stderr, "%s: 1: %s: %s\n", __FILE__, commandPath, strerror(errno));
+			exit(EXIT_FAILURE); /* indicate error */
 		}
 	}
 	else /* parent process; fork_rtn contains pid of child process */
