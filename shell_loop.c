@@ -69,15 +69,14 @@ void shellLoop(char *argv[])
 			free_all(tokens, cmd, input, NULL);
 			exit(EXIT_FAILURE); /* TODO: might want to consider printing an error message and skipping to the end of loop instead of terminating program */
 		}
-
-
-		if (cmd_token[0] != '/' && cmd_token[0] != '.') /* user inputed a path */
+		/* initialize cmd to the command to pass to execve */
+		if (cmd_token[0] != '/' && cmd_token[0] != '.')
 		{
-			strcpy(cmd, bash_dir);
-			strcat(cmd, cmd_token);
+			strcpy(cmd, bash_dir); /* insert bash path if command is not already a path */
+			strcat(cmd, cmd_token); /* add input command */
 		}
-		else
-			strcpy(cmd, cmd_token);
+		else /* if user input a path */
+			strcpy(cmd, cmd_token); /* initialize cmd to the input path */
 
 		while (cmd_token != NULL)
 		{
