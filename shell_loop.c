@@ -209,6 +209,7 @@ int runCommand(char *commandPath, char **args, char **envPaths)
  * @tokens: tokens.
  * @input: the user's input, aka the
  * @cmd: cmd variable (needs to be freed in some commands)
+ *
  * Return: 1 if it was a custom command and it was successfully executed,
  * 0 if it's not a custom command,
  * -1 on error (which currently can never happen because all current custom
