@@ -30,7 +30,7 @@ void selfDestruct(int countdown);
 
 void free_all(char **, ...);
 
-int runCommand(char *commandPath, char **args, char **envPaths, char *argv[]);
+int runCommand(char *commandPath, char **args, char **envPaths);
 /* ------------------- */
 
 #endif /* MAIN_H */
