@@ -191,7 +191,7 @@ int runCommand(char *commandPath, char **args, char **envPaths)
 	}
 	if (fork_rtn == 0) /* child process */
 	{
-		exec_rtn = execve(commandPath, args, envPaths); /* sys call to sleep for 1 sec */
+		exec_rtn = execve(commandPath, args, envPaths); /* executes user-command */
 		if (exec_rtn == -1)
 		{
 			/* perror("An error occurred while running command"); error message */
