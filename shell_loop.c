@@ -4,7 +4,7 @@
 /**
  * shellLoop - main loop for input/output.
  */
-void shellLoop(void)
+void shellLoop(char *argv[])
 {
 	char *input; /* user input */
 	char path[PATH_MAX]; /* current working dir path */
@@ -121,7 +121,7 @@ void shellLoop(void)
 		/* ↑------------- custom command "self-destruct" -------------↑ */
 
 		/* run command; if child process fails, stop the child process from re-entering loop */
-		runCommand(cmd, tokens, paths);
+		runCommand(cmd, tokens, paths, argv);
 
 		free_all(tokens, cmd, input, NULL);
 	}
@@ -182,7 +182,7 @@ int isNumber(char *number)
  *
  * Return: 0 on success, -1 on failure, -2 on failure from child process.
  */
-int runCommand(char *commandPath, char **args, char **envPaths)
+int runCommand(char *commandPath, char **args, char **envPaths, char *argv[])
 {
 	int exec_rtn = 0, child_status;
 	pid_t fork_rtn, wait_rtn;
@@ -199,7 +199,7 @@ int runCommand(char *commandPath, char **args, char **envPaths)
 		if (exec_rtn == -1)
 		{
 			/* perror("An error occurred while running command"); error message */
-			fprintf(stderr, "%s: 1: %s: %s\n", __FILE__, commandPath, strerror(errno));
+			fprintf(stderr, "%s: 1: %s: %s\n", argv[0], commandPath, strerror(errno));
 			exit(EXIT_FAILURE); /* indicate error */
 		}
 	}

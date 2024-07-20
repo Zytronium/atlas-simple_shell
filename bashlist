@@ -24,4 +24,4 @@ less
 Failing Bash Commands:
 grep
 rm
-cd
+cd - advanced

@@ -1,8 +1,9 @@
 #include "main.h"
 #include "colors.h"
 
-int main(void)
+int main(int argc, char *argv[])
 {
+	(void)argc;
 	/* ------------------- On entry - one time execution ------------------- */
 	if (stylePrints)
 		printf("%sWelcome to the %sGates Of Shell%s. Type \"help\" for a list of "
@@ -10,7 +11,7 @@ int main(void)
 		   CLR_YELLOW_BOLD, CLR_RED_BOLD, CLR_YELLOW_BOLD);
 	/* --------------------------------------------------------------------- */
 
-	shellLoop(); /* main shell loop. (what else?) */
+	shellLoop(argv); /* main shell loop. (what else?) */
 
 	/* ------------------- On exit - one time execution ------------------- */
 	if (stylePrints)
