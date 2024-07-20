@@ -3,14 +3,12 @@
 
 /**
  * shellLoop - main loop for input/output.
- *
- * Return: void
  */
 void shellLoop(void)
 {
 	char *input; /* user input */
 	char path[PATH_MAX]; /* current working dir path */
-	size_t size = 0; /* size variable for getline */
+	size_t size; /* size variable for getline */
 	char *cmd_token;
 	char **tokens = NULL;
 	int tokens_count;
@@ -27,6 +25,7 @@ void shellLoop(void)
 			exit(EXIT_FAILURE);
 		tokens_count = 0;
 		getline_rtn = 0;
+		size = 0;
 
 
 		getcwd(path, sizeof(path));
@@ -123,7 +122,7 @@ void free_all(char **tokens, ...)
 	int i;
 	char *free_me;
 
-	fflush(NULL);
+	//fflush(NULL);
 	for (i = 0; tokens[i] != NULL; i++)
 		free(tokens[i]);
 	free(tokens);
