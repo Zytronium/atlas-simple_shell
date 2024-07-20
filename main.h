@@ -32,7 +32,7 @@ void freeAll(char **tokens, ...);
 
 int customCmd(char **tokens, char *input, char *cmd);
 
-int runCommand(char *commandPath, char **args, char **envPaths, char *argv[]);
+int runCommand(char *commandPath, char **args, char **envPaths);
 /* ------------------- */
 
 #endif /* MAIN_H */
