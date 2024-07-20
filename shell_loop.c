@@ -21,28 +21,31 @@ void shellLoop(void)
 
 	while (1)
 	{
-		input = "";
-		tokens = malloc(64 * sizeof(char *));
-		if (tokens == NULL)
-			exit(EXIT_FAILURE);
+		/* ---------------- variable (re)initializations ---------------- */
+		getcwd(path, sizeof(path));
 		tokens_count = 0;
 		getline_rtn = 0;
 		size = 0;
 		input = "";
+		tokens = malloc(64 * sizeof(char *));
+		if (tokens == NULL)
+			exit(EXIT_FAILURE);
 
+		/* initialize all tokens in array to null */
 		for (i = 0; i < 64; i++)
 			tokens[i] = NULL;
 
-		getcwd(path, sizeof(path));
-		/* get & save input */
+		/* print prompt (path + '$') */
 		if (stylePrints)
 		{
 			printf(CLR_BLUE_BOLD); /* sets the text color to blue */
 			printf("%s", path); /* prints the path in blue */
 			printf("%s$ ", CLR_DEFAULT); /* resets text color and prints '$' */
 		}
+
+		/* get & save input */
 		getline_rtn = getline(&input, &size, stdin);
-		if (getline_rtn == -1)
+		if (getline_rtn == -1) /* End Of File (^D) */
 		{
 			if (stylePrints)
 				printf("\n%sCtrl-D Entered. %s\nThe %sGates Of Shell%s have closed. "
@@ -53,21 +56,22 @@ void shellLoop(void)
 		}
 		input[strlen(input) - 1] = '\0'; /* delete newline at end of string *//* TODO: consider checking if this char acutally is a newline */
 
-		/* PARSING */
+		/* parse the input */
 		cmd_token = strtok(input, " "); /* first token */
-		if (cmd_token == NULL)
+		if (cmd_token == NULL) /* blank command - only spaces or newline */
 		{
 			free_all(tokens, input, NULL);
 			continue;
 		}
 		cmd = malloc(strlen(bash_dir) + strlen(cmd_token) + 1);
-		if (cmd == NULL)
+		if (cmd == NULL) /* malloc fail check */
 		{
 			free_all(tokens, cmd, input, NULL);
 			exit(EXIT_FAILURE); /* TODO: might want to consider printing an error message and skipping to the end of loop instead of terminating program */
 		}
 
-		if (cmd_token[0] != '/' && cmd_token[0] != '.')
+
+		if (cmd_token[0] != '/' && cmd_token[0] != '.') /* user inputed a path */
 		{
 			strcpy(cmd, bash_dir);
 			strcat(cmd, cmd_token);
