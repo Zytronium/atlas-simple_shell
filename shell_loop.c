@@ -69,8 +69,10 @@ void shellLoop(char *argv[])
 			free_all(tokens, cmd, input, NULL);
 			exit(EXIT_FAILURE); /* TODO: might want to consider printing an error message and skipping to the end of loop instead of terminating program */
 		}
+
 		/* initialize cmd to the command to pass to execve */
 		if (cmd_token[0] != '/' && cmd_token[0] != '.')
+
 		{
 			strcpy(cmd, bash_dir); /* insert bash path if command is not already a path */
 			strcat(cmd, cmd_token); /* add input command */
@@ -78,6 +80,17 @@ void shellLoop(char *argv[])
 		else /* if user input a path */
 			strcpy(cmd, cmd_token); /* initialize cmd to the input path */
 
+		if (access(cmd, F_OK) != 0) /* checks if cmd exists */
+		{
+			fprintf(stderr, "%s: 1: %s: %s\n", argv[0], cmd, strerror(errno));
+			free_all(tokens, cmd, input, NULL);
+			continue;
+		}
+		else if (customCmd(token, input) == 1)
+		{
+			free_all(tokens, cmd, input, NULL);
+			continue;
+		}
 		while (cmd_token != NULL)
 		{
 			if (tokens_count >= 64)
@@ -120,7 +133,7 @@ void shellLoop(char *argv[])
 		/* ↑------------- custom command "self-destruct" -------------↑ */
 
 		/* run command; if child process fails, stop the child process from re-entering loop */
-		runCommand(cmd, tokens, paths, argv);
+		runCommand(cmd, tokens, paths);
 
 		free_all(tokens, cmd, input, NULL);
 	}
@@ -181,7 +194,7 @@ int isNumber(char *number)
  *
  * Return: 0 on success, -1 on failure, -2 on failure from child process.
  */
-int runCommand(char *commandPath, char **args, char **envPaths, char *argv[])
+int runCommand(char *commandPath, char **args, char **envPaths)
 {
 	int exec_rtn = 0, child_status;
 	pid_t fork_rtn, wait_rtn;
@@ -197,9 +210,8 @@ int runCommand(char *commandPath, char **args, char **envPaths, char *argv[])
 		exec_rtn = execve(commandPath, args, envPaths); /* executes user-command */
 		if (exec_rtn == -1)
 		{
-			/* perror("An error occurred while running command"); error message */
-			fprintf(stderr, "%s: 1: %s: %s\n", argv[0], commandPath, strerror(errno));
-			exit(EXIT_FAILURE); /* don't let child process re-enter loop */
+			perror("An error occurred while running command");
+			return(-1); /* indicate error */
 		}
 	}
 	else /* parent process; fork_rtn contains pid of child process */
@@ -211,6 +223,5 @@ int runCommand(char *commandPath, char **args, char **envPaths, char *argv[])
 			return (-1); /* indicate error */
 		}
 	}
-
 	return (0); /* success */
 }
