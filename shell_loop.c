@@ -109,7 +109,11 @@ void shellLoop(void)
 			/* TODO: should we handle the condition if the cmd has too many arguments? */
 		}
 		/* ↑------------- custom command "self-destruct" -------------↑ */
-		runCommand(cmd, tokens, paths);
+
+		/* run command; if child process fails, stop the child process from re-entering loop */
+		if (runCommand(cmd, tokens, paths) == -2)
+			break;
+
 		free_all(tokens, cmd, input, NULL);
 	}
 }
@@ -167,7 +171,7 @@ int isNumber(char *number)
  * @args: array of args for commandPath, including the commandPath (without path)
  * @envPaths: paths for the environment(?)
  *
- * Return: 0 on success, -1 on failure.
+ * Return: 0 on success, -1 on failure, -2 on failure from child process.
  */
 int runCommand(char *commandPath, char **args, char **envPaths)
 {
@@ -186,7 +190,7 @@ int runCommand(char *commandPath, char **args, char **envPaths)
 		if (exec_rtn == -1)
 		{
 			perror("An error occurred while running command"); /* error message */
-			exit(EXIT_FAILURE); /* indicate error */
+			return (-2); /* indicate error */
 		}
 	}
 	else /* parent process; fork_rtn contains pid of child process */
