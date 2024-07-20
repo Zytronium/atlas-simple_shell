@@ -52,7 +52,6 @@ void shellLoop(void)
 		cmd_token = strtok(input, " "); /* first token */
 		if (cmd_token == NULL)
 		{
-			printf("\ncmd token is null, yo\n");
 			free_all(tokens, input, NULL);
 			continue;
 		}
@@ -116,8 +115,6 @@ void shellLoop(void)
 /**
  * free_all - frees all dynamically allotted memory
  * @tokens: array of strings needing free()
- *
- * Return: void
  */
 void free_all(char **tokens, ...)
 {
