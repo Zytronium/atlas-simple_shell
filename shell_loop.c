@@ -117,8 +117,7 @@ void shellLoop(void)
 		/* ↑------------- custom command "self-destruct" -------------↑ */
 
 		/* run command; if child process fails, stop the child process from re-entering loop */
-		if (runCommand(cmd, tokens, paths) == -2)
-			break;
+		runCommand(cmd, tokens, paths);
 
 		free_all(tokens, cmd, input, NULL);
 	}
@@ -197,7 +196,7 @@ int runCommand(char *commandPath, char **args, char **envPaths)
 		{
 			/* perror("An error occurred while running command"); error message */
 			fprintf(stderr, "%s: 1: %s: %s\n", __FILE__, commandPath, strerror(errno));
-			return (-2); /* indicate error */
+			exit(EXIT_FAILURE); /* indicate error */
 		}
 	}
 	else /* parent process; fork_rtn contains pid of child process */
