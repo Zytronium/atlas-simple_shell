@@ -34,9 +34,9 @@ void shellLoop(void)
 
 		getcwd(path, sizeof(path));
 		/* get & save input */
-		/*printf(CLR_BLUE_BOLD); /* sets the text color to blue #1#
-		printf("%s", path); /* prints the path in blue #1#
-		printf("%s$ ", CLR_DEFAULT); /* resets text color and prints '$' #1#*/
+		/*printf(CLR_BLUE_BOLD); #1# sets the text color to blue #1#
+		printf("%s", path); #1# prints the path in blue #1#
+		printf("%s$ ", CLR_DEFAULT); #1# resets text color and prints '$' #1#*/
 		printf("$ ");
 		getline_rtn = getline(&input, &size, stdin);
 		if (getline_rtn == -1)
