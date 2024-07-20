@@ -21,6 +21,7 @@ void shellLoop(void)
 
 	while (1)
 	{
+		input = "";
 		tokens = malloc(64 * sizeof(char *));
 		if (tokens == NULL)
 			exit(EXIT_FAILURE);
