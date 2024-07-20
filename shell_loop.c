@@ -127,10 +127,7 @@ void free_all(char **tokens, ...)
 
 	//fflush(NULL);
 	for (i = 0; tokens[i] != NULL; i++)
-		{
-		if (tokens[i] != NULL)
-			free(tokens[i]);
-	}
+		free(tokens[i]);
 	free(tokens);
 	va_start(vars, tokens);
 	free_me = va_arg(vars, char *);
