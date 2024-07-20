@@ -78,7 +78,7 @@ void shellLoop(char *argv[])
 		else
 			strcpy(cmd, cmd_token);
 
-		if (access(cmd, F_OK) != 0) /* checks if cmd exists */
+		if (access(cmd, F_OK) != 0) /* checks if cmd doesn't exit */
 		{
 			fprintf(stderr, "%s: 1: %s: %s\n", argv[0], cmd, strerror(errno));
 			free_all(tokens, cmd, input, NULL);
