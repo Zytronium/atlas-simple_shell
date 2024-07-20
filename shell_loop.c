@@ -21,6 +21,7 @@ void shellLoop(void)
 
 	while (1)
 	{
+		input = "";
 		tokens = malloc(64 * sizeof(char *));
 		if (tokens == NULL)
 			exit(EXIT_FAILURE);
@@ -31,18 +32,18 @@ void shellLoop(void)
 
 		for (i = 0; i < 64; i++)
 			tokens[i] = NULL;
-		getcwd(path, sizeof(path));
 
+		getcwd(path, sizeof(path));
 		/* get & save input */
-		printf(CLR_BLUE_BOLD); /* sets the text color to blue */
-		printf("%s", path); /* prints the path in blue */
-		printf("%s$ ", CLR_DEFAULT); /* resets text color and prints '$' */
+		/*printf(CLR_BLUE_BOLD); #1# sets the text color to blue #1#
+		printf("%s", path); #1# prints the path in blue #1#
+		printf("%s$ ", CLR_DEFAULT); #1# resets text color and prints '$' #1#*/
 		getline_rtn = getline(&input, &size, stdin);
 		if (getline_rtn == -1)
 		{
-			printf("\n%sCtrl-D Entered. %s\nThe %sGates Of Shell%s have closed. "
+			/*printf("\n%sCtrl-D Entered. %s\nThe %sGates Of Shell%s have closed. "
 				"Goodbye.\n%s\n", CLR_DEFAULT_BOLD, CLR_YELLOW_BOLD,
-				CLR_RED_BOLD, CLR_YELLOW_BOLD, CLR_DEFAULT);
+				CLR_RED_BOLD, CLR_YELLOW_BOLD, CLR_DEFAULT);*/
 			free_all(tokens, input, NULL);
 			exit(EXIT_SUCCESS);
 		}
@@ -52,7 +53,6 @@ void shellLoop(void)
 		cmd_token = strtok(input, " "); /* first token */
 		if (cmd_token == NULL)
 		{
-			printf("\ncmd token is null, yo\n");
 			free_all(tokens, input, NULL);
 			continue;
 		}
@@ -63,9 +63,13 @@ void shellLoop(void)
 			exit(EXIT_FAILURE); /* TODO: might want to consider printing an error message and skipping to the end of loop instead of terminating program */
 		}
 
-		if (cmd_token[0] != '/' && (cmd_token[0] != '.' && cmd_token[1] != '/'))
+		if (cmd_token[0] != '/' && cmd_token[0] != '.')
+		{
 			strcpy(cmd, bash_dir);
-		strcat(cmd, cmd_token);
+			strcat(cmd, cmd_token);
+		}
+		else
+			strcpy(cmd, cmd_token);
 
 		while (cmd_token != NULL)
 		{
@@ -107,17 +111,18 @@ void shellLoop(void)
 			/* TODO: should we handle the condition if the cmd has too many arguments? */
 		}
 		/* ↑------------- custom command "self-destruct" -------------↑ */
-		runCommand(cmd, tokens, paths);
+
+		/* run command; if child process fails, stop the child process from re-entering loop */
+		if (runCommand(cmd, tokens, paths) == -2)
+			break;
+
 		free_all(tokens, cmd, input, NULL);
-		/* NOTE: exit doesn't exit. TODO: consider changing to while loop and including attie as a condition */
-	}	/* NOTE: what do you mean exit doesn't exit? it seems to work for me. - Daniel */
+	}
 }
 
 /**
  * free_all - frees all dynamically allotted memory
  * @tokens: array of strings needing free()
- *
- * Return: void
  */
 void free_all(char **tokens, ...)
 {
@@ -134,7 +139,7 @@ void free_all(char **tokens, ...)
 	while (free_me != NULL)
 	{
 		free(free_me);
-		free_me = va_arg(vars, char*);
+		free_me = va_arg(vars, char *);
 	}
 	va_end(vars);
 }
@@ -168,7 +173,7 @@ int isNumber(char *number)
  * @args: array of args for commandPath, including the commandPath (without path)
  * @envPaths: paths for the environment(?)
  *
- * Return: 0 on success, -1 on failure.
+ * Return: 0 on success, -1 on failure, -2 on failure from child process.
  */
 int runCommand(char *commandPath, char **args, char **envPaths)
 {
@@ -181,13 +186,13 @@ int runCommand(char *commandPath, char **args, char **envPaths)
 		perror("An error occurred while running command"); /* error message */
 		return (-1); /* indicate error */
 	}
-	else if (fork_rtn == 0) /* child process */
+	if (fork_rtn == 0) /* child process */
 	{
 		exec_rtn = execve(commandPath, args, envPaths); /* sys call to sleep for 1 sec */
 		if (exec_rtn == -1)
 		{
 			perror("An error occurred while running command"); /* error message */
-			return (-1); /* indicate error */
+			return (-2); /* indicate error */
 		}
 	}
 	else /* parent process; fork_rtn contains pid of child process */

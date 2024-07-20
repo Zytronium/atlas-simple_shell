@@ -11,14 +11,16 @@
 void selfDestruct(int countdown)
 {
 	char *paths[1] = {NULL}; /* environment for execve */
-	char **sleep1args = malloc(sizeof(char *) * 2); /* sleep command args for execve */
-	char **sleep2args = malloc(sizeof(char *) * 2); /* sleep command args for execve */
+	char **sleep1args = malloc(sizeof(char *) * 3); /* sleep command args for execve */
+	char **sleep2args = malloc(sizeof(char *) * 3); /* sleep command args for execve */
 
 	/* execve sleep command arguments setup */
 	sleep1args[0] = "sleep"; /* command to pass to execve */
 	sleep2args[0] = "sleep"; /* command to pass to execve */
 	sleep1args[1] = "1"; /* specifies how many seconds to sleep (1) */
 	sleep2args[1] = "2"; /* specifies how many seconds to sleep (2) */
+	sleep1args[2] = NULL; /* Null terminate */
+	sleep2args[2] = NULL; /* Null terminate */
 
 	printf("Segmentation fault\n"); /* fake seg fault */
 	runCommand("/usr/bin/sleep", sleep1args, paths); /* 1 second delay */
