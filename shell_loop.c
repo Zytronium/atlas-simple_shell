@@ -200,7 +200,7 @@ int runCommand(char *commandPath, char **args, char **envPaths, char *argv[])
 		{
 			/* perror("An error occurred while running command"); error message */
 			fprintf(stderr, "%s: 1: %s: %s\n", argv[0], commandPath, strerror(errno));
-			exit(EXIT_FAILURE); /* indicate error */
+			exit(errno); /* indicate error */
 		}
 	}
 	else /* parent process; fork_rtn contains pid of child process */
