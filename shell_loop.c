@@ -196,7 +196,7 @@ int runCommand(char *commandPath, char **args, char **envPaths)
 		if (exec_rtn == -1)
 		{
 			/* perror("An error occurred while running command"); error message */
-			fprintf(stderr, "%s %s: %s\n", args[1], commandPath, strerror(errno));
+			fprintf(stderr, "%s: 1: %s: %s\n", __FILE__, commandPath, strerror(errno));
 			return (-2); /* indicate error */
 		}
 	}
