@@ -18,6 +18,6 @@ int main(int argc, char *argv[])
 		printf("%s\nThe %sGates Of Shell%s have closed. Goodbye.\n%s",
 		   CLR_YELLOW_BOLD, CLR_RED_BOLD, CLR_YELLOW_BOLD, CLR_DEFAULT);
 
-	return (126);
+	return (EXIT_SUCCESS);
 	/* -------------------------------------------------------------------- */
 }
