@@ -79,17 +79,6 @@ void shellLoop(char *argv[])
 		else /* if user input a path */
 			strcpy(cmd, cmd_token); /* initialize cmd to the input path */
 
-		if (access(cmd, F_OK) != 0) /* checks if cmd exists */
-		{
-			fprintf(stderr, "%s: 1: %s: %s\n", argv[0], cmd, strerror(errno));
-			freeAll(tokens, cmd, input, NULL);
-			continue;
-		}
-		else if (customCmd(tokens, input, cmd) == 1)
-		{
-			freeAll(tokens, cmd, input, NULL);
-			continue;
-		}
 		while (cmd_token != NULL)
 		{
 			if (tokens_count >= 64)
@@ -109,7 +98,16 @@ void shellLoop(char *argv[])
 
 		/* run command; if child process fails, stop the child process from re-entering loop */
 		if (custom_cmd_rtn == 0) /* input is not a custom command */
-			runCommand(cmd, tokens, paths);
+		{
+			if (access(cmd, F_OK) != 0) /* checks if cmd exists */
+			{
+				fprintf(stderr, "%s: 1: %s: %s\n", argv[0], cmd, strerror(errno));
+				freeAll(tokens, cmd, input, NULL);
+				continue;
+			}
+			else
+				runCommand(cmd, tokens, paths);
+		}
 
 		freeAll(tokens, cmd, input, NULL);
 	}
@@ -212,8 +210,7 @@ int runCommand(char *commandPath, char **args, char **envPaths)
  *
  * Return: 1 if it was a custom command and it was successfully executed,
  * 0 if it's not a custom command,
- * -1 on error (which currently can never happen because all current custom
- * cmds can't encounter errors because they all just exit anyway)
+ * -1 on error
  */
 int customCmd(char **tokens, char *input, char *cmd)
 {
@@ -240,6 +237,7 @@ int customCmd(char **tokens, char *input, char *cmd)
 		*/
 		freeAll(tokens, cmd, input, NULL);
 		selfDestruct(countdown); /* runs exit() when done */
+		return (-1); /* indicate error if selfDestruct never exits */
 		/* TODO: should we handle the condition if the cmd has too many arguments? */
 	}
 	/* ↑------------- custom command "self-destruct" -------------↑ */
