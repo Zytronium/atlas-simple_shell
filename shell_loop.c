@@ -16,6 +16,7 @@ void shellLoop(void)
 	char *bash_dir = "/usr/bin/";
 	char *paths[1] = {NULL};
 	int getline_rtn;
+	int i;
 	/* TODO: consider changing to multiple locations that will be searched with algo that combines cmd_token and if (access ... true) */
 
 	while (1)
@@ -27,7 +28,8 @@ void shellLoop(void)
 		getline_rtn = 0;
 		size = 0;
 
-
+		for (i = 0; i < 64; i++)
+			tokens[i] = NULL;
 		getcwd(path, sizeof(path));
 
 		/* get & save input */
@@ -180,11 +182,6 @@ int runCommand(char *commandPath, char **args, char **envPaths)
 	}
 	else if (fork_rtn == 0) /* child process */
 	{
-		if (strlen(args[0]) != 2)
-		{
-			printf("Segmentation fault\n");
-			sleep(3);
-		}
 		exec_rtn = execve(commandPath, args, envPaths); /* sys call to sleep for 1 sec */
 		if (exec_rtn == -1)
 		{
