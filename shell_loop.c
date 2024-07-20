@@ -184,7 +184,7 @@ int isNumber(char *number)
  */
 int runCommand(char *commandPath, char **args, char **envPaths, char *argv[])
 {
-	int exec_rtn = 0, child_status;
+	int exec_rtn = 0, child_status, errnum;
 	pid_t fork_rtn, wait_rtn;
 
 	fork_rtn = fork();
@@ -199,8 +199,9 @@ int runCommand(char *commandPath, char **args, char **envPaths, char *argv[])
 		if (exec_rtn == -1)
 		{
 			/* perror("An error occurred while running command"); error message */
-			fprintf(stderr, "%s: 1: %s: %s\n", argv[0], commandPath, strerror(errno));
-			exit(errno); /* indicate error */
+			errnum = errno;
+			fprintf(stderr, "%s: 1: %s: %s\n", argv[0], commandPath, strerror(errnum));
+			exit(errnum); /* indicate error */
 		}
 	}
 	else /* parent process; fork_rtn contains pid of child process */
