@@ -33,17 +33,17 @@ void shellLoop(void)
 			tokens[i] = NULL;
 
 		getcwd(path, sizeof(path));
-
 		/* get & save input */
-		printf(CLR_BLUE_BOLD); /* sets the text color to blue */
-		printf("%s", path); /* prints the path in blue */
-		printf("%s$ ", CLR_DEFAULT); /* resets text color and prints '$' */
+		/*printf(CLR_BLUE_BOLD); /* sets the text color to blue #1#
+		printf("%s", path); /* prints the path in blue #1#
+		printf("%s$ ", CLR_DEFAULT); /* resets text color and prints '$' #1#*/
+		printf("$ ");
 		getline_rtn = getline(&input, &size, stdin);
 		if (getline_rtn == -1)
 		{
-			printf("\n%sCtrl-D Entered. %s\nThe %sGates Of Shell%s have closed. "
+			/*printf("\n%sCtrl-D Entered. %s\nThe %sGates Of Shell%s have closed. "
 				"Goodbye.\n%s\n", CLR_DEFAULT_BOLD, CLR_YELLOW_BOLD,
-				CLR_RED_BOLD, CLR_YELLOW_BOLD, CLR_DEFAULT);
+				CLR_RED_BOLD, CLR_YELLOW_BOLD, CLR_DEFAULT);*/
 			free_all(tokens, input, NULL);
 			exit(EXIT_SUCCESS);
 		}
@@ -109,8 +109,7 @@ void shellLoop(void)
 		/* ↑------------- custom command "self-destruct" -------------↑ */
 		runCommand(cmd, tokens, paths);
 		free_all(tokens, cmd, input, NULL);
-		/* NOTE: exit doesn't exit. TODO: consider changing to while loop and including attie as a condition */
-	}	/* NOTE: what do you mean exit doesn't exit? it seems to work for me. - Daniel */
+	}
 }
 
 /**
