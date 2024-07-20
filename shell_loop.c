@@ -125,7 +125,7 @@ void free_all(char **tokens, ...)
 	int i;
 	char *free_me;
 
-	//fflush(NULL);
+	/* fflush(NULL); */
 	for (i = 0; tokens[i] != NULL; i++)
 		free(tokens[i]);
 	free(tokens);
