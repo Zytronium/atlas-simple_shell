@@ -27,6 +27,7 @@ void shellLoop(void)
 		tokens_count = 0;
 		getline_rtn = 0;
 		size = 0;
+		input = "";
 
 		for (i = 0; i < 64; i++)
 			tokens[i] = NULL;
