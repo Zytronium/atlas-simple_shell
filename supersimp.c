@@ -102,27 +102,27 @@ int _setenv(const char *name, const char *value, int overwrite)
 	else if (strlen(name) == 0 || strchr(name, '=') == NULL)
 		return (-1);
 
-	new_line = malloc(strlen(name) + strlen(value) + 2); /* line */
+	new_line = malloc(strlen(name) + strlen(value) + 2); /* line replacement */
 	if (new_line == NULL)
 		return (-1);
 	strcpy(new_line, name);
 	strcat(new_line, "=");
 	strcat(new_line, value);
 
-	for (i = 0; environ[i] != NULL && overwrite != 0; i++)
+	for (i = 0; environ[i] != NULL && overwrite != 0; i++) /* looks for name */
 	{
 		temp = strtok(environ[i], "=");
 		size_environ += strlen(environ[i]);
 
 		if (strcmp(temp, name) == 0) /* name found in environ */
 		{
-			free(environ[i]); /* does this work? */
+			free(environ[i]);
 			environ[i] = strdup(new_line);
 			found = 0;
 			break;
 		}
 	}
-	if (found != 0 && overwrite != 0 && environ[i] == NULL)
+	if (found != 0 && overwrite != 0 && environ[i] == NULL) /* if at end */
 	{ /* currently assumes environ can be modified. if not, will need to rebuild it.*/
 		environ = realloc(environ, size_environ + strlen(new_line));
 		if (environ == NULL)
