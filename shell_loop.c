@@ -13,7 +13,7 @@ void shellLoop(char *argv[])
 	char **tokens = NULL;
 	int tokens_count;
 	char *cmd;
-	char *bash_dir = "/usr/bin/";
+	/* char *bash_dir = "/usr/bin/"; */
 	char *paths[1] = {NULL};
 	int custom_cmd_rtn, getline_rtn;
 	int i;
@@ -63,29 +63,33 @@ void shellLoop(char *argv[])
 			freeAll(tokens, input, NULL);
 			continue;
 		}
-		cmd = malloc(strlen(bash_dir) + strlen(cmd_token) + 1);
-		if (cmd == NULL) /* malloc fail check */
-		{
-			freeAll(tokens, cmd, input, NULL);
-			exit(EXIT_FAILURE); /* TODO: might want to consider printing an error message and skipping to the end of loop instead of terminating program */
-		}
 
 		/* initialize cmd to the command to pass to execve */
 		if (cmd_token[0] != '/' && cmd_token[0] != '.')
 		{
-			strcpy(cmd, bash_dir); /* insert bash path if command is not already a path */
-			strcat(cmd, cmd_token); /* add input command */
+			cmd = findPath(cmd_token);
+			if (cmd == NULL)
+			{
+				access(cmd_token, F_OK);
+				perror("not a real command");
+				freeAll(tokens, input, NULL);
+				continue;
+			}
 		}
 		else /* if user input a path */
-			strcpy(cmd, cmd_token); /* initialize cmd to the input path */
-
+			cmd = strdup(cmd_token); /* initialize cmd to the input path */
 		while (cmd_token != NULL)
 		{
 			if (tokens_count >= 64)
+			{
 				tokens = realloc(tokens, (tokens_count + 64) * sizeof(char *));
-
+				if (tokens == NULL)
+				{
+					freeAll(tokens, cmd, input, NULL);
+					continue;
+				}
+			}
 			tokens[tokens_count] = strdup(cmd_token);
-
 			cmd_token = strtok(NULL, " ");
 			tokens_count++;
 		}

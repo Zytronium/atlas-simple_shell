@@ -56,6 +56,10 @@ path_t *buildListPath(void);
 int _setenv(const char *name, const char *value, int overwrite);
 
 int _unsetenv(const char *name);
+
+char *findPath(char *name);
+
+void destroyListPath(path_t *h);
 /* ------------------- */
 
 #endif /* MAIN_H */
