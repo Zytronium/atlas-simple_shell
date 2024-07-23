@@ -5,6 +5,7 @@ int main(int argc, char *argv[])
 {
 	/* ------------------- On entry - one time execution ------------------- */
 	(void) argc;
+	/*setenv("PATH", "", 1);*/
 	if (stylePrints)
 		printf("%sWelcome to the %sGates Of Shell%s. Type \"help\" for a list of "
 		   "commands. Type \"exit\" to quit.\n\n",
