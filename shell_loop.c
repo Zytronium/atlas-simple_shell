@@ -108,7 +108,7 @@ void shellLoop(char *argv[])
 				freeAll(tokens, cmd, input, NULL);
 				continue; /* go back to start of the loop */
 			}
-			runCommand(cmd, tokens, paths); /* runs the command if it exists */
+			runCommand(cmd, tokens, paths); /* runs the command otherwise */
 		}
 
 		freeAll(tokens, cmd, input, NULL);

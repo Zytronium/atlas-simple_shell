@@ -11,7 +11,6 @@ char *findPath(char *name)
 	path_t *temp = NULL;
 	path_t *head = NULL;
 	char *temp_path;
-	int i;
 
 	head = buildListPath();
 	temp = head;
@@ -28,9 +27,9 @@ char *findPath(char *name)
 		/* printf("temp_path: %s\n", temp_path); */
 		if (access(temp_path, F_OK) == 0)
 		{
-			//printf("findpath A\n");
+			/* printf("findpath A\n"); */
 			destroyListPath(head);
-			//printf("findpath B\n");
+			/* printf("findpath B\n"); */
 			return (temp_path);
 		}
 		free(temp_path);
@@ -44,14 +43,14 @@ char *findPath(char *name)
 void destroyListPath(path_t *h)
 {
 	path_t *temp = NULL;
-	//printf("destroyListPath A\n");
+	/* printf("destroyListPath A\n"); */
 	while (h != NULL)
 	{
 		temp = h;
 		h = h->next;
 		/* free(temp->directory); not sure if needed */
 		free(temp);
-		//printf("destroyListPath B\n");
+		/* printf("destroyListPath B\n"); */
 	}
-	//printf("destroyListPath C\n");
+	/* printf("destroyListPath C\n"); */
 }
