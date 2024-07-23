@@ -29,16 +29,16 @@ char *findPath(char *name)
 		if (access(temp_path, F_OK) == 0)
 		{
 			//printf("findpath A\n");
-			//printf("findpath B\n");
 			destroyListPath(head);
-			//printf("findpath C\n");
+			//printf("findpath B\n");
 			return (temp_path);
 		}
 		free(temp_path);
 		temp = temp->next;
 	}
 	destroyListPath(head);
-	return (name);
+	temp_path = strdup(name);
+	return (temp_path);
 }
 
 void destroyListPath(path_t *h)

@@ -13,11 +13,9 @@ void shellLoop(char *argv[])
 	char **tokens = NULL;
 	int tokens_count;
 	char *cmd;
-	/* char *bash_dir = "/usr/bin/"; */
 	char *paths[1] = {NULL};
 	int custom_cmd_rtn, getline_rtn;
 	int i;
-	/* TODO: consider changing to multiple locations that will be searched with algo that combines cmd_token and if (access ... true) */
 
 	while (1)
 	{
@@ -103,7 +101,7 @@ void shellLoop(char *argv[])
 		/* run command; if child process fails, stop the child process from re-entering loop */
 		if (custom_cmd_rtn == 0) /* input is not a custom command */
 		{
-			if (access(cmd, F_OK) != 0) /* checks if cmd exists */
+			if (access(cmd, F_OK) != 0) /* checks if cmd doesn't exists */
 			{
 				/* print error message in a specific format */
 				fprintf(stderr, "%s: 1: %s: %s\n", argv[0], cmd, strerror(errno));
