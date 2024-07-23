@@ -3,8 +3,8 @@
 
 int main(int argc, char *argv[])
 {
-	(void)argc;
 	/* ------------------- On entry - one time execution ------------------- */
+	(void) argc;
 	if (stylePrints)
 		printf("%sWelcome to the %sGates Of Shell%s. Type \"help\" for a list of "
 		   "commands. Type \"exit\" to quit.\n\n",

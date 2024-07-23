@@ -61,7 +61,7 @@ void shellLoop(char *argv[])
 		if (cmd_token == NULL) /* blank command - only spaces or newline */
 		{
 			freeAll(tokens, input, NULL);
-			continue;
+			continue; /* go back to start of the loop */
 		}
 		cmd = malloc(strlen(bash_dir) + strlen(cmd_token) + 1);
 		if (cmd == NULL) /* malloc fail check */
@@ -85,7 +85,6 @@ void shellLoop(char *argv[])
 				tokens = realloc(tokens, (tokens_count + 64) * sizeof(char *));
 
 			tokens[tokens_count] = strdup(cmd_token);
-
 			cmd_token = strtok(NULL, " ");
 			tokens_count++;
 		}
@@ -93,7 +92,7 @@ void shellLoop(char *argv[])
 
 		/* ------------------- RUN USER COMMANDS -------------------  */
 
-		/* check for custom commands */
+		/* check if input is a custom command; run it if it is one */
 		custom_cmd_rtn = customCmd(tokens, input, cmd);
 
 		/* run command; if child process fails, stop the child process from re-entering loop */
@@ -101,11 +100,12 @@ void shellLoop(char *argv[])
 		{
 			if (access(cmd, F_OK) != 0) /* checks if cmd exists */
 			{
+				/* print error message in a specific format */
 				fprintf(stderr, "%s: 1: %s: %s\n", argv[0], cmd, strerror(errno));
 				freeAll(tokens, cmd, input, NULL);
-				continue;
+				continue; /* go back to start of the loop */
 			}
-			runCommand(cmd, tokens, paths);
+			runCommand(cmd, tokens, paths); /* runs the command if it exists */
 		}
 
 		freeAll(tokens, cmd, input, NULL);
@@ -173,7 +173,7 @@ int runCommand(char *commandPath, char **args, char **envPaths)
 	int exec_rtn = 0, child_status;
 	pid_t fork_rtn, wait_rtn;
 
-	fork_rtn = fork();
+	fork_rtn = fork(); /* split process into 2 processes */
 	if (fork_rtn == -1) /* Fork! It failed */
 	{
 		perror("An error occurred while running command"); /* error message */
