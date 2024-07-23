@@ -128,9 +128,12 @@ void freeAll(char **tokens, ...)
 	char *free_me;
 
 	/* fflush(NULL); */
-	for (i = 0; tokens[i] != NULL; i++)
-		free(tokens[i]);
-	free(tokens);
+	if (tokens != NULL)
+	{
+		for (i = 0; tokens[i] != NULL; i++)
+			free(tokens[i]);
+		free(tokens);
+	}
 	va_start(vars, tokens);
 	free_me = va_arg(vars, char *);
 	while (free_me != NULL)
