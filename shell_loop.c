@@ -68,13 +68,13 @@ void shellLoop(char *argv[])
 		if (cmd_token[0] != '/' && cmd_token[0] != '.')
 		{
 			cmd = findPath(cmd_token);
-			if (cmd == NULL)
+			/* if (cmd == NULL)
 			{
 				access(cmd_token, F_OK);
 				perror("not a real command");
 				freeAll(tokens, input, NULL);
 				continue;
-			}
+			} */
 		}
 		else /* if user input a path */
 			cmd = strdup(cmd_token); /* initialize cmd to the input path */
