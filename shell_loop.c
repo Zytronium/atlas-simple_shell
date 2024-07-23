@@ -8,6 +8,8 @@ void shellLoop(char *argv[])
 {
 	char *input; /* user input */
 	char path[PATH_MAX]; /* current working dir path */
+	char *user = _getenv("USER"); /* current user name */
+	char *hostname = _getenv("HOSTNAME"); /* current user name */
 	size_t size; /* size variable for getline */
 	char *cmd_token;
 	char **tokens = NULL;
@@ -35,10 +37,12 @@ void shellLoop(char *argv[])
 
 		/* print prompt (path + '$') */
 		if (stylePrints)
-		{
-			printf(CLR_BLUE_BOLD); /* sets the text color to blue */
-			printf("%s", path); /* prints the path in blue */
-			printf("%s$ ", CLR_DEFAULT); /* resets text color and prints '$' */
+		{ /* print prompt in color ("[Go$Huser@hostname:$ ") */
+			printf("%s[%sGo$H%s]%s | ", CLR_YELLOW_BOLD, CLR_RED_BOLD,
+				CLR_YELLOW_BOLD, CLR_DEFAULT); /* print thing to let me know I'm in this shell, not the real one */
+			printf("%s%s@%s", CLR_GREEN_BOLD, user, hostname); /* prints user@host in green (i.e. julien@ubuntu) */
+			printf("%s:%s%s", CLR_DEFAULT_BOLD, CLR_BLUE_BOLD, path); /* prints the path in blue */
+			printf("%s$ ", CLR_DEFAULT); /* resets text color and prints '$ ' */
 		}
 
 		/* get & save input */
