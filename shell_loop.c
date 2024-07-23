@@ -24,7 +24,7 @@ void shellLoop(char *argv[])
 		tokens_count = 0;
 		getline_rtn = 0;
 		size = 0;
-		input = "";
+		input = NULL;
 		tokens = malloc(64 * sizeof(char *));
 		if (tokens == NULL)
 			exit(EXIT_FAILURE);
@@ -53,29 +53,16 @@ void shellLoop(char *argv[])
 			exit(EXIT_SUCCESS);
 		}
 		input[strlen(input) - 1] = '\0'; /* delete newline at end of string *//* TODO: consider checking if this char acutally is a newline */
-
+		printf("INPUT is %s\n", input);
 		/* parse the input */
 		cmd_token = strtok(input, " "); /* first token */
+		printf("CMD_TOKEN IS: %s\n", cmd_token);
 		if (cmd_token == NULL) /* blank command - only spaces or newline */
 		{
 			freeAll(tokens, input, NULL);
 			continue; /* go back to start of the loop */
 		}
 
-		/* initialize cmd to the command to pass to execve */
-		if (cmd_token[0] != '/' && cmd_token[0] != '.')
-		{
-			cmd = findPath(cmd_token);
-			/* if (cmd == NULL)
-			{
-				access(cmd_token, F_OK);
-				perror("not a real command");
-				freeAll(tokens, input, NULL);
-				continue;
-			} */
-		}
-		else /* if user input a path */
-			cmd = strdup(cmd_token); /* initialize cmd to the input path */
 		while (cmd_token != NULL)
 		{
 			if (tokens_count >= 64)
@@ -94,7 +81,11 @@ void shellLoop(char *argv[])
 		tokens[tokens_count] = NULL;
 
 		/* ------------------- RUN USER COMMANDS -------------------  */
-
+		/* initialize cmd to the command to pass to execve */
+		if (tokens[0][0] != '/' && tokens[0][0] != '.')
+			cmd = findPath(tokens[0]);
+		else /* if user input a path */
+			cmd = strdup(tokens[0]); /* initialize cmd to the input path */
 		/* check if input is a custom command; run it if it is one */
 		custom_cmd_rtn = customCmd(tokens, input, cmd);
 
