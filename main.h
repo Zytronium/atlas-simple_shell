@@ -19,6 +19,19 @@
 #define stylePrints 0
 /* set to 0 for checker, set to 1 to prettify shell */
 #endif /* stylePrints */
+/**
+ * struct path_s - singly linked list for PATH environ variable
+ * @directory: string of directory
+ * @next: next location directory
+ *
+ * Description: singly linked list node structure
+ */
+typedef struct path_s
+{
+	char *directory;
+	struct path_s *next;
+} path_t;
+extern char **environ;
 /* ------------------- */
 
 /* ↓ FUNCTIONS ↓ */
@@ -33,6 +46,16 @@ void freeAll(char **tokens, ...);
 int customCmd(char **tokens, char *input, char *cmd);
 
 int runCommand(char *commandPath, char **args, char **envPaths);
+
+char *_getenv(const char *name);
+
+void printPATH(void);
+
+path_t *buildListPath(void);
+
+int _setenv(const char *name, const char *value, int overwrite);
+
+int _unsetenv(const char *name);
 /* ------------------- */
 
 #endif /* MAIN_H */
