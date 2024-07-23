@@ -48,7 +48,7 @@ void destroyListPath(path_t *h)
 	{
 		temp = h;
 		h = h->next;
-		/* free(temp->directory); not sure if needed */
+		free(temp->directory);
 		free(temp);
 		/* printf("destroyListPath B\n"); */
 	}

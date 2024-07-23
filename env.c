@@ -56,7 +56,7 @@ path_t *buildListPath(void)
 			free(temp_path);
 			return (NULL);
 		}
-		new_node->directory = token;
+		new_node->directory = strdup(token);
 		new_node->next = head;
 		head = new_node;
 		token = strtok(NULL, ":");
