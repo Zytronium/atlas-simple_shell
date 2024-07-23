@@ -165,12 +165,11 @@ int isNumber(char *number)
 }
 
 /**
- * runCommand - runs execve on a commandPath, handles forking and errors.
+ * runCommand - runs execve on a command. Handles forking and errors.
  *
- * @commandPath: command to run, including path(?)
- * @args: array of args for commandPath, including the commandPath (without path)
- * @envPaths: paths for the environment(?)
- * @argv TODO: this
+ * @commandPath: command to run, including path
+ * @args: array of args for commandPath, including the command (without path)
+ * @envPaths: paths for the environment
  *
  * Return: 0 on success, -1 on failure, -2 on failure from child process.
  */
@@ -210,7 +209,7 @@ int runCommand(char *commandPath, char **args, char **envPaths)
  * customCmd - checks if the given input is a custom command. If so, executes it.
  *
  * @tokens: tokens.
- * @input: the user's input, aka the
+ * @input: the user's input, aka the command
  * @cmd: cmd variable (needs to be freed in some commands)
  *
  * Return: 1 if it was a custom command and it was successfully executed,
