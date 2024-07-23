@@ -222,6 +222,11 @@ int customCmd(char **tokens, char *input, char *cmd)
 	if (tokens[0] != NULL && (strcmp(tokens[0], "exit") == 0 || strcmp(tokens[0], "quit") == 0))
 	{
 		freeAll(tokens, cmd, input, NULL);
+
+		if (stylePrints)
+			printf("%s\nThe %sGates Of Shell%s have closed. Goodbye.\n%s",
+			   CLR_YELLOW_BOLD, CLR_RED_BOLD, CLR_YELLOW_BOLD, CLR_DEFAULT);
+
 		exit(EXIT_SUCCESS);
 	}
 	/* ↑----------------- custom command "exit" -----------------↑ */
