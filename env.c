@@ -45,18 +45,23 @@ path_t *buildListPath(void)
 	path_t *new_node = NULL;
 	path_t *head = NULL;
 	char *path = getenv("PATH");
-	char *token = strtok(path, ":");
+	char *temp_path = strdup(path);
+	char *token = strtok(temp_path, ":");
 
 	while (token != NULL)
 	{
 		new_node = (path_t *)malloc(sizeof(path_t));
 		if (new_node == NULL)
+		{
+			free(temp_path);
 			return (NULL);
+		}
 		new_node->directory = token;
 		new_node->next = head;
 		head = new_node;
 		token = strtok(NULL, ":");
 	}
+	free(temp_path);
 	return (head);
 }
 
