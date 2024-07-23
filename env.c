@@ -44,7 +44,7 @@ path_t *buildListPath(void)
 {
 	path_t *new_node = NULL;
 	path_t *head = NULL;
-	char *path = getenv("PATH");
+	char *path = _getenv("PATH");
 	char *temp_path = strdup(path);
 	char *token = strtok(temp_path, ":");
 
