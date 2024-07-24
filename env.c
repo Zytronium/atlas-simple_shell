@@ -53,6 +53,7 @@ path_t *buildListPath(void)
 	char *temp_path = strdup(path);
 	char *token = strtok(temp_path, ":");
 
+	free(path);
 	while (token != NULL)
 	{
 		new_node = (path_t *)malloc(sizeof(path_t));
