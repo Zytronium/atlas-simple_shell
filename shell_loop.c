@@ -33,27 +33,45 @@ void shellLoop(char *argv[])
 		for (i = 0; i < 64; i++)
 			tokens[i] = NULL;
 
+		if (isatty(STDIN_FILENO) == 1) /* checks interactive mode */
+		{
 		/* print prompt (path + '$') */
-		if (stylePrints)
-		{
-			printf(CLR_BLUE_BOLD); /* sets the text color to blue */
-			printf("%s", path); /* prints the path in blue */
-			printf("%s$ ", CLR_DEFAULT); /* resets text color and prints '$' */
-		}
-
-		/* get & save input */
-		getline_rtn = getline(&input, &size, stdin);
-		if (getline_rtn == -1) /* End Of File (^D) */
-		{
+			printf("$");
 			if (stylePrints)
-				printf("\n%sCtrl-D Entered. %s\nThe %sGates Of Shell%s have closed. "
-					"Goodbye.\n%s\n", CLR_DEFAULT_BOLD, CLR_YELLOW_BOLD,
-					CLR_RED_BOLD, CLR_YELLOW_BOLD, CLR_DEFAULT);
-			freeAll(tokens, input, NULL);
-			exit(EXIT_SUCCESS);
+			{
+				printf(CLR_BLUE_BOLD); /* sets the text color to blue */
+				printf("%s", path); /* prints the path in blue */
+				printf("%s$ ", CLR_DEFAULT); /* resets text color and prints '$' */
+			}
+
+			/* get & save input */
+			getline_rtn = getline(&input, &size, stdin);
+			if (getline_rtn == -1) /* End Of File (^D) */
+			{
+				if (stylePrints)
+					printf("\n%sCtrl-D Entered. %s\nThe %sGates Of Shell%s have closed. "
+						"Goodbye.\n%s\n", CLR_DEFAULT_BOLD, CLR_YELLOW_BOLD,
+						CLR_RED_BOLD, CLR_YELLOW_BOLD, CLR_DEFAULT);
+				freeAll(tokens, input, NULL);
+				exit(EXIT_SUCCESS);
+			}
+			input[strlen(input) - 1] = '\0'; /* delete newline at end of string */
 		}
-		input[strlen(input) - 1] = '\0'; /* delete newline at end of string */
-		/* parse the input */
+		else /* in noninteractive mode */
+		{
+			for (i = 1; argv[i] != NULL; i++)
+			{
+				input = malloc(1024);
+				if (input == NULL)
+				{
+					freeAll(tokens, input, NULL);
+					exit(EXIT_FAILURE);
+				}
+				strcat(input, " ");
+				strcat(input, argv[i]);
+			}
+		}
+		/* PARSE INPUT */
 		cmd_token = strtok(input, " "); /* first token */
 		if (cmd_token == NULL) /* blank command - only spaces or newline */
 		{
