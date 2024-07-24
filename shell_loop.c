@@ -8,6 +8,8 @@ void shellLoop(char *argv[])
 {
 	char *input; /* user input */
 	char path[PATH_MAX]; /* current working dir path */
+	char *user = _getenv("USER") ? _getenv("USER") : _getenv("LOGNAME") ; /* current user name */
+	char *hostname = _getenv("NAME") ? _getenv("NAME") : _getenv("HOSTNAME") ? _getenv("HOSTNAME") : _getenv(("WSL_DISTRO_NAME")); /* PC name or host name */
 	size_t size; /* size variable for getline */
 	char *cmd_token;
 	char **tokens = NULL;
@@ -38,10 +40,12 @@ void shellLoop(char *argv[])
 		/* print prompt (path + '$') */
 			printf("$");
 			if (stylePrints)
-			{
-				printf(CLR_BLUE_BOLD); /* sets the text color to blue */
-				printf("%s", path); /* prints the path in blue */
-				printf("%s$ ", CLR_DEFAULT); /* resets text color and prints '$' */
+			{ /* print prompt in color ("[Go$Huser@hostname:$ ") */
+				printf("%s[%sGo$H%s]%s | ", CLR_YELLOW_BOLD, CLR_RED_BOLD,
+				CLR_YELLOW_BOLD, CLR_DEFAULT); /* print thing to let me know I'm in this shell, not the real one */
+				printf("%s%s@%s", CLR_GREEN_BOLD, user, hostname); /* prints user@host in green (i.e. julien@ubuntu) */
+				printf("%s:%s%s", CLR_DEFAULT_BOLD, CLR_BLUE_BOLD, path); /* prints the path in blue */
+				printf("%s$ ", CLR_DEFAULT); /* resets text color and prints '$ ' */
 			}
 
 			/* get & save input */
@@ -132,9 +136,12 @@ void freeAll(char **tokens, ...)
 	char *free_me;
 
 	/* fflush(NULL); */
-	for (i = 0; tokens[i] != NULL; i++)
-		free(tokens[i]);
-	free(tokens);
+	if (tokens != NULL)
+	{
+		for (i = 0; tokens[i] != NULL; i++)
+			free(tokens[i]);
+		free(tokens);
+	}
 	va_start(vars, tokens);
 	free_me = va_arg(vars, char *);
 	while (free_me != NULL)
@@ -168,12 +175,11 @@ int isNumber(char *number)
 }
 
 /**
- * runCommand - runs execve on a commandPath, handles forking and errors.
+ * runCommand - runs execve on a command. Handles forking and errors.
  *
- * @commandPath: command to run, including path(?)
- * @args: array of args for commandPath, including the commandPath (without path)
- * @envPaths: paths for the environment(?)
- * @argv TODO: this
+ * @commandPath: command to run, including path
+ * @args: array of args for commandPath, including the command (without path)
+ * @envPaths: paths for the environment
  *
  * Return: 0 on success, -1 on failure, -2 on failure from child process.
  */
@@ -213,7 +219,7 @@ int runCommand(char *commandPath, char **args, char **envPaths)
  * customCmd - checks if the given input is a custom command. If so, executes it.
  *
  * @tokens: tokens.
- * @input: the user's input, aka the
+ * @input: the user's input, aka the command
  * @cmd: cmd variable (needs to be freed in some commands)
  *
  * Return: 1 if it was a custom command and it was successfully executed,
@@ -226,6 +232,11 @@ int customCmd(char **tokens, char *input, char *cmd)
 	if (tokens[0] != NULL && (strcmp(tokens[0], "exit") == 0 || strcmp(tokens[0], "quit") == 0))
 	{
 		freeAll(tokens, cmd, input, NULL);
+
+		if (stylePrints)
+			printf("%s\nThe %sGates Of Shell%s have closed. Goodbye.\n%s",
+			   CLR_YELLOW_BOLD, CLR_RED_BOLD, CLR_YELLOW_BOLD, CLR_DEFAULT);
+
 		exit(EXIT_SUCCESS);
 	}
 	/* ↑----------------- custom command "exit" -----------------↑ */
