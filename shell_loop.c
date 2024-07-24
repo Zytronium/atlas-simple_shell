@@ -16,7 +16,7 @@ void shellLoop(char *argv[])
 	int tokens_count;
 	char *cmd;
 	char *paths[1] = {NULL};
-	int custom_cmd_rtn, getline_rtn;
+	int custom_cmd_rtn, getline_rtn, run_cmd_rtn;
 	int i;
 
 	while (1)
@@ -99,14 +99,9 @@ void shellLoop(char *argv[])
 		/* run command; if child process fails, stop the child process from re-entering loop */
 		if (custom_cmd_rtn == 0) /* input is not a custom command */
 		{
-			if (access(cmd, F_OK) != 0) /* checks if cmd doesn't exists */
-			{
-				/* print error message in a specific format */
-				fprintf(stderr, "%s: 1: %s: %s\n", argv[0], cmd, strerror(errno));
-				freeAll(tokens, cmd, input, NULL);
-				continue; /* go back to start of the loop */
-			}
-			runCommand(cmd, tokens, paths); /* runs the command otherwise */
+			run_cmd_rtn = runCommand(cmd, tokens, paths); /* runs the command otherwise */
+			if (run_cmd_rtn != 0)
+				fprintf(stderr, "%s: 1: %s: %s\n", argv[0], cmd, strerror(run_cmd_rtn));
 		}
 		freeAll(tokens, cmd, input, NULL);
 	}
@@ -175,6 +170,8 @@ int runCommand(char *commandPath, char **args, char **envPaths)
 	int exec_rtn = 0, child_status;
 	pid_t fork_rtn, wait_rtn;
 
+	if (access(commandPath, F_OK) != 0) /* checks if cmd doesn't exists */
+		return(127);
 	fork_rtn = fork(); /* split process into 2 processes */
 	if (fork_rtn == -1) /* Fork! It failed */
 	{
