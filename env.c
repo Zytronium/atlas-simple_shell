@@ -11,12 +11,17 @@ char *_getenv(const char *name) /* gets an environmental variable */
 	char **current;
 	char *token;
 	char *temp_line;
+	char *temp = NULL;
 	for (current = environ; *current; current++)
 	{
 		temp_line = strdup(*current);
 		token = strtok(temp_line, "=");
 		if (strcmp(token, name) == 0)
-			return (strtok(NULL, "="));
+		{
+			temp = strdup(strtok(NULL, "="));
+			free(temp_line);
+			return (temp);
+		}
 		free(temp_line);
 	}
 	return (NULL);
@@ -48,6 +53,7 @@ path_t *buildListPath(void)
 	char *temp_path = strdup(path);
 	char *token = strtok(temp_path, ":");
 
+	free(path);
 	while (token != NULL)
 	{
 		new_node = (path_t *)malloc(sizeof(path_t));
