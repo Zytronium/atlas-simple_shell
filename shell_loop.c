@@ -8,8 +8,8 @@ void shellLoop(char *argv[])
 {
 	char *input; /* user input */
 	char path[PATH_MAX]; /* current working dir path */
-	char *user = _getenv("USER"); /* current user name */
-	char *hostname = _getenv("NAME") ? _getenv("NAME") : _getenv("HOSTNAME"); /* current host name */
+	char *user = _getenv("USER") ? _getenv("USER") : _getenv("LOGNAME") ; /* current user name */
+	char *hostname = _getenv("NAME") ? _getenv("NAME") : _getenv("HOSTNAME") ? _getenv("HOSTNAME") : _getenv(("WSL_DISTRO_NAME")); /* PC name or host name */
 	size_t size; /* size variable for getline */
 	char *cmd_token;
 	char **tokens = NULL;
