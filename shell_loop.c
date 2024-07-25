@@ -37,9 +37,7 @@ void shellLoop(char *argv[])
 
 		if (isatty(STDIN_FILENO) == 1) /* checks interactive mode */
 		{
-			if (!stylePrints)
-				printf("$"); /* quick command prompt */
-			/* print prompt (path + '$') */
+			/* print prompt (path + '$ ') */
 			if (stylePrints)
 			{ /* print prompt in color ("[Go$Huser@hostname:$ ") */
 				printf("%s[%sGo$H%s]%s | ", CLR_YELLOW_BOLD, CLR_RED_BOLD,

@@ -16,7 +16,7 @@
 
 /* ↓ STRUCTS AND MISC ↓ */
 #ifndef stylePrints
-#define stylePrints 0
+#define stylePrints 1
 /* set to 0 for checker, set to 1 to prettify shell */
 #endif /* stylePrints */
 /**
