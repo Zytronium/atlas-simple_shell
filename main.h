@@ -35,15 +35,16 @@ extern char **environ;
 /* ------------------- */
 
 /* ↓ FUNCTIONS ↓ */
+
 int isNumber(char *number);
 
-void shellLoop(char *argv[]);
+void shellLoop(int argc, char *argv[]);
 
 void selfDestruct(int countdown);
 
 void freeAll(char **tokens, ...);
 
-int customCmd(char **tokens, char *input, char *cmd);
+int customCmd(char **tokens, int interactive, ...);
 
 int runCommand(char *commandPath, char **args, char **envPaths);
 

@@ -4,12 +4,12 @@
 /**
  * shellLoop - main loop for input/output.
  */
-void shellLoop(char *argv[])
+void shellLoop(int argc, char *argv[])
 {
 	char *input; /* user input */
 	char path[PATH_MAX]; /* current working dir path */
-	/* char *user = _getenv("USER") ? _getenv("USER") : _getenv("LOGNAME") ;  current user name
-	char *hostname = _getenv("NAME") ? _getenv("NAME") : _getenv("HOSTNAME") ? _getenv("HOSTNAME") : _getenv(("WSL_DISTRO_NAME")); PC name or host name */
+	char *user = _getenv("USER") ? _getenv("USER") : _getenv("LOGNAME"); /* current user name */
+	char *hostname = _getenv("NAME") ? _getenv("NAME") : _getenv("HOSTNAME") ? _getenv("HOSTNAME") : _getenv(("WSL_DISTRO_NAME")); /* PC name or host name */
 	size_t size; /* size variable for getline */
 	char *cmd_token;
 	char **tokens = NULL;
@@ -40,7 +40,7 @@ void shellLoop(char *argv[])
 			/* print prompt in color ("[Go$H] | user@hostname:path$ ") */
 			printf("%s[%sGo$H%s]%s | ", CLR_YELLOW_BOLD, CLR_RED_BOLD,
 			CLR_YELLOW_BOLD, CLR_DEFAULT); /* print thing to let me know I'm in this shell, not the real one */
-			/* printf("%s%s@%s", CLR_GREEN_BOLD, user, hostname); prints user@host in green (i.e. julien@ubuntu) */
+			printf("%s%s@%s", CLR_GREEN_BOLD, user, hostname); /* prints user@host in green (i.e. julien@ubuntu) */
 			printf("%s:%s%s", CLR_DEFAULT_BOLD, CLR_BLUE_BOLD, path); /* prints the path in blue */
 			printf("%s$ ", CLR_DEFAULT); /* resets text color and prints '$ ' */
 		}
@@ -48,11 +48,11 @@ void shellLoop(char *argv[])
 		getline_rtn = getline(&input, &size, stdin);
 		if (getline_rtn == -1) /* End Of File (^D) */
 		{
-			if (stylePrints)
+			if (argc)
 				printf("\n%sCtrl-D Entered. %s\nThe %sGates Of Shell%s have closed. "
 					"Goodbye.\n%s\n", CLR_DEFAULT_BOLD, CLR_YELLOW_BOLD,
 					CLR_RED_BOLD, CLR_YELLOW_BOLD, CLR_DEFAULT);
-			freeAll(tokens, input, NULL);
+			freeAll(tokens, input, hostname, user, NULL);
 			exit(EXIT_SUCCESS);
 		}
 		input[strlen(input) - 1] = '\0'; /* delete newline at end of string */
@@ -84,12 +84,12 @@ void shellLoop(char *argv[])
 
 		/* ------------------- RUN USER COMMANDS -------------------  */
 		/* initialize cmd to the command to pass to execve */
-		if (tokens[0][0] != '/' && tokens[0][0] != '.')
+		if (tokens[0][0] != '/' && tokens[0][0] != '.')/*if input isn't a path*/
 			cmd = findPath(tokens[0]);
-		else /* if user input a path */
+		else /* if user's input is a path */
 			cmd = strdup(tokens[0]); /* initialize cmd to the input path */
 		/* check if input is a custom command; run it if it is one */
-		custom_cmd_rtn = customCmd(tokens, input, cmd);
+		custom_cmd_rtn = customCmd(tokens, argc, input, cmd, user, hostname, NULL);
 
 		/* run command; if child process fails, stop the child process from re-entering loop */
 		if (custom_cmd_rtn == 0) /* input is not a custom command */
@@ -195,24 +195,28 @@ int runCommand(char *commandPath, char **args, char **envPaths)
 }
 
 /**
- * customCmd - checks if the given input is a custom command. If so, executes it.
+ * customCmd - checks if the given input is a custom command. If so, executes it
  *
  * @tokens: tokens.
- * @input: the user's input, aka the command
- * @cmd: cmd variable (needs to be freed in some commands)
+ * @input: the user's input, aka the command.
+ * @interactive: if the shell is running in interactive mode (argc)
+ * ...: any additional variables to be freed if the command exits. (i.e. user)
  *
  * Return: 1 if it was a custom command and it was successfully executed,
  * 0 if it's not a custom command,
  * -1 on error
  */
-int customCmd(char **tokens, char *input, char *cmd)
+int customCmd(char **tokens, int interactive, ...)
 {
+	va_list args;
+
+	va_start(args, interactive);
 	/* ↓----------------- custom command "exit" -----------------↓ */
 	if (tokens[0] != NULL && (strcmp(tokens[0], "exit") == 0 || strcmp(tokens[0], "quit") == 0))
 	{
-		freeAll(tokens, cmd, input, NULL);
+		freeAll(tokens, args);
 
-		if (stylePrints)
+		if (interactive)
 			printf("%s\nThe %sGates Of Shell%s have closed. Goodbye.\n%s",
 			   CLR_YELLOW_BOLD, CLR_RED_BOLD, CLR_YELLOW_BOLD, CLR_DEFAULT);
 
@@ -233,11 +237,13 @@ int customCmd(char **tokens, char *input, char *cmd)
 		* NOTE: I'd use abs() instead of checking if its positive, but
 		* abs() is not an allowed function and I don't want to code it.
 		*/
-		freeAll(tokens, cmd, input, NULL);
+		freeAll(tokens, args);
 		selfDestruct(countdown); /* runs exit() when done */
 		return (-1); /* indicate error if selfDestruct never exits */
 		/* TODO: should we handle the condition if the cmd has too many arguments? */
 	}
 	/* ↑------------- custom command "self-destruct" -------------↑ */
+	va_end(args);
+
 	return (0);
 }
