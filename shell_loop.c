@@ -37,15 +37,12 @@ void shellLoop(char *argv[])
 
 		if (isatty(STDIN_FILENO) == 1) /* checks interactive mode */
 		{
-			/* print prompt (path + '$ ') */
-			if (stylePrints)
-			{ /* print prompt in color ("[Go$Huser@hostname:$ ") */
-				printf("%s[%sGo$H%s]%s | ", CLR_YELLOW_BOLD, CLR_RED_BOLD,
-				CLR_YELLOW_BOLD, CLR_DEFAULT); /* print thing to let me know I'm in this shell, not the real one */
-				/* printf("%s%s@%s", CLR_GREEN_BOLD, user, hostname); prints user@host in green (i.e. julien@ubuntu) */ 
-				printf("%s:%s%s", CLR_DEFAULT_BOLD, CLR_BLUE_BOLD, path); /* prints the path in blue */
-				printf("%s$ ", CLR_DEFAULT); /* resets text color and prints '$ ' */
-			}
+			/* print prompt in color ("[Go$H] | user@hostname:path$ ") */
+			printf("%s[%sGo$H%s]%s | ", CLR_YELLOW_BOLD, CLR_RED_BOLD,
+			CLR_YELLOW_BOLD, CLR_DEFAULT); /* print thing to let me know I'm in this shell, not the real one */
+			/* printf("%s%s@%s", CLR_GREEN_BOLD, user, hostname); prints user@host in green (i.e. julien@ubuntu) */
+			printf("%s:%s%s", CLR_DEFAULT_BOLD, CLR_BLUE_BOLD, path); /* prints the path in blue */
+			printf("%s$ ", CLR_DEFAULT); /* resets text color and prints '$ ' */
 		}
 		/* get & save input */
 		getline_rtn = getline(&input, &size, stdin);
