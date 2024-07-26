@@ -1,28 +1,43 @@
 #include "main.h"
 #include "colors.h"
 
+/*
+ * shellLoop variables descriptions - because I can't put them on
+ * the line they are declared due to betty forcing me to put multiple
+ * on each line to shorten the function below 40 lines
+ *
+ * @size: size for getline()
+ * @user: current user name
+ * @hostname: host name or device name
+ * @path: current working directory
+ * @input: user input
+ * @tokens:
+ * @cmd:
+ * @cmd_token:
+ * @paths:
+ * @custom_cmd_rtn: return value of customCmd()
+ * @getline_rtn: return value of getline()
+ * @run_cmd_rtn: return value of runCommand()
+ * @tokens_count: number of tokens while initializing the tokens
+ * @i: iterator variable for a for loop somewhere
+ */
+
 /**
  * shellLoop - main loop for input/output.
  */
 void shellLoop(int isAtty, char *argv[])
 {
-	char *input; /* user input */
-	char path[PATH_MAX]; /* current working dir path */
-	char *user = _getenv("USER") ? _getenv("USER") : _getenv("LOGNAME"); /* current user name */
-	char *hostname = _getenv("NAME") ? _getenv("NAME") : _getenv("HOSTNAME") ? _getenv("HOSTNAME") : _getenv(("WSL_DISTRO_NAME")); /* PC name or host name */
 	size_t size; /* size variable for getline */
-	char *cmd_token;
-	char **tokens = NULL;
-	int tokens_count;
-	char *cmd;
-	char *paths[1] = {NULL};
-	int custom_cmd_rtn, getline_rtn, run_cmd_rtn;
-	int i;
+	char user[64], hostname[64], path[PATH_MAX], *input, **tokens = NULL;
+	char *cmd, *cmd_token, *paths[1] = {NULL};
+	int custom_cmd_rtn, getline_rtn, run_cmd_rtn, tokens_count, i;
 
 	while (1)
 	{
 		/* ---------------- variable (re)initializations ---------------- */
 		getcwd(path, sizeof(path));
+		strcpy(user, _getenv("USER") ? _getenv("USER") : _getenv("LOGNAME"));
+		strcpy(hostname, _getenv("NAME") ? _getenv("NAME") : _getenv("HOSTNAME") ? _getenv("HOSTNAME") : _getenv(("WSL_DISTRO_NAME")));
 		tokens_count = 0;
 		getline_rtn = 0;
 		size = 0;
@@ -35,15 +50,7 @@ void shellLoop(int isAtty, char *argv[])
 		for (i = 0; i < 64; i++)
 			tokens[i] = NULL;
 
-		if (isAtty) /* checks interactive mode */
-		{
-			/* print prompt in color ("[Go$H] | user@hostname:path$ ") */
-			printf("%s[%sGo$H%s]%s | ", CLR_YELLOW_BOLD, CLR_RED_BOLD,
-			CLR_YELLOW_BOLD, CLR_DEFAULT); /* print thing to let me know I'm in this shell, not the real one */
-			printf("%s%s@%s", CLR_GREEN_BOLD, user, hostname); /* prints user@host in green (i.e. julien@ubuntu) */
-			printf("%s:%s%s", CLR_DEFAULT_BOLD, CLR_BLUE_BOLD, path); /* prints the path in blue */
-			printf("%s$ ", CLR_DEFAULT); /* resets text color and prints '$ ' */
-		}
+		printPrompt(isAtty, user, hostname, path);
 		/* get & save input */
 		getline_rtn = getline(&input, &size, stdin);
 		if (getline_rtn == -1) /* End Of File (^D) */
@@ -52,7 +59,7 @@ void shellLoop(int isAtty, char *argv[])
 				printf("\n%sCtrl-D Entered. %s\nThe %sGates Of Shell%s have closed. "
 					"Goodbye.\n%s\n", CLR_DEFAULT_BOLD, CLR_YELLOW_BOLD,
 					CLR_RED_BOLD, CLR_YELLOW_BOLD, CLR_DEFAULT);
-			freeAll(tokens, input, hostname, user, NULL);
+			freeAll(tokens, input, NULL);
 			exit(EXIT_SUCCESS);
 		}
 		input[strlen(input) - 1] = '\0'; /* delete newline at end of string */
@@ -89,7 +96,7 @@ void shellLoop(int isAtty, char *argv[])
 		else /* if user's input is a path */
 			cmd = strdup(tokens[0]); /* initialize cmd to the input path */
 		/* check if input is a custom command; run it if it is one */
-		custom_cmd_rtn = customCmd(tokens, isAtty, input, cmd, user, hostname, NULL);
+		custom_cmd_rtn = customCmd(tokens, isAtty, input, cmd, NULL);
 
 		/* run command; if child process fails, stop the child process from re-entering loop */
 		if (custom_cmd_rtn == 0) /* input is not a custom command */
@@ -103,8 +110,33 @@ void shellLoop(int isAtty, char *argv[])
 }
 
 /**
+ * printPrompt - prints prompt in color ("[Go$H] | user@hostname:path$ ")
+ *
+ * @isAtty: is interactive mode
+ * @user: environment variable for user's username
+ * @hostname: environment variable for user's hostname or device name.
+ * @path: current working directory
+ */
+void printPrompt(int isAtty, const char *user, const char *hostname, char *path)
+{
+	if (isAtty) /* checks interactive mode */
+	{
+		/* print thing to let me know I'm in this shell, not the real one */
+		printf("%s[%sGo$H%s]%s | ", CLR_YELLOW_BOLD, CLR_RED_BOLD,
+			   CLR_YELLOW_BOLD, CLR_DEFAULT); /*Go$H stands for Gates of Shell*/
+		/* prints user@host in green (i.e. julien@ubuntu) */
+		printf("%s%s@%s", CLR_GREEN_BOLD, user, hostname);
+		/* prints the path in blue */
+		printf("%s:%s%s", CLR_DEFAULT_BOLD, CLR_BLUE_BOLD, path);
+		/* resets text color and prints '$ ' */
+		printf("%s$ ", CLR_DEFAULT);
+	}
+}
+
+/**
  * free_all - frees all dynamically allotted memory
  * @tokens: array of strings needing free()
+ * ...: list of variables to free
  */
 void freeAll(char **tokens, ...)
 {

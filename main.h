@@ -50,7 +50,7 @@ int runCommand(char *commandPath, char **args, char **envPaths);
 
 char *_getenv(const char *name);
 
-void printPATH(void);
+void printPrompt(int isAtty, const char *user, const char *hostname, char *path);
 
 path_t *buildListPath(void);
 
