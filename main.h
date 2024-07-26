@@ -35,23 +35,47 @@ extern char **environ;
 /* ------------------- */
 
 /* ↓ FUNCTIONS ↓ */
+
 int isNumber(char *number);
 
-void shellLoop(char *argv[]);
+void shellLoop(int isAtty, char *argv[]);
 
 void selfDestruct(int countdown);
 
+void initVars(char *, size_t *, char **, char **, char **, char ***, int *);
+
+void saveInput(int isAtty, char **tokens, size_t *size, char **input);
+
+int parseInput(char *input, char ***tokens, char **cmd_token, int *tokens_count);
+
+void executeIfValid(int isAtty, char *const *argv, char *input, char **tokens,
+					char *cmd, char *cmd_token, char **paths);
+
+void initCmd(char **cmd, char *const *tokens);
+
+int populateTokens(const char *input, char ***tokens, char **cmd_token,
+				   int *tokens_count);
+
 void freeAll(char **tokens, ...);
 
-int customCmd(char **tokens, char *input, char *cmd);
+void ifCmdExit(char **tokens, int interactive, const char *f1, const char *f2,
+			   const char *f3);
+
+int ifCmdSelfDestruct(char **tokens, const char *f1, const char *f2,
+					  const char *f3);
+int customCmd(char **tokens, int interactive, char *f1, char *f2, char *f3);
 
 int runCommand(char *commandPath, char **args, char **envPaths);
 
 char *_getenv(const char *name);
 
-void printPATH(void);
+void printPrompt(int isAtty, char *user, char *hostname, char *path);
 
 path_t *buildListPath(void);
+
+char *getUser();
+
+char *getHostname();
 
 int _setenv(const char *name, const char *value, int overwrite);
 
