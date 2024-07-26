@@ -4,7 +4,7 @@
 /**
  * shellLoop - main loop for input/output.
  */
-void shellLoop(int argc, char *argv[])
+void shellLoop(int isAtty, char *argv[])
 {
 	char *input; /* user input */
 	char path[PATH_MAX]; /* current working dir path */
@@ -35,7 +35,7 @@ void shellLoop(int argc, char *argv[])
 		for (i = 0; i < 64; i++)
 			tokens[i] = NULL;
 
-		if (isatty(STDIN_FILENO) == 1) /* checks interactive mode */
+		if (isAtty) /* checks interactive mode */
 		{
 			/* print prompt in color ("[Go$H] | user@hostname:path$ ") */
 			printf("%s[%sGo$H%s]%s | ", CLR_YELLOW_BOLD, CLR_RED_BOLD,
@@ -48,7 +48,7 @@ void shellLoop(int argc, char *argv[])
 		getline_rtn = getline(&input, &size, stdin);
 		if (getline_rtn == -1) /* End Of File (^D) */
 		{
-			if (argc)
+			if (isAtty)
 				printf("\n%sCtrl-D Entered. %s\nThe %sGates Of Shell%s have closed. "
 					"Goodbye.\n%s\n", CLR_DEFAULT_BOLD, CLR_YELLOW_BOLD,
 					CLR_RED_BOLD, CLR_YELLOW_BOLD, CLR_DEFAULT);
@@ -89,7 +89,7 @@ void shellLoop(int argc, char *argv[])
 		else /* if user's input is a path */
 			cmd = strdup(tokens[0]); /* initialize cmd to the input path */
 		/* check if input is a custom command; run it if it is one */
-		custom_cmd_rtn = customCmd(tokens, argc, input, cmd, user, hostname, NULL);
+		custom_cmd_rtn = customCmd(tokens, isAtty, input, cmd, user, hostname, NULL);
 
 		/* run command; if child process fails, stop the child process from re-entering loop */
 		if (custom_cmd_rtn == 0) /* input is not a custom command */

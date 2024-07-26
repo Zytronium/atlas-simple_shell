@@ -38,7 +38,7 @@ extern char **environ;
 
 int isNumber(char *number);
 
-void shellLoop(int argc, char *argv[]);
+void shellLoop(int isAtty, char *argv[]);
 
 void selfDestruct(int countdown);
 
