@@ -7,6 +7,7 @@
  * Return: value if found, NULL if not
  */
 char *_getenv(const char *name) /* gets an environmental variable */
+
 {
 	char **current;
 	char *token;
@@ -43,6 +44,7 @@ void printPATH(void)
 		token = strtok(NULL, ":");
 	}
 }
+
 /**
  * buildListPath - builds a singly linked list off the environ variable PATH
  *

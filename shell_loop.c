@@ -36,8 +36,8 @@ void shellLoop(int isAtty, char *argv[])
 	{
 		/* ---------------- variable (re)initializations ---------------- */
 		getcwd(path, sizeof(path));
-		user = _getenv("USER") ? : _getenv("LOGNAME");
-		hostname = _getenv("NAME") ? : _getenv("HOSTNAME") ? : _getenv(("WSL_DISTRO_NAME"));
+		user = getUser();
+		hostname = getHostname();
 		tokens_count = 0;
 		getline_rtn = 0;
 		size = 0;
@@ -244,7 +244,7 @@ int runCommand(char *commandPath, char **args, char **envPaths)
  * @tokens: tokens.
  * @input: the user's input, aka the command.
  * @interactive: if the shell is running in interactive mode (argc)
- * ...: any additional variables to be freed if the command exits. (i.e. user)
+ * @free1: any additional variables to be freed if the command exits. (i.e. user)
  *
  * Return: 1 if it was a custom command and it was successfully executed,
  * 0 if it's not a custom command,
@@ -287,3 +287,7 @@ int customCmd(char **tokens, int interactive, char *free1, char *free2, char *fr
 
 	return (0);
 }
+/*
+ * note: customCmd() was variadic, but we undid that because of
+ * problems calling freeAll() using the args variable.
+ */
