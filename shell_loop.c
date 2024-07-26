@@ -193,8 +193,8 @@ int runCommand(char *commandPath, char **args, char **envPaths)
 		/* printf("CHILD STATUS: %d\n", child_status); */
 		if (WIFEXITED(child_status))
 		{
-			/* wexitstat = WEXITSTATUS(child_status); */
-			printf("WEXITSTATUS: %d\n", wexitstat);
+			wexitstat = WEXITSTATUS(child_status);
+			/* printf("WEXITSTATUS: %d\n", wexitstat); */
 			return (wexitstat);
 		}
 		else if (wait_rtn == -1)
