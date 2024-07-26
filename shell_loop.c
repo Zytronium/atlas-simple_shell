@@ -264,11 +264,12 @@ int isNumber(char *number)
  * @args: array of args for commandPath, including the command (without path)
  * @envPaths: paths for the environment
  *
- * Return: 0 on success, -1 on failure, -2 on failure from child process.
+ * Return: 0 on success, -1 on failure, errno on failure from child process.
  */
 int runCommand(char *commandPath, char **args, char **envPaths)
 {
-	int exec_rtn, child_status;
+	int exec_rtn = 0, child_status, wexitstat;
+
 	pid_t fork_rtn, wait_rtn;
 
 	if (access(commandPath, F_OK) != 0) /* checks if cmd doesn't exist */
@@ -281,8 +282,8 @@ int runCommand(char *commandPath, char **args, char **envPaths)
 	fork_rtn = fork(); /* split process into 2 processes */
 	if (fork_rtn == -1) /* Fork! It failed */
 	{
-		perror("An error occurred while running command"); /* error message */
-		return (-1); /* indicate error */
+		/* perror("An error occurred while running command at fork"); error message */
+		return (EXIT_FAILURE); /* indicate error */
 	}
 	if (fork_rtn == 0) /* child process */
 	{
@@ -290,16 +291,22 @@ int runCommand(char *commandPath, char **args, char **envPaths)
 						  envPaths); /* executes user-command */
 		if (exec_rtn == -1)
 		{
-			perror("An error occurred while running command");
-			return (-1); /* indicate error */
+			/* perror("An error occurred while running command at child"); */
+			exit(errno); /* indicate error */
 		}
 	} else /* parent process; fork_rtn contains pid of child process */
 	{
-		wait_rtn = waitpid(fork_rtn, &child_status,
-						   WUNTRACED); /* waits until child process terminates */
-		if (wait_rtn == -1)
+		wait_rtn = waitpid(fork_rtn, &child_status, WUNTRACED); /* waits until child process terminates */
+		/* printf("CHILD STATUS: %d\n", child_status); */
+		if (WIFEXITED(child_status))
 		{
-			perror("An error occurred while running command"); /* error message */
+			wexitstat = WEXITSTATUS(child_status);
+			/* printf("WEXITSTATUS: %d\n", wexitstat); */
+			return (wexitstat);
+		}
+		else if (wait_rtn == -1)
+		{
+			/* perror("An error occurred while running command at parent"); error message */
 			return (-1); /* indicate error */
 		}
 	}
