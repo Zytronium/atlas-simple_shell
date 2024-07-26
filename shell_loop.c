@@ -16,7 +16,6 @@
  * @cmd_token:
  * @paths:
  * @custom_cmd_rtn: return value of customCmd()
- * @getline_rtn: return value of getline()
  * @run_cmd_rtn: return value of runCommand()
  * @tokens_count: number of tokens while initializing the tokens
  * @i: iterator variable for a for loop somewhere
@@ -27,93 +26,157 @@
  */
 void shellLoop(int isAtty, char *argv[])
 {
-	size_t size; /* size variable for getline */
+	size_t size;
 	char *user, *hostname, path[PATH_MAX], *input, **tokens = NULL;
 	char *cmd, *cmd_token, *paths[1] = {NULL};
-	int custom_cmd_rtn, getline_rtn, run_cmd_rtn, tokens_count, i;
+	int tokens_count;
 
 	while (1)
 	{
-		/* ---------------- variable (re)initializations ---------------- */
-		getcwd(path, sizeof(path));
-		user = getUser();
-		hostname = getHostname();
-		tokens_count = 0;
-		getline_rtn = 0;
-		size = 0;
-		input = NULL;
-		tokens = malloc(64 * sizeof(char *));
-		if (tokens == NULL)
-			exit(EXIT_FAILURE);
-
-		/* initialize all tokens in array to null */
-		for (i = 0; i < 64; i++)
-			tokens[i] = NULL;
-
+		initVars(path, &size, &user, &hostname, &input, &tokens, &tokens_count);
 		printPrompt(isAtty, user, hostname, path);
-		free(user);
-		free(hostname);
-		/* get & save input */
-		getline_rtn = getline(&input, &size, stdin);
-		if (getline_rtn == -1) /* End Of File (^D) */
-		{
-			if (isAtty)
-				printf("\n%sCtrl-D Entered. %s\nThe %sGates Of Shell%s have closed. "
-					"Goodbye.\n%s\n", CLR_DEFAULT_BOLD, CLR_YELLOW_BOLD,
-					CLR_RED_BOLD, CLR_YELLOW_BOLD, CLR_DEFAULT);
-			freeAll(tokens, input, NULL);
-			exit(EXIT_SUCCESS);
-		}
-		input[strlen(input) - 1] = '\0'; /* delete newline at end of string */
-
-		/* PARSE INPUT */
-		cmd_token = strtok(input, " "); /* first token */
-		if (cmd_token == NULL) /* blank command - only spaces or newline */
-		{
-			freeAll(tokens, input, NULL);
-			continue; /* go back to start of the loop */
-		}
-
-		while (cmd_token != NULL)
-		{
-			if 	(tokens_count >= 64)
-			{
-				tokens = realloc(tokens, (tokens_count) * sizeof(char *));
-			}
-			if (tokens == NULL)
-			{
-				freeAll(tokens, /*cmd, */input, NULL); /* note: I don't think we should free cmd here. It's uninitialized. */
-				continue;
-			} /* note: I moved this realloc fail check outside of the if statement because of a warning CLion gave me about tokens possibly being null on the next line */
-			tokens[tokens_count] = strdup(cmd_token);
-			cmd_token = strtok(NULL, " ");
-			tokens_count++;
-		}
-		if (tokens == NULL)
-		{
-			freeAll(tokens, /*cmd, */input, NULL);
-			continue;
-		} /* note: I duplicated this here because of a warning CLion gave me saying tokens may be null on the line below */
-		tokens[tokens_count] = NULL;
-
-		/* ------------------- RUN USER COMMANDS -------------------  */
-		/* initialize cmd to the command to pass to execve */
-		if (tokens[0][0] != '/' && tokens[0][0] != '.')/*if input isn't a path*/
-			cmd = findPath(tokens[0]);
-		else /* if user's input is a path */
-			cmd = strdup(tokens[0]); /* initialize cmd to the input path */
-		/* check if input is a custom command; run it if it is one */
-		custom_cmd_rtn = customCmd(tokens, isAtty, input, cmd, cmd_token);
-
-		/* run command; if child process fails, stop the child process from re-entering loop */
-		if (custom_cmd_rtn == 0) /* input is not a custom command */
-		{
-			run_cmd_rtn = runCommand(cmd, tokens, paths); /* runs the command otherwise */
-			if (run_cmd_rtn != 0)
-				fprintf(stderr, "%s: 1: %s: %s\n", argv[0], cmd, strerror(run_cmd_rtn));
-		}
-		freeAll(tokens, cmd, input, NULL);
+		saveInput(isAtty, tokens, &size, &input);
+		parseInput(input, &tokens, &cmd_token, &tokens_count);
+		cmd = initCmd(tokens);
+		executeIfValid(isAtty, argv, input, tokens, cmd, cmd_token, paths);
 	}
+}
+
+/**
+ * executeIfValid - check if a command is a valid custom or built-in command;
+ * run the command if it is valid; if child process fails,stop it
+ * from re-entering loop
+ *
+ * @isAtty:
+ * @argv:
+ * @input:
+ * @tokens:
+ * @cmd:
+ * @cmd_token:
+ * @paths:
+ * @run_cmd_rtn:
+ */
+void executeIfValid(int isAtty, char *const *argv, char *input, char **tokens,
+					char *cmd, char *cmd_token, char **paths)
+{
+	int run_cmd_rtn;
+
+	/* run command */
+	/* if child process fails, stop it from re-entering loop */
+	if (customCmd(tokens, isAtty, input, cmd, cmd_token) == 0) /* input is not a custom command */
+	{
+		/* runs the command if it is a valid built-in */
+		run_cmd_rtn = runCommand(cmd, tokens, paths);
+		/* prints error if command is invalid or another error occurs */
+		if (run_cmd_rtn != 0)
+			fprintf(stderr, "%s: 1: %s: %s\n", argv[0], cmd, strerror(run_cmd_rtn));
+	}
+
+	freeAll(tokens, cmd, input, NULL);
+}
+
+/**
+ * initCmd - initialize cmd to the command to pass to execve
+ *
+ * @tokens: tokens
+ *
+ * Return: command
+ */
+char *initCmd(char *const *tokens)
+{
+	char *cmd;
+	if (tokens[0][0] != '/' && tokens[0][0] != '.')/*if input isn't a path*/
+		cmd = findPath(tokens[0]);
+	else /* if user's input is a path */
+		cmd = strdup(tokens[0]); /* initialize cmd to the input path */
+
+	return cmd;
+}
+
+int parseInput(char *input, char ***tokens, char **cmd_token, int *tokens_count)
+{
+	(*cmd_token) = strtok(input, " "); /* first token */
+	if ((*cmd_token) == NULL) /* blank command - only spaces or newline */
+	{
+		freeAll((*tokens), input, NULL);
+			return (-1); /* go back to start of the loop */
+	}
+
+	if (populateTokens(input, tokens, cmd_token, tokens_count) == -1)
+		return (-1);
+
+	if ((*tokens) == NULL)
+	{
+		freeAll((*tokens), /*cmd, */input, NULL);
+		return (-1);
+	}
+	(*tokens)[(*tokens_count)] = NULL;
+
+	return (1);
+}
+
+int populateTokens(const char *input, char ***tokens, char **cmd_token,
+					int *tokens_count)
+{
+	while ((*cmd_token) != NULL)
+	{
+		if 	((*tokens_count) >= 64)
+			(*tokens) = realloc((*tokens), (*tokens_count) * sizeof(char *));
+
+		if ((*tokens) == NULL)
+		{
+			freeAll((*tokens), input, NULL);
+			return (-1);
+		}
+
+		(*tokens)[(*tokens_count)] = strdup((*cmd_token));
+		(*cmd_token) = strtok(NULL, " ");
+		(*tokens_count)++;
+	}
+	return (1);
+}
+
+/**
+ * saveInput - get & save input
+ *
+ * @isAtty:
+ * @tokens:
+ * @getline_rtn:
+ * @size:
+ * @input:
+ */
+void saveInput(int isAtty, char **tokens, size_t *size, char **input)
+{
+	if (getline(input, size, stdin) == -1) /* gets input; plus EOF (^D) check */
+	{
+		if (isAtty)
+			printf("\n%sCtrl-D Entered. %s\nThe %sGates Of Shell%s have closed."
+				" Goodbye.\n%s\n", CLR_DEFAULT_BOLD, CLR_YELLOW_BOLD,
+				CLR_RED_BOLD, CLR_YELLOW_BOLD, CLR_DEFAULT);
+		freeAll(tokens, (*input), NULL);
+		exit(EXIT_SUCCESS);
+	}
+
+	(*input)[strlen((*input)) - 1] = '\0'; /* delete newline at end of string */
+}
+
+void initVars(char *path, size_t *size, char **user, char **hs, char **input, char ***tokens, int *tokens_count)
+{
+	int i;
+
+	getcwd(path, sizeof(path));
+	(*user) = getUser();
+	(*hs) = getHostname();
+	(*tokens_count) = 0;
+	(*size) = 0;
+	(*input) = NULL;
+	(*tokens) = malloc(64 * sizeof(char *));
+	if ((*tokens) == NULL)
+		exit(EXIT_FAILURE);
+
+	/* initialize all tokens in array to null */
+	for (i = 0; i < 64; i++)
+		(*tokens)[i] = NULL;
 }
 
 /**
@@ -124,7 +187,7 @@ void shellLoop(int isAtty, char *argv[])
  * @hostname: environment variable for user's hostname or device name.
  * @path: current working directory
  */
-void printPrompt(int isAtty, const char *user, const char *hostname, char *path)
+void printPrompt(int isAtty, char *user, char *hostname, char *path)
 {
 	if (isAtty) /* checks interactive mode */
 	{
@@ -138,6 +201,8 @@ void printPrompt(int isAtty, const char *user, const char *hostname, char *path)
 		/* resets text color and prints '$ ' */
 		printf("%s$ ", CLR_DEFAULT);
 	}
+	free(user);
+	free(hostname);
 }
 
 /**
@@ -201,7 +266,7 @@ int isNumber(char *number)
  */
 int runCommand(char *commandPath, char **args, char **envPaths)
 {
-	int exec_rtn = 0, child_status;
+	int exec_rtn, child_status;
 	pid_t fork_rtn, wait_rtn;
 
 	if (access(commandPath, F_OK) != 0) /* checks if cmd doesn't exist */
