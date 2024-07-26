@@ -12,6 +12,7 @@
 #include <errno.h>
 #include <sys/wait.h>
 #include <stdarg.h>
+#include <sys/types.h>
 /* ------------------- */
 
 /* ↓ STRUCTS AND MISC ↓ */

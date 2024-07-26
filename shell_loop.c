@@ -189,7 +189,7 @@ int runCommand(char *commandPath, char **args, char **envPaths)
 	}
 	else /* parent process; fork_rtn contains pid of child process */
 	{
-		wait_rtn = waitpid(fork_rtn, &child_status, WUNTRACED); /* waits until child process terminates */
+		wait_rtn = waitpid(fork_rtn, &child_status, WUNTRACED | WIFEXITED | WEXITSTATUS); /* waits until child process terminates */
 		if (wait_rtn == -1)
 		{
 			perror("An error occurred while running command"); /* error message */
