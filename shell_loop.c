@@ -23,6 +23,9 @@
 
 /**
  * shellLoop - main loop for input/output.
+ *
+ * @isAtty: is interactive mode
+ * @argv: args passed into main()
  */
 void shellLoop(int isAtty, char *argv[])
 {
@@ -37,7 +40,7 @@ void shellLoop(int isAtty, char *argv[])
 		printPrompt(isAtty, user, hostname, path);
 		saveInput(isAtty, tokens, &size, &input);
 		parseInput(input, &tokens, &cmd_token, &tokens_count);
-		cmd = initCmd(tokens);
+		initCmd(&cmd, tokens);
 		executeIfValid(isAtty, argv, input, tokens, cmd, cmd_token, paths);
 	}
 }
@@ -62,14 +65,14 @@ void executeIfValid(int isAtty, char *const *argv, char *input, char **tokens,
 	int run_cmd_rtn;
 
 	/* run command */
-	/* if child process fails, stop it from re-entering loop */
-	if (customCmd(tokens, isAtty, input, cmd, cmd_token) == 0) /* input is not a custom command */
-	{
+	if (customCmd(tokens, isAtty, input, cmd, cmd_token) == 0)
+	{ /* if input is not a custom command */
 		/* runs the command if it is a valid built-in */
 		run_cmd_rtn = runCommand(cmd, tokens, paths);
 		/* prints error if command is invalid or another error occurs */
 		if (run_cmd_rtn != 0)
-			fprintf(stderr, "%s: 1: %s: %s\n", argv[0], cmd, strerror(run_cmd_rtn));
+			fprintf(stderr, "%s: 1: %s: %s\n", argv[0], cmd,
+					strerror(run_cmd_rtn));
 	}
 
 	freeAll(tokens, cmd, input, NULL);
@@ -82,15 +85,12 @@ void executeIfValid(int isAtty, char *const *argv, char *input, char **tokens,
  *
  * Return: command
  */
-char *initCmd(char *const *tokens)
+void initCmd(char **cmd, char *const *tokens)
 {
-	char *cmd;
-	if (tokens[0][0] != '/' && tokens[0][0] != '.')/*if input isn't a path*/
-		cmd = findPath(tokens[0]);
+	if (tokens[0][0] != '/' && tokens[0][0] != '.') /* if input isn't a path */
+		*cmd = findPath(tokens[0]);
 	else /* if user's input is a path */
-		cmd = strdup(tokens[0]); /* initialize cmd to the input path */
-
-	return cmd;
+		*cmd = strdup(tokens[0]); /* initialize cmd to the input path */
 }
 
 int parseInput(char *input, char ***tokens, char **cmd_token, int *tokens_count)
@@ -99,7 +99,7 @@ int parseInput(char *input, char ***tokens, char **cmd_token, int *tokens_count)
 	if ((*cmd_token) == NULL) /* blank command - only spaces or newline */
 	{
 		freeAll((*tokens), input, NULL);
-			return (-1); /* go back to start of the loop */
+		return (-1); /* go back to start of the loop */
 	}
 
 	if (populateTokens(input, tokens, cmd_token, tokens_count) == -1)
@@ -116,11 +116,11 @@ int parseInput(char *input, char ***tokens, char **cmd_token, int *tokens_count)
 }
 
 int populateTokens(const char *input, char ***tokens, char **cmd_token,
-					int *tokens_count)
+				   int *tokens_count)
 {
 	while ((*cmd_token) != NULL)
 	{
-		if 	((*tokens_count) >= 64)
+		if ((*tokens_count) >= 64)
 			(*tokens) = realloc((*tokens), (*tokens_count) * sizeof(char *));
 
 		if ((*tokens) == NULL)
@@ -151,8 +151,8 @@ void saveInput(int isAtty, char **tokens, size_t *size, char **input)
 	{
 		if (isAtty)
 			printf("\n%sCtrl-D Entered. %s\nThe %sGates Of Shell%s have closed."
-				" Goodbye.\n%s\n", CLR_DEFAULT_BOLD, CLR_YELLOW_BOLD,
-				CLR_RED_BOLD, CLR_YELLOW_BOLD, CLR_DEFAULT);
+				   " Goodbye.\n%s\n", CLR_DEFAULT_BOLD, CLR_YELLOW_BOLD,
+				   CLR_RED_BOLD, CLR_YELLOW_BOLD, CLR_DEFAULT);
 		freeAll(tokens, (*input), NULL);
 		exit(EXIT_SUCCESS);
 	}
@@ -160,7 +160,8 @@ void saveInput(int isAtty, char **tokens, size_t *size, char **input)
 	(*input)[strlen((*input)) - 1] = '\0'; /* delete newline at end of string */
 }
 
-void initVars(char *path, size_t *size, char **user, char **hs, char **input, char ***tokens, int *tokens_count)
+void initVars(char *path, size_t *size, char **user, char **hs, char **input,
+			  char ***tokens, int *tokens_count)
 {
 	int i;
 
@@ -201,6 +202,7 @@ void printPrompt(int isAtty, char *user, char *hostname, char *path)
 		/* resets text color and prints '$ ' */
 		printf("%s$ ", CLR_DEFAULT);
 	}
+
 	free(user);
 	free(hostname);
 }
@@ -284,16 +286,17 @@ int runCommand(char *commandPath, char **args, char **envPaths)
 	}
 	if (fork_rtn == 0) /* child process */
 	{
-		exec_rtn = execve(commandPath, args, envPaths); /* executes user-command */
+		exec_rtn = execve(commandPath, args,
+						  envPaths); /* executes user-command */
 		if (exec_rtn == -1)
 		{
 			perror("An error occurred while running command");
-			return(-1); /* indicate error */
+			return (-1); /* indicate error */
 		}
-	}
-	else /* parent process; fork_rtn contains pid of child process */
+	} else /* parent process; fork_rtn contains pid of child process */
 	{
-		wait_rtn = waitpid(fork_rtn, &child_status, WUNTRACED); /* waits until child process terminates */
+		wait_rtn = waitpid(fork_rtn, &child_status,
+						   WUNTRACED); /* waits until child process terminates */
 		if (wait_rtn == -1)
 		{
 			perror("An error occurred while running command"); /* error message */
@@ -307,31 +310,34 @@ int runCommand(char *commandPath, char **args, char **envPaths)
  * customCmd - checks if the given input is a custom command. If so, executes it
  *
  * @tokens: tokens.
- * @input: the user's input, aka the command.
- * @interactive: if the shell is running in interactive mode (argc)
- * @free1: any additional variables to be freed if the command exits. (i.e. user)
+ * @interactive: if the shell is running in interactive mode (isAtty)
+ * @f1: variable to be freed if the command exits. (i.e. input)
+ * @f2: variable to be freed if the command exits. (i.e. cmd)
+ * @f3: variable to be freed if the command exits. (i.e. cmd_token)
  *
  * Return: 1 if it was a custom command and it was successfully executed,
  * 0 if it's not a custom command,
  * -1 on error
  */
-int customCmd(char **tokens, int interactive, char *free1, char *free2, char *free3)
+int customCmd(char **tokens, int interactive, char *f1, char *f2, char *f3)
 {
 	/* ↓----------------- custom command "exit" -----------------↓ */
-	if (tokens[0] != NULL && (strcmp(tokens[0], "exit") == 0 || strcmp(tokens[0], "quit") == 0))
-	{
-		freeAll(tokens, free1, free2, free3, NULL);
-
-		if (interactive)
-			printf("%s\nThe %sGates Of Shell%s have closed. Goodbye.\n%s",
-			   CLR_YELLOW_BOLD, CLR_RED_BOLD, CLR_YELLOW_BOLD, CLR_DEFAULT);
-
-		exit(EXIT_SUCCESS);
-	}
+	ifCmdExit(tokens, interactive, f1, f2, f3);
 	/* ↑----------------- custom command "exit" -----------------↑ */
 
 	/* ↓------------- custom command "self-destruct" -------------↓ */
-	if (tokens[0] != NULL && (strcmp(tokens[0], "self-destruct") == 0 || strcmp(tokens[0], "selfdestr") == 0))
+	if (ifCmdSelfDestruct(tokens, f1, f2, f3) == -1)
+		return (-1);
+	/* ↑------------- custom command "self-destruct" -------------↑ */
+
+	return (0);
+}
+
+int ifCmdSelfDestruct(char **tokens, const char *f1, const char *f2,
+					   const char *f3)
+{
+	if (tokens[0] != NULL && (strcmp(tokens[0], "self-destruct") == 0 ||
+							  strcmp(tokens[0], "selfdestr") == 0))
 	{
 		int countdown = 5; /* number of seconds to countdown from */
 		/* initialized to 5 in case user doesn't give a number */
@@ -343,14 +349,28 @@ int customCmd(char **tokens, int interactive, char *free1, char *free2, char *fr
 		* NOTE: I'd use abs() instead of checking if its positive, but
 		* abs() is not an allowed function and I don't want to code it.
 		*/
-		freeAll(tokens, free1, free2, free3, NULL);
+		freeAll(tokens, f1, f2, f3, NULL);
 		selfDestruct(countdown); /* runs exit() when done */
 		return (-1); /* indicate error if selfDestruct never exits */
-		/* TODO: should we handle the condition if the cmd has too many arguments? */
+		/* TODO: should we handle the condition if the cmd has too many args? */
 	}
-	/* ↑------------- custom command "self-destruct" -------------↑ */
-
 	return (0);
+}
+
+void ifCmdExit(char **tokens, int interactive, const char *f1, const char *f2,
+			   const char *f3)
+{
+	if (tokens[0] != NULL &&
+		(strcmp(tokens[0], "exit") == 0 || strcmp(tokens[0], "quit") == 0))
+	{
+		freeAll(tokens, f1, f2, f3, NULL);
+
+		if (interactive)
+			printf("%s\nThe %sGates Of Shell%s have closed. Goodbye.\n%s",
+				   CLR_YELLOW_BOLD, CLR_RED_BOLD, CLR_YELLOW_BOLD, CLR_DEFAULT);
+
+		exit(EXIT_SUCCESS);
+	}
 }
 /*
  * note: customCmd() was variadic, but we undid that because of
