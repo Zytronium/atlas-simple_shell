@@ -166,7 +166,12 @@ int runCommand(char *commandPath, char **args, char **envPaths)
 	pid_t fork_rtn, wait_rtn;
 
 	if (access(commandPath, F_OK) != 0) /* checks if cmd doesn't exists */
-		return(127);
+	{
+		if (isatty(STDIN_FILENO) == 1)
+			return (127);
+		else
+			exit (127);
+	}
 	fork_rtn = fork(); /* split process into 2 processes */
 	if (fork_rtn == -1) /* Fork! It failed */
 	{

@@ -14,7 +14,7 @@ tail
 tail -n
 chmod
 cp
-
+rm
 * --help
 
 
@@ -23,5 +23,4 @@ less
 
 Failing Bash Commands:
 grep
-rm
 cd - advanced
