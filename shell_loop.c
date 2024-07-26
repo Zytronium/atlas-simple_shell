@@ -8,8 +8,8 @@ void shellLoop(int isAtty, char *argv[])
 {
 	char *input; /* user input */
 	char path[PATH_MAX]; /* current working dir path */
-	char *user = _getenv("USER") ? _getenv("USER") : _getenv("LOGNAME"); /* current user name */
-	char *hostname = _getenv("NAME") ? _getenv("NAME") : _getenv("HOSTNAME") ? _getenv("HOSTNAME") : _getenv(("WSL_DISTRO_NAME")); /* PC name or host name */
+	/* char *user = _getenv("USER") ? _getenv("USER") : _getenv("LOGNAME"); current user name
+	char *hostname = _getenv("NAME") ? _getenv("NAME") : _getenv("HOSTNAME") ? _getenv("HOSTNAME") : _getenv(("WSL_DISTRO_NAME")); PC name or host name */
 	size_t size; /* size variable for getline */
 	char *cmd_token;
 	char **tokens = NULL;
@@ -40,7 +40,7 @@ void shellLoop(int isAtty, char *argv[])
 			/* print prompt in color ("[Go$H] | user@hostname:path$ ") */
 			printf("%s[%sGo$H%s]%s | ", CLR_YELLOW_BOLD, CLR_RED_BOLD,
 			CLR_YELLOW_BOLD, CLR_DEFAULT); /* print thing to let me know I'm in this shell, not the real one */
-			printf("%s%s@%s", CLR_GREEN_BOLD, user, hostname); /* prints user@host in green (i.e. julien@ubuntu) */
+			/* printf("%s%s@%s", CLR_GREEN_BOLD, user, hostname); prints user@host in green (i.e. julien@ubuntu) */
 			printf("%s:%s%s", CLR_DEFAULT_BOLD, CLR_BLUE_BOLD, path); /* prints the path in blue */
 			printf("%s$ ", CLR_DEFAULT); /* resets text color and prints '$ ' */
 		}
@@ -52,7 +52,7 @@ void shellLoop(int isAtty, char *argv[])
 				printf("\n%sCtrl-D Entered. %s\nThe %sGates Of Shell%s have closed. "
 					"Goodbye.\n%s\n", CLR_DEFAULT_BOLD, CLR_YELLOW_BOLD,
 					CLR_RED_BOLD, CLR_YELLOW_BOLD, CLR_DEFAULT);
-			freeAll(tokens, input, hostname, user, NULL);
+			freeAll(tokens, input, /* hostname, user, */ NULL);
 			exit(EXIT_SUCCESS);
 		}
 		input[strlen(input) - 1] = '\0'; /* delete newline at end of string */
@@ -89,7 +89,7 @@ void shellLoop(int isAtty, char *argv[])
 		else /* if user's input is a path */
 			cmd = strdup(tokens[0]); /* initialize cmd to the input path */
 		/* check if input is a custom command; run it if it is one */
-		custom_cmd_rtn = customCmd(tokens, isAtty, input, cmd, user, hostname, NULL);
+		custom_cmd_rtn = customCmd(tokens, isAtty, input, cmd,/* user, hostname, */ NULL);
 
 		/* run command; if child process fails, stop the child process from re-entering loop */
 		if (custom_cmd_rtn == 0) /* input is not a custom command */
