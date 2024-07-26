@@ -74,19 +74,24 @@ void shellLoop(int isAtty, char *argv[])
 
 		while (cmd_token != NULL)
 		{
-			if (tokens_count >= 64)
+			if 	(tokens_count >= 64)
 			{
-				tokens = realloc(tokens, (tokens_count + 64) * sizeof(char *));
-				if (tokens == NULL)
-				{
-					freeAll(tokens, cmd, input, NULL);
-					continue;
-				}
+				tokens = realloc(tokens, (tokens_count) * sizeof(char *));
 			}
+			if (tokens == NULL)
+			{
+				freeAll(tokens, /*cmd, */input, NULL); /* note: I don't think we should free cmd here. It's uninitialized. */
+				continue;
+			} /* note: I moved this realloc fail check outside of the if statement because of a warning CLion gave me about tokens possibly being null on the next line */
 			tokens[tokens_count] = strdup(cmd_token);
 			cmd_token = strtok(NULL, " ");
 			tokens_count++;
 		}
+		if (tokens == NULL)
+		{
+			freeAll(tokens, /*cmd, */input, NULL);
+			continue;
+		} /* note: I duplicated this here because of a warning CLion gave me saying tokens may be null on the line below */
 		tokens[tokens_count] = NULL;
 
 		/* ------------------- RUN USER COMMANDS -------------------  */
@@ -96,7 +101,7 @@ void shellLoop(int isAtty, char *argv[])
 		else /* if user's input is a path */
 			cmd = strdup(tokens[0]); /* initialize cmd to the input path */
 		/* check if input is a custom command; run it if it is one */
-		custom_cmd_rtn = customCmd(tokens, isAtty, input, cmd, NULL);
+		custom_cmd_rtn = customCmd(tokens, isAtty, input, user, hostname, cmd);
 
 		/* run command; if child process fails, stop the child process from re-entering loop */
 		if (custom_cmd_rtn == 0) /* input is not a custom command */
@@ -144,7 +149,7 @@ void freeAll(char **tokens, ...)
 	int i;
 	char *free_me;
 
-	/* fflush(NULL); */
+	/*fflush(NULL);*/
 	if (tokens != NULL)
 	{
 		for (i = 0; tokens[i] != NULL; i++)
@@ -251,7 +256,7 @@ int customCmd(char **tokens, int interactive, ...)
 	/* ↓----------------- custom command "exit" -----------------↓ */
 	if (tokens[0] != NULL && (strcmp(tokens[0], "exit") == 0 || strcmp(tokens[0], "quit") == 0))
 	{
-		freeAll(tokens, args);
+		freeAll(tokens, *args, NULL);
 
 		if (interactive)
 			printf("%s\nThe %sGates Of Shell%s have closed. Goodbye.\n%s",
