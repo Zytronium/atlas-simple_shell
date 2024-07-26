@@ -28,7 +28,7 @@
 void shellLoop(int isAtty, char *argv[])
 {
 	size_t size; /* size variable for getline */
-	char user[64], hostname[64], path[PATH_MAX], *input, **tokens = NULL;
+	char *user, *hostname, path[PATH_MAX], *input, **tokens = NULL;
 	char *cmd, *cmd_token, *paths[1] = {NULL};
 	int custom_cmd_rtn, getline_rtn, run_cmd_rtn, tokens_count, i;
 
@@ -36,8 +36,8 @@ void shellLoop(int isAtty, char *argv[])
 	{
 		/* ---------------- variable (re)initializations ---------------- */
 		getcwd(path, sizeof(path));
-		strcpy(user, _getenv("USER") ? _getenv("USER") : _getenv("LOGNAME"));
-		strcpy(hostname, _getenv("NAME") ? _getenv("NAME") : _getenv("HOSTNAME") ? _getenv("HOSTNAME") : _getenv(("WSL_DISTRO_NAME")));
+		user = _getenv("USER") ? : _getenv("LOGNAME");
+		hostname = _getenv("NAME") ? : _getenv("HOSTNAME") ? : _getenv(("WSL_DISTRO_NAME"));
 		tokens_count = 0;
 		getline_rtn = 0;
 		size = 0;
@@ -51,6 +51,8 @@ void shellLoop(int isAtty, char *argv[])
 			tokens[i] = NULL;
 
 		printPrompt(isAtty, user, hostname, path);
+		free(user);
+		free(hostname);
 		/* get & save input */
 		getline_rtn = getline(&input, &size, stdin);
 		if (getline_rtn == -1) /* End Of File (^D) */
@@ -101,7 +103,7 @@ void shellLoop(int isAtty, char *argv[])
 		else /* if user's input is a path */
 			cmd = strdup(tokens[0]); /* initialize cmd to the input path */
 		/* check if input is a custom command; run it if it is one */
-		custom_cmd_rtn = customCmd(tokens, isAtty, input, user, hostname, cmd);
+		custom_cmd_rtn = customCmd(tokens, isAtty, input, cmd, cmd_token);
 
 		/* run command; if child process fails, stop the child process from re-entering loop */
 		if (custom_cmd_rtn == 0) /* input is not a custom command */
@@ -248,15 +250,12 @@ int runCommand(char *commandPath, char **args, char **envPaths)
  * 0 if it's not a custom command,
  * -1 on error
  */
-int customCmd(char **tokens, int interactive, ...)
+int customCmd(char **tokens, int interactive, char *free1, char *free2, char *free3)
 {
-	va_list args;
-
-	va_start(args, interactive);
 	/* ↓----------------- custom command "exit" -----------------↓ */
 	if (tokens[0] != NULL && (strcmp(tokens[0], "exit") == 0 || strcmp(tokens[0], "quit") == 0))
 	{
-		freeAll(tokens, *args, NULL);
+		freeAll(tokens, free1, free2, free3, NULL);
 
 		if (interactive)
 			printf("%s\nThe %sGates Of Shell%s have closed. Goodbye.\n%s",
@@ -279,13 +278,12 @@ int customCmd(char **tokens, int interactive, ...)
 		* NOTE: I'd use abs() instead of checking if its positive, but
 		* abs() is not an allowed function and I don't want to code it.
 		*/
-		freeAll(tokens, args);
+		freeAll(tokens, free1, free2, free3, NULL);
 		selfDestruct(countdown); /* runs exit() when done */
 		return (-1); /* indicate error if selfDestruct never exits */
 		/* TODO: should we handle the condition if the cmd has too many arguments? */
 	}
 	/* ↑------------- custom command "self-destruct" -------------↑ */
-	va_end(args);
 
 	return (0);
 }

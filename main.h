@@ -44,7 +44,7 @@ void selfDestruct(int countdown);
 
 void freeAll(char **tokens, ...);
 
-int customCmd(char **tokens, int interactive, ...);
+int customCmd(char **tokens, int interactive, char *free1, char *free2, char *free3);
 
 int runCommand(char *commandPath, char **args, char **envPaths);
 
