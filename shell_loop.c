@@ -50,14 +50,14 @@ void shellLoop(int isAtty, char *argv[])
  * run the command if it is valid; if child process fails,stop it
  * from re-entering loop
  *
- * @isAtty:
- * @argv:
- * @input:
- * @tokens:
- * @cmd:
- * @cmd_token:
- * @paths:
- * @run_cmd_rtn:
+ * @isAtty: result of isatty(), 1 if interactive, 0 otherwsie
+ * @argv: carrier of filename in [0]
+ * @input: user-input
+ * @tokens: array of strings of user inputs delimited by spaces
+ * @cmd: first argument of user-input prefixed with found filepath
+ * @cmd_token:last arguments from strtok'd input
+ * @paths:array of strings of filepaths
+ * @run_cmd_rtn: return value of run_command function
  */
 void executeIfValid(int isAtty, char *const *argv, char *input, char **tokens,
 					char *cmd, char *cmd_token, char **paths)
@@ -80,7 +80,7 @@ void executeIfValid(int isAtty, char *const *argv, char *input, char **tokens,
 
 /**
  * initCmd - initialize cmd to the command to pass to execve
- *
+ * @cmd: variable to be initialized
  * @tokens: tokens
  *
  * Return: command
@@ -93,6 +93,15 @@ void initCmd(char **cmd, char *const *tokens)
 		*cmd = strdup(tokens[0]); /* initialize cmd to the input path */
 }
 
+/**
+ * parseInput - parsed the user-input into tokens
+ * @input: user-input
+ * @tokens: empty token containers
+ * @cmd_token: strtok tool
+ * @tokens_count: token counter
+ *
+ * Return: 1 if successful, -1 if failed
+ */
 int parseInput(char *input, char ***tokens, char **cmd_token, int *tokens_count)
 {
 	(*cmd_token) = strtok(input, " "); /* first token */
@@ -114,7 +123,15 @@ int parseInput(char *input, char ***tokens, char **cmd_token, int *tokens_count)
 
 	return (1);
 }
-
+/**
+ * populateTokens: populates the tokens with user-inputs
+ * @input: user-input
+ * @tokens: populates tokens with parsed cmd_token
+ * @cmd_token: container of delimited tokens
+ * @tokens_count: token counter
+ *
+ * Return: 1 if successful, -1 if not
+ */
 int populateTokens(const char *input, char ***tokens, char **cmd_token,
 				   int *tokens_count)
 {
@@ -139,11 +156,11 @@ int populateTokens(const char *input, char ***tokens, char **cmd_token,
 /**
  * saveInput - get & save input
  *
- * @isAtty:
- * @tokens:
- * @getline_rtn:
- * @size:
- * @input:
+ * @isAtty: isatty() return. if 1 interactive, 0 otherwise
+ * @tokens: empty container for tokenized inputs
+ * @getline_rtn: return value of getline() function
+ * @size: size of input
+ * @input: user-input
  */
 void saveInput(int isAtty, char **tokens, size_t *size, char **input)
 {
@@ -160,6 +177,16 @@ void saveInput(int isAtty, char **tokens, size_t *size, char **input)
 	(*input)[strlen((*input)) - 1] = '\0'; /* delete newline at end of string */
 }
 
+/**
+ * initVars - initialize variables
+ * @path: current working directory
+ * @size: size of input
+ * @user: current user in env
+ * @hs: hostname in env
+ * @input: user-input
+ * @tokens: array of strings for tokenized user-input
+ * @tokens_count: token counter
+ */
 void initVars(char *path, size_t *size, char **user, char **hs, char **input,
 			  char ***tokens, int *tokens_count)
 {
@@ -340,6 +367,15 @@ int customCmd(char **tokens, int interactive, char *f1, char *f2, char *f3)
 	return (0);
 }
 
+/**
+ * ifCmdSelfDestruct - self destruct oscar mike golf
+ * @tokens: tokenized array of user-inputs
+ * @f1: variable to be freed if the command exits. (i.e. input)
+ * @f2: variable to be freed if the command exits. (i.e. cmd)
+ * @f3: variable to be freed if the command exits. (i.e. cmd_token)
+ *
+ * Return: 0 if successful, -1 otherwise
+ */
 int ifCmdSelfDestruct(char **tokens, const char *f1, const char *f2,
 					   const char *f3)
 {
@@ -364,6 +400,14 @@ int ifCmdSelfDestruct(char **tokens, const char *f1, const char *f2,
 	return (0);
 }
 
+/**
+ * ifCmdExit: if user-input is "exit" or "quit"
+ * @tokens: tokenized array of user-inputs
+ * @interactive: isatty() return value. 1 if interactive, 0 otherwise
+ * @f1: variable to be freed if the command exits. (i.e. input)
+ * @f2: variable to be freed if the command exits. (i.e. cmd)
+ * @f3: variable to be freed if the command exits. (i.e. cmd_token)
+ */
 void ifCmdExit(char **tokens, int interactive, const char *f1, const char *f2,
 			   const char *f3)
 {
