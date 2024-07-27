@@ -145,6 +145,7 @@ int parseInput(char *input, char ***tokens, char **cmd_token, int *tokens_count)
 
 	return (1);
 }
+
 /**
  * populateTokens: populates the tokens with user-inputs
  * @input: user-input
@@ -188,7 +189,7 @@ void saveInput(int isAtty, char **tokens, size_t *size, char **input)
 {
 	if (getline(input, size, stdin) == -1) /* gets input; plus EOF (^D) check */
 	{
-		if (isAtty && stylePrints == 1)
+		if (isAtty && stylePrints)
 			printf("\n%sCtrl-D Entered. %s\nThe %sGates Of Shell%s have closed."
 				   " Goodbye.\n%s\n", CLR_DEFAULT_BOLD, CLR_YELLOW_BOLD,
 				   CLR_RED_BOLD, CLR_YELLOW_BOLD, CLR_DEFAULT);
@@ -209,9 +210,9 @@ void saveInput(int isAtty, char **tokens, size_t *size, char **input)
  */
 void printPrompt(int isAtty, char *user, char *hostname, char *path)
 {
-	if (isAtty && stylePrints == 1) /* checks interactive mode */
+	if (isAtty && stylePrints) /* checks interactive mode */
 	{
-		/* print thing to let me know I'm in this shell, not the real one */
+		/* print thing to let us know we're in this shell, not the real one */
 		printf("%s[%sGo$H%s]%s | ", CLR_YELLOW_BOLD, CLR_RED_BOLD,
 			   CLR_YELLOW_BOLD, CLR_DEFAULT); /*Go$H stands for Gates of Shell*/
 		/* prints user@host in green (i.e. julien@ubuntu) */
@@ -221,7 +222,7 @@ void printPrompt(int isAtty, char *user, char *hostname, char *path)
 		/* resets text color and prints '$ ' */
 		printf("%s$ ", CLR_DEFAULT);
 	}
-	else if (isAtty && stylePrints == 0)
+	else if (isAtty && !stylePrints)
 		printf("$");
 
 	free(user);
@@ -351,18 +352,16 @@ int runCommand(char *commandPath, char **args, char **envPaths)
  */
 int customCmd(char **tokens, int interactive, char *f1, char *f2, char *f3)
 {
-	/* ↓----------------- custom command "exit" -----------------↓ */
+	/* ----------------- custom command "env" ----------------- */
+	if (ifCmdEnv(tokens))
+		return (1);
+
+	/* ----------------- custom command "exit" ----------------- */
 	ifCmdExit(tokens, interactive, f1, f2, f3);
-	/* ↑----------------- custom command "exit" -----------------↑ */
 
-	/* ↓----------------- custom command "env" -----------------↓ */
-	ifCmdEnv(tokens);
-	/* ↑----------------- custom command "env" -----------------↑ */
-
-	/* ↓------------- custom command "self-destruct" -------------↓ */
+	/* ------------- custom command "self-destruct" ------------- */
 	if (ifCmdSelfDestruct(tokens, f1, f2, f3) == -1)
 		return (-1);
-	/* ↑------------- custom command "self-destruct" -------------↑ */
 
 	return (0);
 }
@@ -416,7 +415,7 @@ void ifCmdExit(char **tokens, int interactive, const char *f1, const char *f2,
 	{
 		freeAll(tokens, f1, f2, f3, NULL);
 
-		if (interactive && stylePrints == 1)
+		if (interactive && stylePrints)
 			printf("%s\nThe %sGates Of Shell%s have closed. Goodbye.\n%s",
 				   CLR_YELLOW_BOLD, CLR_RED_BOLD, CLR_YELLOW_BOLD, CLR_DEFAULT);
 
