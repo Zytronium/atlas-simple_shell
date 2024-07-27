@@ -89,6 +89,11 @@ void executeIfValid(int isAtty, char *const *argv, char *input, char **tokens,
 			if (isAtty == 1)
 				fprintf(stderr, "%s: 1: %s: %s\n", argv[0], cmd,
 					strerror(run_cmd_rtn));
+			else
+			{
+				freeAll(tokens, cmd, input, NULL);
+				exit(run_cmd_rtn);
+			}
 		}
 	}
 
