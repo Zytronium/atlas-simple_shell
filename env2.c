@@ -64,7 +64,10 @@ char *getHostname(void)
 	if (!hostname)
 		hostname = _getenv(("WSL_DISTRO_NAME"));
 	if (!hostname)
+	{
+		hostname = malloc(8);
 		hostname = "unknown";
+	}
 
 	return hostname;
 }
@@ -76,7 +79,10 @@ char *getUser(void)
 	if(!user)
 		user = _getenv("LOGNAME");
 	if (!user)
+	{
+		user = malloc(8);
 		user = "unknown";
+	}
 
 	return (user);
 }
