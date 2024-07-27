@@ -217,7 +217,7 @@ void initVars(char *path, size_t *size, char **user, char **hs, char **input,
  */
 void printPrompt(int isAtty, char *user, char *hostname, char *path)
 {
-	if (isAtty) /* checks interactive mode */
+	if (isAtty && stylePrints == 1) /* checks interactive mode */
 	{
 		/* print thing to let me know I'm in this shell, not the real one */
 		printf("%s[%sGo$H%s]%s | ", CLR_YELLOW_BOLD, CLR_RED_BOLD,
@@ -229,6 +229,8 @@ void printPrompt(int isAtty, char *user, char *hostname, char *path)
 		/* resets text color and prints '$ ' */
 		printf("%s$ ", CLR_DEFAULT);
 	}
+	else if (isAtty && stylePrints == 0)
+		printf("$");
 
 	free(user);
 	free(hostname);
@@ -309,7 +311,8 @@ int runCommand(char *commandPath, char **args, char **envPaths)
 	fork_rtn = fork(); /* split process into 2 processes */
 	if (fork_rtn == -1) /* Fork! It failed */
 	{
-		/* perror("An error occurred while running command at fork"); error message */
+		/* perror("An error occurred while running command at fork"); error
+		message */
 		return (EXIT_FAILURE); /* indicate error */
 	}
 	if (fork_rtn == 0) /* child process */
@@ -323,7 +326,8 @@ int runCommand(char *commandPath, char **args, char **envPaths)
 		}
 	} else /* parent process; fork_rtn contains pid of child process */
 	{
-		wait_rtn = waitpid(fork_rtn, &child_status, WUNTRACED); /* waits until child process terminates */
+		wait_rtn = waitpid(fork_rtn, &child_status, WUNTRACED); /* waits until
+		child process terminates */
 		/* printf("CHILD STATUS: %d\n", child_status); */
 		if (WIFEXITED(child_status))
 		{
