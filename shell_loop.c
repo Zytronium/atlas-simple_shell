@@ -294,10 +294,16 @@ int runCommand(char *commandPath, char **args, char **envPaths)
 
 	pid_t fork_rtn, wait_rtn;
 	if (commandPath == NULL)
-		return (0);
+	{
+		if (isatty(STDIN_FILENO)) /* == 1 */
+			return (0);
+		else
+			exit(0);
+	}
+
 	if (access(commandPath, F_OK) != 0) /* checks if cmd doesn't exist */
 	{
-		if (isatty(STDIN_FILENO) == 1)
+		if (isatty(STDIN_FILENO)) /* == 1 */
 			return (127);
 		else
 			exit(127);
