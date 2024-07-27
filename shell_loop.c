@@ -301,6 +301,8 @@ int runCommand(char *commandPath, char **args, char **envPaths)
 		else
 			exit(0);
 	}
+	else
+		printf("commandPath is not NULL\n");
 
 	if (access(commandPath, F_OK) != 0) /* checks if cmd doesn't exist */
 	{
