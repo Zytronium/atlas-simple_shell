@@ -18,7 +18,7 @@
 
 /* ↓ STRUCTS AND MISC ↓ */
 #ifndef stylePrints
-#define stylePrints 0
+#define stylePrints 1
 /* set to 0 for checker, set to 1 to prettify shell */
 #endif /* stylePrints */
 /**
@@ -43,8 +43,6 @@ int isNumber(char *number);
 void shellLoop(int isAtty, char *argv[]);
 
 void selfDestruct(int countdown);
-
-void initVars(char *, size_t *, char **, char **, char **, char ***, int *);
 
 void saveInput(int isAtty, char **tokens, size_t *size, char **input);
 
