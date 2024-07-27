@@ -13,6 +13,7 @@
 #include <sys/wait.h>
 #include <stdarg.h>
 #include <sys/types.h>
+#include "colors.h"
 /* ------------------- */
 
 /* ↓ STRUCTS AND MISC ↓ */
@@ -85,6 +86,8 @@ int _unsetenv(const char *name);
 char *findPath(char *name);
 
 void destroyListPath(path_t *h);
+
+void ifCmdEnv(char **tokens);
 /* ------------------- */
 
 #endif /* MAIN_H */

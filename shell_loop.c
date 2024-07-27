@@ -166,7 +166,7 @@ void saveInput(int isAtty, char **tokens, size_t *size, char **input)
 {
 	if (getline(input, size, stdin) == -1) /* gets input; plus EOF (^D) check */
 	{
-		if (isAtty)
+		if (isAtty && stylePrints == 1)
 			printf("\n%sCtrl-D Entered. %s\nThe %sGates Of Shell%s have closed."
 				   " Goodbye.\n%s\n", CLR_DEFAULT_BOLD, CLR_YELLOW_BOLD,
 				   CLR_RED_BOLD, CLR_YELLOW_BOLD, CLR_DEFAULT);
@@ -363,6 +363,10 @@ int customCmd(char **tokens, int interactive, char *f1, char *f2, char *f3)
 	ifCmdExit(tokens, interactive, f1, f2, f3);
 	/* ↑----------------- custom command "exit" -----------------↑ */
 
+	/* ↓----------------- custom command "env" -----------------↓ */
+	ifCmdEnv(tokens);
+	/* ↑----------------- custom command "env" -----------------↑ */
+
 	/* ↓------------- custom command "self-destruct" -------------↓ */
 	if (ifCmdSelfDestruct(tokens, f1, f2, f3) == -1)
 		return (-1);
@@ -420,7 +424,7 @@ void ifCmdExit(char **tokens, int interactive, const char *f1, const char *f2,
 	{
 		freeAll(tokens, f1, f2, f3, NULL);
 
-		if (interactive)
+		if (interactive && stylePrints == 1)
 			printf("%s\nThe %sGates Of Shell%s have closed. Goodbye.\n%s",
 				   CLR_YELLOW_BOLD, CLR_RED_BOLD, CLR_YELLOW_BOLD, CLR_DEFAULT);
 

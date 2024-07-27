@@ -55,7 +55,7 @@ void destroyListPath(path_t *h)
 	/* printf("destroyListPath C\n"); */
 }
 
-char *getHostname()
+char *getHostname(void)
 {
 	char *hostname = _getenv("NAME");
 
@@ -69,7 +69,7 @@ char *getHostname()
 	return hostname;
 }
 
-char *getUser()
+char *getUser(void)
 {
 	char *user = _getenv("USER");
 
@@ -79,4 +79,15 @@ char *getUser()
 		user = "unknown";
 
 	return (user);
+}
+
+void ifCmdEnv(char **tokens)
+{
+	int i;
+
+	if (tokens[0] != NULL && (strcmp(tokens[0], "env") == 0))
+	{
+		for (i = 0; environ[i] != NULL; i++)
+			printf("%s\n", environ[i]);
+	}
 }
