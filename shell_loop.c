@@ -295,6 +295,7 @@ int runCommand(char *commandPath, char **args, char **envPaths)
 
 	if (commandPath == NULL)
 	{
+		printf("commandPath is NULL\n");
 		if (isatty(STDIN_FILENO)) /* == 1 */
 			return (0);
 		else
