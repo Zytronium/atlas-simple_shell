@@ -87,7 +87,7 @@ char *getUser(void)
 	return (user);
 }
 
-void ifCmdEnv(char **tokens)
+int ifCmdEnv(char **tokens)
 {
 	int i;
 
@@ -95,5 +95,7 @@ void ifCmdEnv(char **tokens)
 	{
 		for (i = 0; environ[i] != NULL; i++)
 			printf("%s\n", environ[i]);
+		return (1); /* indicate success */
 	}
+	return (0); /* indicate that input is not "env" */
 }
