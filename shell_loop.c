@@ -85,8 +85,11 @@ void executeIfValid(int isAtty, char *const *argv, char *input, char **tokens,
 		run_cmd_rtn = runCommand(cmd, tokens, paths);
 		/* prints error if command is invalid or another error occurs */
 		if (run_cmd_rtn != 0)
-			fprintf(stderr, "%s: 1: %s: %s\n", argv[0], cmd,
+		{
+			if (isAtty == 1)
+				fprintf(stderr, "%s: 1: %s: %s\n", argv[0], cmd,
 					strerror(run_cmd_rtn));
+		}
 	}
 
 	freeAll(tokens, cmd, input, NULL);
