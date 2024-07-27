@@ -32,11 +32,25 @@ void shellLoop(int isAtty, char *argv[])
 	size_t size;
 	char *user, *hostname, path[PATH_MAX], *input, **tokens = NULL;
 	char *cmd, *cmd_token, *paths[1] = {NULL};
-	int tokens_count;
+	int tokens_count, i;
 
 	while (1)
 	{
-		initVars(path, &size, &user, &hostname, &input, &tokens, &tokens_count);
+		/* initialize vars */
+		getcwd(path, sizeof(path));
+		user = getUser();
+		hostname = getHostname();
+		tokens_count = 0;
+		size = 0;
+		input = NULL;
+		tokens = malloc(64 * sizeof(char *));
+		if (tokens == NULL) /* malloc fail check */
+			exit(EXIT_FAILURE);
+
+		/* initialize all tokens in array to null */
+		for (i = 0; i < 64; i++)
+			tokens[i] = NULL;
+
 		printPrompt(isAtty, user, hostname, path);
 		saveInput(isAtty, tokens, &size, &input);
 		parseInput(input, &tokens, &cmd_token, &tokens_count);
@@ -175,36 +189,6 @@ void saveInput(int isAtty, char **tokens, size_t *size, char **input)
 	}
 
 	(*input)[strlen((*input)) - 1] = '\0'; /* delete newline at end of string */
-}
-
-/**
- * initVars - initialize variables
- * @path: current working directory
- * @size: size of input
- * @user: current user in env
- * @hs: hostname in env
- * @input: user-input
- * @tokens: array of strings for tokenized user-input
- * @tokens_count: token counter
- */
-void initVars(char *path, size_t *size, char **user, char **hs, char **input,
-			  char ***tokens, int *tokens_count)
-{
-	int i;
-
-	getcwd(path, sizeof(path));
-	(*user) = getUser();
-	(*hs) = getHostname();
-	(*tokens_count) = 0;
-	(*size) = 0;
-	(*input) = NULL;
-	(*tokens) = malloc(64 * sizeof(char *));
-	if ((*tokens) == NULL)
-		exit(EXIT_FAILURE);
-
-	/* initialize all tokens in array to null */
-	for (i = 0; i < 64; i++)
-		(*tokens)[i] = NULL;
 }
 
 /**
