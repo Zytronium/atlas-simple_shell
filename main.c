@@ -3,22 +3,28 @@
 
 int main(int argc, char *argv[])
 {
+	int isInteractive = isatty(STDIN_FILENO);
+
 	/* ------------------- On entry - one time execution ------------------- */
 	(void) argc;
-	/*setenv("PATH", "", 1);*/
-	if (stylePrints)
-		printf("%sWelcome to the %sGates Of Shell%s. Type \"help\" for a list of "
-		   "commands. Type \"exit\" to quit.\n\n",
-		   CLR_YELLOW_BOLD, CLR_RED_BOLD, CLR_YELLOW_BOLD);
+	/* if argc == 1, meaning no args given, meaning it's in interactive mode */
+	if (isInteractive)
+		printf("%sWelcome to the %sGates Of Shell%s. Type \"exit\" to quit.\n\n",
+			   CLR_YELLOW_BOLD, CLR_RED_BOLD, CLR_YELLOW_BOLD);
 	/* --------------------------------------------------------------------- */
 
-	shellLoop(argv); /* main shell loop. (what else?) */
+	shellLoop(isInteractive, argv); /* main shell loop. (what else?) */
 
 	/* ------------------- On exit - one time execution ------------------- */
-	if (stylePrints)
+	if (isInteractive)
 		printf("%s\nThe %sGates Of Shell%s have closed. Goodbye.\n%s",
 		   CLR_YELLOW_BOLD, CLR_RED_BOLD, CLR_YELLOW_BOLD, CLR_DEFAULT);
 
 	return (EXIT_SUCCESS);
 	/* -------------------------------------------------------------------- */
+	/*
+	 * note: 'On exit' code will probably never run unless something goes wrong.
+	 * TODO: We should consider returning EXIT_FAILURE
+	 *  or using break instead of exit(EXIT_SUCCESS)
+	 */
 }

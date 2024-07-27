@@ -54,3 +54,29 @@ void destroyListPath(path_t *h)
 	}
 	/* printf("destroyListPath C\n"); */
 }
+
+char *getHostname()
+{
+	char *hostname = _getenv("NAME");
+
+	if (!hostname)
+		hostname = _getenv("HOSTNAME");
+	if (!hostname)
+		hostname = _getenv(("WSL_DISTRO_NAME"));
+	if (!hostname)
+		hostname = "unknown";
+
+	return hostname;
+}
+
+char *getUser()
+{
+	char *user = _getenv("USER");
+
+	if(!user)
+		user = _getenv("LOGNAME");
+	if (!user)
+		user = "unknown";
+
+	return (user);
+}
