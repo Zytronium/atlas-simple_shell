@@ -22,12 +22,9 @@ char *findPath(char *name)
 		strcpy(temp_path, temp->directory);
 		strcat(temp_path, "/");
 		strcat(temp_path, name);
-		/* printf("temp_path: %s\n", temp_path); */
 		if (access(temp_path, F_OK) == 0)
 		{
-			/* printf("findpath A\n"); */
 			destroyListPath(head);
-			/* printf("findpath B\n"); */
 			return (temp_path);
 		}
 		free(temp_path);
@@ -41,16 +38,13 @@ char *findPath(char *name)
 void destroyListPath(path_t *h)
 {
 	path_t *temp = NULL;
-	/* printf("destroyListPath A\n"); */
 	while (h != NULL)
 	{
 		temp = h;
 		h = h->next;
 		free(temp->directory);
 		free(temp);
-		/* printf("destroyListPath B\n"); */
 	}
-	/* printf("destroyListPath C\n"); */
 }
 
 char *getHostname(void)
