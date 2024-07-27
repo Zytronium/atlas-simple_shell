@@ -22,5 +22,5 @@ Moderately Successful Bash Commands:
 less
 
 Failing Bash Commands:
-grep
+grep "if" main.h
 cd - advanced

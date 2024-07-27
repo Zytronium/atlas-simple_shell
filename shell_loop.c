@@ -228,12 +228,12 @@ void printPrompt(int isAtty, char *user, char *hostname, char *path)
 		printf("%s:%s%s", CLR_DEFAULT_BOLD, CLR_BLUE_BOLD, path);
 		/* resets text color and prints '$ ' */
 		printf("%s$ ", CLR_DEFAULT);
-
-		free(user);
-		free(hostname);
 	}
 	else if (isAtty && stylePrints == 0)
 		printf("$");
+
+	free(user);
+	free(hostname);
 }
 
 /**
