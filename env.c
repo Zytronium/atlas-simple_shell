@@ -7,7 +7,6 @@
  * Return: value if found, NULL if not
  */
 char *_getenv(const char *name) /* gets an environmental variable */
-
 {
 	char **current;
 	char *token;

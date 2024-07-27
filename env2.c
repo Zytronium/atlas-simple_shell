@@ -15,9 +15,7 @@ char *findPath(char *name)
 	head = buildListPath();
 	temp = head;
 	if (temp == NULL)
-	{
 		return (NULL);
-	}
 	while (temp != NULL)
 	{
 		temp_path = malloc(strlen(temp->directory) + strlen(name) + 2);
