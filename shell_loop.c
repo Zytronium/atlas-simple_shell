@@ -291,8 +291,8 @@ int isNumber(char *number)
 int runCommand(char *commandPath, char **args, char **envPaths)
 {
 	int exec_rtn = 0, child_status, wexitstat;
-
 	pid_t fork_rtn, wait_rtn;
+
 	if (commandPath == NULL)
 	{
 		if (isatty(STDIN_FILENO)) /* == 1 */
@@ -308,6 +308,7 @@ int runCommand(char *commandPath, char **args, char **envPaths)
 		else
 			exit(127);
 	}
+
 	fork_rtn = fork(); /* split process into 2 processes */
 	if (fork_rtn == -1) /* Fork! It failed */
 	{
@@ -317,8 +318,7 @@ int runCommand(char *commandPath, char **args, char **envPaths)
 	}
 	if (fork_rtn == 0) /* child process */
 	{
-		exec_rtn = execve(commandPath, args,
-						  envPaths); /* executes user-command */
+		exec_rtn = execve(commandPath, args, envPaths);/*executes user-command*/
 		if (exec_rtn == -1)
 		{
 			/* perror("An error occurred while running command at child"); */
