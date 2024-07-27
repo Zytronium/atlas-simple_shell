@@ -84,16 +84,3 @@ char *getUser(void)
 
 	return (user);
 }
-
-int ifCmdEnv(char **tokens)
-{
-	int i;
-
-	if (tokens[0] != NULL && (strcmp(tokens[0], "env") == 0))
-	{
-		for (i = 0; environ[i] != NULL; i++)
-			printf("%s\n", environ[i]);
-		return (1); /* indicate success */
-	}
-	return (0); /* indicate that input is not "env" */
-}
