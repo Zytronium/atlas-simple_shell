@@ -66,7 +66,7 @@ char *getHostname(void)
 	if (!hostname)
 	{
 		hostname = malloc(8);
-		hostname = "unknown";
+		strcpy(hostname, "unknown");
 	}
 
 	return hostname;
@@ -81,7 +81,7 @@ char *getUser(void)
 	if (!user)
 	{
 		user = malloc(8);
-		user = "unknown";
+		strcpy(user, "unknown");
 	}
 
 	return (user);
