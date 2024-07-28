@@ -224,6 +224,8 @@ void executeIfValid(int isAtty, char *const *argv, char *input, char **tokens,
 					strerror(run_cmd_rtn));
 			else
 			{
+				fprintf(stderr, "%s: 1: %s: %s\n", argv[0], cmd,
+					strerror(run_cmd_rtn));
 				freeAll(tokens, cmd, input, NULL);
 				exit(run_cmd_rtn);
 			}
@@ -312,7 +314,6 @@ int runCommand(char *commandPath, char **args, char **envPaths)
 		/* if (isatty(STDIN_FILENO))
 			return (127);
 		else
-			errno = 127;
 			exit(127);
 		*/
 	}
