@@ -313,7 +313,7 @@ int runCommand(char *commandPath, char **args, char **envPaths)
 		return (127);
 		/* if (isatty(STDIN_FILENO))
 			return (127);
-		/*else
+		else
 			errno = 127;
 			exit(127);
 		*/
