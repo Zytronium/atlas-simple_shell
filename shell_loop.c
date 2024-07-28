@@ -307,10 +307,14 @@ int runCommand(char *commandPath, char **args, char **envPaths)
 
 	if (access(commandPath, F_OK) != 0) /* checks if cmd doesn't exist */
 	{
-		if (isatty(STDIN_FILENO))
+		return (127);
+
+		/* if (isatty(STDIN_FILENO))
 			return (127);
 		else
+			errno = 127;
 			exit(127);
+		*/
 	}
 
 	fork_rtn = fork(); /* split process into 2 processes */
