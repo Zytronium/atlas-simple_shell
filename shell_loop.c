@@ -12,7 +12,7 @@
  * @path: current working directory
  * @input: user input
  * @tokens: array of strings of tokenized user inputs deliminated by spaces
- * @cmd: user-inputted command with possible path prefixed
+ * @cmd: user-inputed command with possible path prefixed
  * @cmd_token: tool for strtok
  * @paths: array of strings of env paths
  * @custom_cmd_rtn: return value of customCmd()
@@ -159,19 +159,19 @@ int parseInput(char *input, char ***tokens, char **cmd_token, int *tokens_count)
 int populateTokens(const char *input, char ***tokens, char **cmd_token,
 				   int *tokens_count)
 {
-	while (*cmd_token != NULL)
+	while ((*cmd_token) != NULL)
 	{
-		if (*tokens_count >= 64)
-			*tokens = realloc(*tokens, *tokens_count * sizeof(char *));
+		if ((*tokens_count) >= 64)
+			(*tokens) = realloc((*tokens), (*tokens_count) * sizeof(char *));
 
-		if (*tokens == NULL)
+		if ((*tokens) == NULL)
 		{
-			freeAll(*tokens, input, NULL);
+			freeAll((*tokens), input, NULL);
 			return (-1);
 		}
 
-		(*tokens)[*tokens_count] = strdup(*cmd_token);
-		*cmd_token = strtok(NULL, " ");
+		(*tokens)[(*tokens_count)] = strdup((*cmd_token));
+		(*cmd_token) = strtok(NULL, " ");
 		(*tokens_count)++;
 	}
 	return (1);
@@ -219,13 +219,14 @@ void executeIfValid(int isAtty, char *const *argv, char *input, char **tokens,
 		/* prints error if command is invalid or another error occurs */
 		if (run_cmd_rtn != 0)
 		{
-			if (isAtty == 1)
+			if (run_cmd_rtn == 127)
 				fprintf(stderr, "%s: 1: %s: %s\n", argv[0], cmd,
-					strerror(run_cmd_rtn));
+					"not found");
 			else
-			{
 				fprintf(stderr, "%s: 1: %s: %s\n", argv[0], cmd,
-					strerror(run_cmd_rtn));
+						strerror(run_cmd_rtn));
+			if (!isAtty)
+			{
 				freeAll(tokens, cmd, input, NULL);
 				exit(run_cmd_rtn);
 			}
@@ -310,10 +311,10 @@ int runCommand(char *commandPath, char **args, char **envPaths)
 	if (access(commandPath, F_OK) != 0) /* checks if cmd doesn't exist */
 	{
 		return (127);
-
 		/* if (isatty(STDIN_FILENO))
 			return (127);
-		else
+		/*else
+			errno = 127;
 			exit(127);
 		*/
 	}
@@ -321,8 +322,9 @@ int runCommand(char *commandPath, char **args, char **envPaths)
 	fork_rtn = fork(); /* split process into 2 processes */
 	if (fork_rtn == -1) /* Fork! It failed */
 	{
-		/* perror("An error occurred while running command at fork"); error message */
-		return (-1); /* indicate error */
+		/* perror("An error occurred while running command at fork"); error
+		message */
+		return (EXIT_FAILURE); /* indicate error */
 	}
 	if (fork_rtn == 0) /* child process */
 	{
