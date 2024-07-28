@@ -2,8 +2,8 @@
 #include "colors.h"
 
 /*
- * shellLoop variables descriptions - because I can't put them on
- * the line they are declared due to betty forcing me to put multiple
+ * shellLoop variables descriptions - because we can't put them on
+ * the line they are declared due to betty forcing us to put multiple
  * on each line to shorten the function below 40 lines
  *
  * @size: size for getline()
@@ -66,59 +66,55 @@ void shellLoop(int isAtty, char *argv[])
 }
 
 /**
- * executeIfValid - check if a command is a valid custom or built-in command;
- * run the command if it is valid; if child process fails,stop it
- * from re-entering loop
+ * printPrompt - prints prompt in color ("[Go$H] | user@hostname:path$ ")
  *
- * @isAtty: result of isatty(), 1 if interactive, 0 otherwsie
- * @argv: carrier of filename in [0]
- * @input: user-input
- * @tokens: array of strings of user inputs delimited by spaces
- * @cmd: first argument of user-input prefixed with found filepath
- * @cmd_token:last arguments from strtok'd input
- * @paths:array of strings of filepaths
- * @run_cmd_rtn: return value of run_command function
+ * @isAtty: is interactive mode
+ * @user: environment variable for user's username
+ * @hostname: environment variable for user's hostname or device name.
+ * @path: current working directory
  */
-void executeIfValid(int isAtty, char *const *argv, char *input, char **tokens,
-					char *cmd, char *cmd_token, char **paths)
+void printPrompt(int isAtty, char *user, char *hostname, char *path)
 {
-	int run_cmd_rtn;
-
-	/* run command */
-	if (customCmd(tokens, isAtty, input, cmd, cmd_token) == 0)
-	{ /* if input is not a custom command */
-		/* runs the command if it is a valid built-in */
-		run_cmd_rtn = runCommand(cmd, tokens, paths);
-		/* prints error if command is invalid or another error occurs */
-		if (run_cmd_rtn != 0)
-		{
-			if (isAtty == 1)
-				fprintf(stderr, "%s: 1: %s: %s\n", argv[0], cmd,
-					strerror(run_cmd_rtn));
-			else
-			{
-				freeAll(tokens, cmd, input, NULL);
-				exit(run_cmd_rtn);
-			}
-		}
+	if (isAtty && stylePrints) /* checks interactive mode */
+	{
+		/* print thing to let us know we're in this shell, not the real one */
+		printf("%s[%sGo$H%s]%s | ", CLR_YELLOW_BOLD, CLR_RED_BOLD,
+			   CLR_YELLOW_BOLD, CLR_DEFAULT); /*Go$H stands for Gates of Shell*/
+		/* prints user@host in green (i.e. julien@ubuntu) */
+		printf("%s%s@%s", CLR_GREEN_BOLD, user, hostname);
+		/* prints the path in blue */
+		printf("%s:%s%s", CLR_DEFAULT_BOLD, CLR_BLUE_BOLD, path);
+		/* resets text color and prints '$ ' */
+		printf("%s$ ", CLR_DEFAULT);
 	}
+	else if (isAtty && !stylePrints)
+		printf("$");
 
-	freeAll(tokens, cmd, input, NULL);
+	free(user);
+	free(hostname);
 }
 
 /**
- * initCmd - initialize cmd to the command to pass to execve
- * @cmd: variable to be initialized
- * @tokens: tokens
+ * saveInput - get & save input
  *
- * Return: command
+ * @isAtty: isatty() return. if 1 interactive, 0 otherwise
+ * @tokens: empty container for tokenized inputs
+ * @getline_rtn: return value of getline() function
+ * @size: size of input
+ * @input: user-input
  */
-void initCmd(char **cmd, char *const *tokens)
+void saveInput(int isAtty, char **tokens, size_t *size, char **input)
 {
-	if (tokens[0][0] != '/' && tokens[0][0] != '.') /* if input isn't a path */
-		*cmd = findPath(tokens[0]);
-	else /* if user's input is a path */
-		*cmd = strdup(tokens[0]); /* initialize cmd to the input path */
+	if (getline(input, size, stdin) == -1) /* gets input; plus EOF (^D) check */
+	{
+		if (isAtty && stylePrints)
+			printf("\n%sCtrl-D Entered. %s\nThe %sGates Of Shell%s have closed."
+				   " Goodbye.\n%s\n", CLR_DEFAULT_BOLD, CLR_YELLOW_BOLD,
+				   CLR_RED_BOLD, CLR_YELLOW_BOLD, CLR_DEFAULT);
+		freeAll(tokens, (*input), NULL);
+		exit(EXIT_SUCCESS);
+	}
+	(*input)[strlen((*input)) - 1] = '\0'; /* delete newline at end of string */
 }
 
 /**
@@ -183,55 +179,59 @@ int populateTokens(const char *input, char ***tokens, char **cmd_token,
 }
 
 /**
- * saveInput - get & save input
+ * initCmd - initialize cmd to the command to pass to execve
+ * @cmd: variable to be initialized
+ * @tokens: tokens
  *
- * @isAtty: isatty() return. if 1 interactive, 0 otherwise
- * @tokens: empty container for tokenized inputs
- * @getline_rtn: return value of getline() function
- * @size: size of input
- * @input: user-input
+ * Return: command
  */
-void saveInput(int isAtty, char **tokens, size_t *size, char **input)
+void initCmd(char **cmd, char *const *tokens)
 {
-	if (getline(input, size, stdin) == -1) /* gets input; plus EOF (^D) check */
-	{
-		if (isAtty && stylePrints)
-			printf("\n%sCtrl-D Entered. %s\nThe %sGates Of Shell%s have closed."
-				   " Goodbye.\n%s\n", CLR_DEFAULT_BOLD, CLR_YELLOW_BOLD,
-				   CLR_RED_BOLD, CLR_YELLOW_BOLD, CLR_DEFAULT);
-		freeAll(tokens, (*input), NULL);
-		exit(EXIT_SUCCESS);
-	}
-	(*input)[strlen((*input)) - 1] = '\0'; /* delete newline at end of string */
+	if (tokens[0][0] != '/' && tokens[0][0] != '.') /* if input isn't a path */
+		*cmd = findPath(tokens[0]);
+	else /* if user's input is a path */
+		*cmd = strdup(tokens[0]); /* initialize cmd to the input path */
 }
 
 /**
- * printPrompt - prints prompt in color ("[Go$H] | user@hostname:path$ ")
+ * executeIfValid - check if a command is a valid custom or built-in command;
+ * run the command if it is valid; if child process fails,stop it
+ * from re-entering loop
  *
- * @isAtty: is interactive mode
- * @user: environment variable for user's username
- * @hostname: environment variable for user's hostname or device name.
- * @path: current working directory
+ * @isAtty: result of isatty(), 1 if interactive, 0 otherwsie
+ * @argv: carrier of filename in [0]
+ * @input: user-input
+ * @tokens: array of strings of user inputs delimited by spaces
+ * @cmd: first argument of user-input prefixed with found filepath
+ * @cmd_token:last arguments from strtok'd input
+ * @paths:array of strings of filepaths
+ * @run_cmd_rtn: return value of run_command function
  */
-void printPrompt(int isAtty, char *user, char *hostname, char *path)
+void executeIfValid(int isAtty, char *const *argv, char *input, char **tokens,
+					char *cmd, char *cmd_token, char **paths)
 {
-	if (isAtty && stylePrints) /* checks interactive mode */
-	{
-		/* print thing to let us know we're in this shell, not the real one */
-		printf("%s[%sGo$H%s]%s | ", CLR_YELLOW_BOLD, CLR_RED_BOLD,
-			   CLR_YELLOW_BOLD, CLR_DEFAULT); /*Go$H stands for Gates of Shell*/
-		/* prints user@host in green (i.e. julien@ubuntu) */
-		printf("%s%s@%s", CLR_GREEN_BOLD, user, hostname);
-		/* prints the path in blue */
-		printf("%s:%s%s", CLR_DEFAULT_BOLD, CLR_BLUE_BOLD, path);
-		/* resets text color and prints '$ ' */
-		printf("%s$ ", CLR_DEFAULT);
-	}
-	else if (isAtty && !stylePrints)
-		printf("$");
+	int run_cmd_rtn;
 
-	free(user);
-	free(hostname);
+	/* run command */
+	if (customCmd(tokens, isAtty, input, cmd, cmd_token) == 0)
+	{ /* if input is not a custom command */
+		/* runs the command if it is a valid built-in */
+		run_cmd_rtn = runCommand(cmd, tokens, paths);
+		/* prints error if command is invalid or another error occurs */
+		if (run_cmd_rtn != 0)
+		{
+			if (isAtty == 1)
+				fprintf(stderr, "%s: 1: %s: %s\n", argv[0], cmd,
+					strerror(run_cmd_rtn));
+			else
+			{
+				freeAll(tokens, cmd, input, NULL);
+				exit(run_cmd_rtn);
+			}
+		}
+	}
+
+	freeAll(tokens, cmd, input, NULL);
 }
 
 /**
@@ -300,7 +300,7 @@ int runCommand(char *commandPath, char **args, char **envPaths)
 
 	if (commandPath == NULL)
 	{
-		if (isatty(STDIN_FILENO)) /* == 1 */
+		if (isatty(STDIN_FILENO))
 			return (0);
 		else
 			exit(0);
@@ -308,7 +308,7 @@ int runCommand(char *commandPath, char **args, char **envPaths)
 
 	if (access(commandPath, F_OK) != 0) /* checks if cmd doesn't exist */
 	{
-		if (isatty(STDIN_FILENO)) /* == 1 */
+		if (isatty(STDIN_FILENO))
 			return (127);
 		else
 			exit(127);
