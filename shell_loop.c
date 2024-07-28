@@ -57,8 +57,7 @@ void shellLoop(int isAtty, char *argv[])
 		{
 			if (isAtty)
 				continue;
-			/* printf("A\n"); */
-			exit(EXIT_FAILURE);
+			exit(EXIT_SUCCESS);
 		}
 		initCmd(&cmd, tokens);
 		executeIfValid(isAtty, argv, input, tokens, cmd, cmd_token, paths);
@@ -341,7 +340,8 @@ int runCommand(char *commandPath, char **args, char **envPaths)
 		}
 		else if (wait_rtn == -1)
 		{
-			/* perror("An error occurred while running command at parent"); error message */
+			/* perror("An error occurred while running command at parent");
+			error message */
 			return (-1); /* indicate error */
 		}
 	}
