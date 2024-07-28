@@ -317,7 +317,7 @@ int runCommand(char *commandPath, char **args, char **envPaths)
 	if (fork_rtn == -1) /* Fork! It failed */
 	{
 		/* perror("An error occurred while running command at fork"); error message */
-		return (EXIT_FAILURE); /* indicate error */
+		return (-1); /* indicate error */
 	}
 	if (fork_rtn == 0) /* child process */
 	{
