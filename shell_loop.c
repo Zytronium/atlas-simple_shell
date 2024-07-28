@@ -53,7 +53,12 @@ void shellLoop(int isAtty, char *argv[])
 
 		printPrompt(isAtty, user, hostname, path);
 		saveInput(isAtty, tokens, &size, &input);
-		parseInput(input, &tokens, &cmd_token, &tokens_count);
+		if (parseInput(input, &tokens, &cmd_token, &tokens_count) == -1)
+		{
+			if (isAtty)
+				continue;
+			exit(EXIT_FAILURE);
+		}
 		initCmd(&cmd, tokens);
 		executeIfValid(isAtty, argv, input, tokens, cmd, cmd_token, paths);
 	}
@@ -196,7 +201,6 @@ void saveInput(int isAtty, char **tokens, size_t *size, char **input)
 		freeAll(tokens, (*input), NULL);
 		exit(EXIT_SUCCESS);
 	}
-
 	(*input)[strlen((*input)) - 1] = '\0'; /* delete newline at end of string */
 }
 
