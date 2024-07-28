@@ -57,6 +57,7 @@ void shellLoop(int isAtty, char *argv[])
 		{
 			if (isAtty)
 				continue;
+			/* printf("A\n"); */
 			exit(EXIT_FAILURE);
 		}
 		initCmd(&cmd, tokens);
