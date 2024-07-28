@@ -12,7 +12,7 @@
  * @path: current working directory
  * @input: user input
  * @tokens: array of strings of tokenized user inputs deliminated by spaces
- * @cmd: user-inputed command with possible path prefixed
+ * @cmd: user-inputted command with possible path prefixed
  * @cmd_token: tool for strtok
  * @paths: array of strings of env paths
  * @custom_cmd_rtn: return value of customCmd()
@@ -160,19 +160,19 @@ int parseInput(char *input, char ***tokens, char **cmd_token, int *tokens_count)
 int populateTokens(const char *input, char ***tokens, char **cmd_token,
 				   int *tokens_count)
 {
-	while ((*cmd_token) != NULL)
+	while (*cmd_token != NULL)
 	{
-		if ((*tokens_count) >= 64)
-			(*tokens) = realloc((*tokens), (*tokens_count) * sizeof(char *));
+		if (*tokens_count >= 64)
+			*tokens = realloc(*tokens, *tokens_count * sizeof(char *));
 
-		if ((*tokens) == NULL)
+		if (*tokens == NULL)
 		{
-			freeAll((*tokens), input, NULL);
+			freeAll(*tokens, input, NULL);
 			return (-1);
 		}
 
-		(*tokens)[(*tokens_count)] = strdup((*cmd_token));
-		(*cmd_token) = strtok(NULL, " ");
+		(*tokens)[*tokens_count] = strdup(*cmd_token);
+		*cmd_token = strtok(NULL, " ");
 		(*tokens_count)++;
 	}
 	return (1);
@@ -317,8 +317,7 @@ int runCommand(char *commandPath, char **args, char **envPaths)
 	fork_rtn = fork(); /* split process into 2 processes */
 	if (fork_rtn == -1) /* Fork! It failed */
 	{
-		/* perror("An error occurred while running command at fork"); error
-		message */
+		/* perror("An error occurred while running command at fork"); error message */
 		return (EXIT_FAILURE); /* indicate error */
 	}
 	if (fork_rtn == 0) /* child process */
