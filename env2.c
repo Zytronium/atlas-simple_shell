@@ -34,7 +34,10 @@ char *findPath(char *name)
 	temp_path = strdup(name);
 	return (temp_path);
 }
-
+/**
+ * destroyListPath - frees the ListPath
+ * @h: head of listpath
+ */
 void destroyListPath(path_t *h)
 {
 	path_t *temp = NULL;
@@ -46,7 +49,11 @@ void destroyListPath(path_t *h)
 		free(temp);
 	}
 }
-
+/**
+ * getHostname - retrieves hostname from env or sets a new hostname
+ *
+ * Return: hostname
+ */
 char *getHostname(void)
 {
 	char *hostname = _getenv("NAME");
@@ -64,6 +71,11 @@ char *getHostname(void)
 	return hostname;
 }
 
+/**
+ * getUser - retrives user from env or sets a new user
+ *
+ * Return: user
+ */
 char *getUser(void)
 {
 	char *user = _getenv("USER");
@@ -78,3 +90,4 @@ char *getUser(void)
 
 	return (user);
 }
+
