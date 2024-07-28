@@ -20,6 +20,25 @@
 #ifndef stylePrints
 #define stylePrints 0
 /* set to 0 for checker, set to 1 to prettify shell */
+/*
+ * Note to Stephen: in every case, 1 means TRUE and 0 means FALSE. It's just like
+ * simple binary code: 0 is 0ff, 1 is on. 0 is nothing, 0%, and
+ * 1 is everything, 100%. The only exception is EXIT_SUCCESS == 0 and
+ * EXIT_FAILURE == 1, but that's probably because I heard it's faster
+ * to check if a number is 0 than to check if it's 1, which is why
+ * old code used to actually loop counting down to 0 instead of up,
+ * because it was a micro-optimization that most compilers today probably
+ * take care of for you. When you're checking an int used as a boolean value
+ * (1 or 0), instead of as a number value, I believe it's best to do
+ * "if (stylePrints)" instead of "if (stylePrints == 1)." I hope this helps.
+ *
+ * TLDR:
+ *
+ * 0: false;	off;	0%; 	nothing
+ * 1: true; 	on; 	100%;	everything
+ *
+ * TODO: Remove this note before Tuesday.
+ */
 #endif /* stylePrints */
 /**
  * struct path_s - singly linked list for PATH environ variable
