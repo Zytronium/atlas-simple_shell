@@ -11,10 +11,10 @@
  * @hostname: host name or device name
  * @path: current working directory
  * @input: user input
- * @tokens:
- * @cmd:
- * @cmd_token:
- * @paths:
+ * @tokens: array of strings of tokenized user inputs deliminated by spaces
+ * @cmd: user-inputed command with possible path prefixed
+ * @cmd_token: tool for strtok
+ * @paths: array of strings of env paths
  * @custom_cmd_rtn: return value of customCmd()
  * @run_cmd_rtn: return value of runCommand()
  * @tokens_count: number of tokens while initializing the tokens
