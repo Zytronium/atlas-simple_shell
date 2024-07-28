@@ -299,14 +299,11 @@ int runCommand(char *commandPath, char **args, char **envPaths)
 
 	if (commandPath == NULL)
 	{
-		printf("commandPath is NULL\n");
 		if (isatty(STDIN_FILENO)) /* == 1 */
 			return (0);
 		else
 			exit(0);
 	}
-	else
-		printf("commandPath is not NULL\n");
 
 	if (access(commandPath, F_OK) != 0) /* checks if cmd doesn't exist */
 	{
