@@ -104,6 +104,7 @@ void printPrompt(int isAtty, char *user, char *hostname, char *path)
  */
 void saveInput(int isAtty, char **tokens, size_t *size, char **input)
 {
+	(void) isAtty;
 	if (getline(input, size, stdin) == -1) /* gets input; plus EOF (^D) check */
 	{
 		if (/*isAtty && */stylePrints)
