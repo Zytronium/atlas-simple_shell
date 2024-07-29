@@ -87,6 +87,10 @@ char *findPath(char *name);
 void destroyListPath(path_t *h);
 
 int ifCmdEnv(char **tokens);
+
+int ifCmdSetEnv(char **tokens);
+
+int ifCmdUnsetEnv(char **tokens);
 /* ------------------- */
 
 #endif /* MAIN_H */
