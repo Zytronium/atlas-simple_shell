@@ -23,10 +23,12 @@
 	 ifCmdExit(tokens, interactive, f1, f2, f3);
 
 	/* ----------------- custom command "setenv" ----------------- */
-	 /* ifCmdSetEnv(); */
+	if (ifCmdSetEnv(tokens))
+		return (1);
 
 	 /* ----------------- custom command "unsetenv" ----------------- */
-	 /* ifCmdUnSetEnv(); */
+	if (ifCmdUnsetEnv(tokens))
+		return (1);
 
 	 /* ------------- custom command "self-destruct" ------------- */
 	 if (ifCmdSelfDestruct(tokens, f1, f2, f3) == -1)
@@ -109,14 +111,23 @@ int ifCmdEnv(char **tokens)
 	return (0); /* indicate that input is not "env" */
 }
 
+/**
+ * ifCmdSetEnv - sets an environment variable
+ * @tokens: tokenized user-inputed commands
+ *
+ * Return: 1 if success, 0 if not applicable, -1 if malloc failed
+ */
 int ifCmdSetEnv(char **tokens)
 {
-	/* int rtn; */
+	int rtn;
 
 	if (tokens[0] != NULL && (strcmp(tokens[0], "setenv") == 0))
 	{
-		if (_setenv(tokens[1], tokens[2], 1) == -1)
+		rtn = _setenv(tokens[1], tokens[2], 1);
+		if (rtn == -1) /* malloc error */
 			return (-1);
+		else if (rtn == 0) /* success */
+			return (1);
 	}
-	return (0);
+	return (0); /* not setenv */
 }
