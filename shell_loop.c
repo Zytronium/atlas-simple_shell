@@ -127,7 +127,7 @@ void saveInput(int isAtty, char **tokens, size_t *size, char **input)
  */
 int parseInput(char *input, char ***tokens, char **cmd_token, int *tokens_count)
 {
-	(*cmd_token) = strtok(input, " "); /* first token */
+	(*cmd_token) = strtok(input, " \n\t\r"); /* first token */
 	if ((*cmd_token) == NULL) /* blank command - only spaces or newline */
 	{
 		freeAll((*tokens), input, NULL);
@@ -171,7 +171,7 @@ int populateTokens(const char *input, char ***tokens, char **cmd_token,
 		}
 
 		(*tokens)[(*tokens_count)] = strdup((*cmd_token));
-		(*cmd_token) = strtok(NULL, " ");
+		(*cmd_token) = strtok(NULL, " \n\t\r");
 		(*tokens_count)++;
 	}
 	return (1);
@@ -322,8 +322,6 @@ int runCommand(char *commandPath, char **args, char **envPaths)
 	fork_rtn = fork(); /* split process into 2 processes */
 	if (fork_rtn == -1) /* Fork! It failed */
 	{
-		/* perror("An error occurred while running command at fork"); error
-		message */
 		return (EXIT_FAILURE); /* indicate error */
 	}
 	if (fork_rtn == 0) /* child process */
@@ -331,24 +329,19 @@ int runCommand(char *commandPath, char **args, char **envPaths)
 		exec_rtn = execve(commandPath, args, envPaths);/*executes user-command*/
 		if (exec_rtn == -1)
 		{
-			/* perror("An error occurred while running command at child"); */
 			exit(errno); /* indicate error */
 		}
 	} else /* parent process; fork_rtn contains pid of child process */
 	{
 		wait_rtn = waitpid(fork_rtn, &child_status, WUNTRACED); /* waits until
 		child process terminates */
-		/* printf("CHILD STATUS: %d\n", child_status); */
 		if (WIFEXITED(child_status))
 		{
 			wexitstat = WEXITSTATUS(child_status);
-			/* printf("WEXITSTATUS: %d\n", wexitstat); */
 			return (wexitstat);
 		}
 		else if (wait_rtn == -1)
 		{
-			/* perror("An error occurred while running command at parent");
-			error message */
 			return (-1); /* indicate error */
 		}
 	}
