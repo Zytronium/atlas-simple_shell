@@ -20,8 +20,8 @@
 #ifndef stylePrints
 #define stylePrints 1
 /* set to 0 for checker, set to 1 to prettify shell */
-
 #endif /* stylePrints */
+
 /**
  * struct path_s - singly linked list for PATH environ variable
  * @directory: string of directory
@@ -38,7 +38,6 @@ extern char **environ;
 /* ------------------- */
 
 /* ↓ FUNCTIONS ↓ */
-
 int isNumber(char *number);
 
 void shellLoop(int isAtty, char *argv[]);
