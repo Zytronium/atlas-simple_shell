@@ -52,7 +52,8 @@ void shellLoop(int isAtty, char *argv[])
 			tokens[i] = NULL;
 
 		/*printPrompt(isAtty, user, hostname, path);*/
-		printf("$ ");
+		if (isAtty)
+			printf("$ ");
 		saveInput(isAtty, tokens, &size, &input);
 		if (parseInput(input, &tokens, &cmd_token, &tokens_count) == -1)
 		{

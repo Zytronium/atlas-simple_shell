@@ -68,7 +68,7 @@ char *getHostname(void)
 		strcpy(hostname, "unknown");
 	}
 
-	return hostname;
+	return (hostname);
 }
 
 /**
