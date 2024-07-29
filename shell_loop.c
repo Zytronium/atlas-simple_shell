@@ -127,7 +127,7 @@ void saveInput(int isAtty, char **tokens, size_t *size, char **input)
  */
 int parseInput(char *input, char ***tokens, char **cmd_token, int *tokens_count)
 {
-	(*cmd_token) = strtok(input, " "); /* first token */
+	(*cmd_token) = strtok(input, " \n\t\r"); /* first token */
 	if ((*cmd_token) == NULL) /* blank command - only spaces or newline */
 	{
 		freeAll((*tokens), input, NULL);
