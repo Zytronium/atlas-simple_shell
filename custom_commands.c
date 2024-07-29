@@ -111,7 +111,7 @@ int ifCmdEnv(char **tokens)
 
 int ifCmdSetEnv(char **tokens)
 {
-	//int rtn;
+	/* int rtn; */
 
 	if (tokens[0] != NULL && (strcmp(tokens[0], "setenv") == 0))
 	{
