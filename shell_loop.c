@@ -30,7 +30,7 @@
 void shellLoop(int isAtty, char *argv[])
 {
 	size_t size;
-	char /**user, *hostname, */path[PATH_MAX], *input, **tokens = NULL;
+	char *user, *hostname, path[PATH_MAX], *input, **tokens = NULL;
 	char *cmd, *cmd_token, *paths[1] = {NULL};
 	int tokens_count, i;
 
@@ -38,8 +38,8 @@ void shellLoop(int isAtty, char *argv[])
 	{
 		/* initialize vars */
 		getcwd(path, sizeof(path));
-		/*user = getUser();
-		hostname = getHostname();*/
+		user = getUser();
+		hostname = getHostname();
 		tokens_count = 0;
 		size = 0;
 		input = NULL;
@@ -51,9 +51,7 @@ void shellLoop(int isAtty, char *argv[])
 		for (i = 0; i < 64; i++)
 			tokens[i] = NULL;
 
-		/*printPrompt(isAtty, user, hostname, path);*/
-		if (isAtty)
-			printf("$ ");
+		printPrompt(isAtty, user, hostname, path);
 		saveInput(isAtty, tokens, &size, &input);
 		if (parseInput(input, &tokens, &cmd_token, &tokens_count) == -1)
 		{
