@@ -29,20 +29,6 @@ char *_getenv(const char *name) /* gets an environmental variable */
 	}
 	return (NULL);
 }
-/**
- * printPATH - prints the PATH
- */
-void printPATH(void)
-{
-	char *path = _getenv("PATH");
-	char *token = strtok(path, ":");
-
-	while (token != NULL)
-	{
-		printf("%s\n", token);
-		token = strtok(NULL, ":");
-	}
-}
 
 /**
  * buildListPath - builds a singly linked list off the environ variable PATH
