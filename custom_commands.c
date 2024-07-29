@@ -22,6 +22,12 @@
 	 /* ----------------- custom command "exit" ----------------- */
 	 ifCmdExit(tokens, interactive, f1, f2, f3);
 
+	/* ----------------- custom command "setenv" ----------------- */
+	 /* ifCmdSetEnv(); */
+
+	 /* ----------------- custom command "unsetenv" ----------------- */
+	 /* ifCmdUnSetEnv(); */
+
 	 /* ------------- custom command "self-destruct" ------------- */
 	 if (ifCmdSelfDestruct(tokens, f1, f2, f3) == -1)
 		 return (-1);
@@ -101,4 +107,16 @@ int ifCmdEnv(char **tokens)
 		return (1); /* indicate success */
 	}
 	return (0); /* indicate that input is not "env" */
+}
+
+int ifCmdSetEnv(char **tokens)
+{
+	//int rtn;
+
+	if (tokens[0] != NULL && (strcmp(tokens[0], "setenv") == 0))
+	{
+		if (_setenv(tokens[1], tokens[2], 1) == -1)
+			return (-1);
+	}
+	return (0);
 }
