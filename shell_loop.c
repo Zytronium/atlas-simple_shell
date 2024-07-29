@@ -171,7 +171,7 @@ int populateTokens(const char *input, char ***tokens, char **cmd_token,
 		}
 
 		(*tokens)[(*tokens_count)] = strdup((*cmd_token));
-		(*cmd_token) = strtok(NULL, " ");
+		(*cmd_token) = strtok(NULL, " \n\t\r");
 		(*tokens_count)++;
 	}
 	return (1);
