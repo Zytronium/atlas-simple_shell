@@ -130,24 +130,24 @@ int parseInput(char *input, char ***tokens, char **cmd_token,
 				int *tokens_count)
 {
 	(*cmd_token) = strtok(input, " \n\t\r"); /* first token */
-	if (*cmd_token == NULL) /* blank command - only spaces or newline */
+	if ((*cmd_token) == NULL) /* blank command - only spaces or newline */
 	{
-		freeAll(*tokens, input, NULL);
+		freeAll((*tokens), input, NULL);
 		return (-1); /* go back to start of the loop */
 	}
 
 	if (populateTokens(input, tokens, cmd_token, tokens_count) == -1)
-	{ /* if populateTokens fails, free memory and indicate a failure */
-		freeAll(*tokens, input, NULL);
-		return (-1);
-	}
-
-	if (*tokens == NULL)
-	{ /* if tokens isn't set, free memory and indicate a failure */
+	{
 		freeAll((*tokens), input, NULL);
 		return (-1);
 	}
-	(*tokens)[*tokens_count] = NULL; /* null terminate */
+
+	if ((*tokens) == NULL)
+	{
+		freeAll((*tokens), /*cmd, */input, NULL);
+		return (-1);
+	}
+	(*tokens)[(*tokens_count)] = NULL;
 
 	return (1);
 }
@@ -164,20 +164,20 @@ int parseInput(char *input, char ***tokens, char **cmd_token,
 int populateTokens(const char *input, char ***tokens, char **cmd_token,
 				   int *tokens_count)
 {
-	while (*cmd_token != NULL)
+	while ((*cmd_token) != NULL)
 	{
-		if (*tokens_count >= 64) /* max of 64 args/flags */
-			*tokens = realloc(*tokens, *tokens_count * sizeof(char *));
+		if ((*tokens_count) >= 64)
+			(*tokens) = realloc((*tokens), (*tokens_count) * sizeof(char *));
 
-		if (*tokens == NULL) /* malloc fail check */
+		if ((*tokens) == NULL)
 		{
-			freeAll(*tokens, input, NULL);
-			return (-1); /* indicate a failure */
+			freeAll((*tokens), input, NULL);
+			return (-1);
 		}
 
-		*tokens[*tokens_count] = strdup(*cmd_token); /* set this token */
-		*cmd_token = strtok(NULL, " \n\t\r"); /* tokenize */
-		(*tokens_count)++; /* increment */
+		(*tokens)[(*tokens_count)] = strdup((*cmd_token));
+		(*cmd_token) = strtok(NULL, " \n\t\r");
+		(*tokens_count)++;
 	}
 	return (1);
 }
