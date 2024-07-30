@@ -17,11 +17,6 @@
 /* ------------------- */
 
 /* ↓ STRUCTS AND MISC ↓ */
-#ifndef stylePrints
-#define stylePrints 1
-/* set to 0 for checker, set to 1 to prettify shell */
-#endif /* stylePrints */
-
 /**
  * struct path_s - singly linked list for PATH environ variable
  * @directory: string of directory

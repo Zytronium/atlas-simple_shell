@@ -94,7 +94,7 @@ void ifCmdExit(char **tokens, int interactive, const char *f1, const char *f2,
 
 		freeAll(tokens, f1, f2, f3, NULL);
 
-		if (interactive && stylePrints)
+		if (interactive)
 			printf("%s\nThe %sGates Of Shell%s have closed. Goodbye.\n%s",
 					CLR_YELLOW_BOLD, CLR_RED_BOLD, CLR_YELLOW_BOLD, CLR_DEFAULT);
 

@@ -74,7 +74,7 @@ void shellLoop(int isAtty, char *argv[])
  */
 void printPrompt(int isAtty, char *user, char *hostname, char *path)
 {
-	if (isAtty && stylePrints) /* checks interactive mode */
+	if (isAtty) /* checks interactive mode */
 	{
 		/* print thing to let us know we're in this shell, not the real one */
 		printf("%s[%sGo$H%s]%s | ", CLR_YELLOW_BOLD, CLR_RED_BOLD,
@@ -86,8 +86,6 @@ void printPrompt(int isAtty, char *user, char *hostname, char *path)
 		/* resets text color and prints '$ ' */
 		printf("%s$ ", CLR_DEFAULT);
 	}
-	else if (isAtty && !stylePrints)
-		printf("$");
 
 	free(user);
 	free(hostname);
@@ -105,7 +103,7 @@ void saveInput(int isAtty, char **tokens, size_t *size, char **input)
 {
 	if (getline(input, size, stdin) == -1) /* gets input; plus EOF (^D) check */
 	{
-		if (isAtty && stylePrints)
+		if (isAtty)
 		{
 			printf("\n%sCtrl-D Entered. %s\n",
 				   CLR_DEFAULT_BOLD, CLR_YELLOW_BOLD);
