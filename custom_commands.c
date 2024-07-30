@@ -84,6 +84,7 @@ void ifCmdExit(char **tokens, int interactive, const char *f1, const char *f2,
 				const char *f3)
 {
 	int status = EXIT_SUCCESS; /* status to exit with */
+
 	if (tokens[0] != NULL &&
 		(strcmp(tokens[0], "exit") == 0 || strcmp(tokens[0], "quit") == 0))
 	{
