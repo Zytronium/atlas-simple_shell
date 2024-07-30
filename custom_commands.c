@@ -13,8 +13,8 @@
  * 0 if it's not a custom command,
  * -1 on error
  */
- int customCmd(char **tokens, int interactive, char *f1, char *f2, char *f3)
- {
+int customCmd(char **tokens, int interactive, char *f1, char *f2, char *f3)
+{
 	 /* ------------------ custom command "env" ------------------ */
 	 if (ifCmdEnv(tokens))
 		 return (1);
@@ -31,11 +31,11 @@
 		return (1);
 
 	 /* ------------- custom command "self-destruct" ------------- */
-	 if (ifCmdSelfDestruct(tokens, f1, f2, f3) == -1)
+	if (ifCmdSelfDestruct(tokens, f1, f2, f3) == -1)
 		 return (-1);
 
 	 return (0); /* indicate that the input is not a custom command */
- }
+}
 /*
  * note: customCmd() was variadic, but we undid that because of
  * problems calling freeAll() using the args variable.
@@ -49,9 +49,9 @@
  * @f3: variable to be freed if the command exits. (i.e. cmd_token)
  * Return: 0 if successful, -1 otherwise
  */
- int ifCmdSelfDestruct(char **tokens, const char *f1, const char *f2,
+int ifCmdSelfDestruct(char **tokens, const char *f1, const char *f2,
 					   const char *f3)
- {
+{
 	 if (tokens[0] != NULL && (strcmp(tokens[0], "self-destruct") == 0 ||
 							   strcmp(tokens[0], "selfdestr") == 0))
 	 {
@@ -68,10 +68,9 @@
 		 freeAll(tokens, f1, f2, f3, NULL);
 		 selfDestruct(countdown); /* runs exit() when done */
 		 return (-1); /* indicate error if selfDestruct never exits */
-		 /* TODO: should we handle the condition if the cmd has too many args? */
 	 }
 	 return (0);
- }
+}
 
 /**
  * ifCmdExit: if user-input is "exit" or "quit"
@@ -81,9 +80,9 @@
  * @f2: variable to be freed if the command exits. (i.e. cmd)
  * @f3: variable to be freed if the command exits. (i.e. cmd_token)
  */
- void ifCmdExit(char **tokens, int interactive, const char *f1, const char *f2,
+void ifCmdExit(char **tokens, int interactive, const char *f1, const char *f2,
 				const char *f3)
- {
+{
 	 if (tokens[0] != NULL &&
 		 (strcmp(tokens[0], "exit") == 0 || strcmp(tokens[0], "quit") == 0))
 	 {
@@ -95,7 +94,7 @@
 
 		 exit(EXIT_SUCCESS);
 	 }
- }
+}
 
 int ifCmdEnv(char **tokens)
 {
