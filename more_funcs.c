@@ -65,9 +65,4 @@ void initCmd(char **cmd, char *const *tokens)
 		*cmd = findPath(tokens[0]);
 	else /* if user's input is a path */
 		*cmd = strdup(tokens[0]); /* initialize cmd to the input path */
-
-	if (*cmd == NULL)
-	{
-		/* free something? */
-	}
 }
