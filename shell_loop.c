@@ -106,11 +106,13 @@ void saveInput(int isAtty, char **tokens, size_t *size, char **input)
 	if (getline(input, size, stdin) == -1) /* gets input; plus EOF (^D) check */
 	{
 		if (isAtty && stylePrints)
+		{
 			printf("\n%sCtrl-D Entered. %s\n",
-					CLR_DEFAULT_BOLD, CLR_YELLOW_BOLD);
+				   CLR_DEFAULT_BOLD, CLR_YELLOW_BOLD);
 			printf("The %sGates Of Shell%s have closed.",
-					CLR_RED_BOLD, CLR_YELLOW_BOLD);
+				   CLR_RED_BOLD, CLR_YELLOW_BOLD);
 			printf("Goodbye.\n%s\n", CLR_DEFAULT);
+		}
 
 		freeAll(tokens, (*input), NULL);
 		exit(EXIT_SUCCESS);
