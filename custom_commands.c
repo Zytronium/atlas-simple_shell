@@ -83,16 +83,21 @@ int ifCmdSelfDestruct(char **tokens, const char *f1, const char *f2,
 void ifCmdExit(char **tokens, int interactive, const char *f1, const char *f2,
 				const char *f3)
 {
+	int status = EXIT_SUCCESS; /* status to exit with */
 	if (tokens[0] != NULL &&
 		(strcmp(tokens[0], "exit") == 0 || strcmp(tokens[0], "quit") == 0))
 	{
+		/* check if user gave any args and if it's a valid number */
+		if (tokens[1] != NULL && isNumber(tokens[1]))
+			status = atoi(tokens[1]); /* set status to given number */
+
 		freeAll(tokens, f1, f2, f3, NULL);
 
 		if (interactive && stylePrints)
 			printf("%s\nThe %sGates Of Shell%s have closed. Goodbye.\n%s",
 					CLR_YELLOW_BOLD, CLR_RED_BOLD, CLR_YELLOW_BOLD, CLR_DEFAULT);
 
-		exit(EXIT_SUCCESS);
+		exit(status);
 	}
 }
 
