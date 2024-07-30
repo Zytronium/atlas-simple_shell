@@ -8,7 +8,7 @@ int main(int argc, char *argv[])
 	(void) argc;
 	/* if argc == 1, meaning no args given, meaning it's in interactive mode */
 	if (isInteractive && stylePrints == 1)
-		printf("%sWelcome to the %sGates Of Shell%s. Type \"exit\" to quit.\n\n",
+		printf("%sWelcome to the %sGates Of Shell%s. Type 'exit' to quit.\n\n",
 			   CLR_YELLOW_BOLD, CLR_RED_BOLD, CLR_YELLOW_BOLD);
 	/* --------------------------------------------------------------------- */
 
