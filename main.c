@@ -70,7 +70,7 @@ void executeIfValid(int isAtty, char *const *argv, char *input, char **tokens,
 						strerror(run_cmd_rtn));
 			if (!isAtty)
 			{
-				freeAll(tokens, cmd, input, NULL);
+				freeAll(tokens, input, cmd, NULL);
 				exit(run_cmd_rtn);
 			}
 		}
