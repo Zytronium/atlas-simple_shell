@@ -35,22 +35,6 @@ int main(int argc, char *argv[])
 	 */
 }
 
-
-/**
- * initCmd - initialize cmd to the command to pass to execve
- * @cmd: variable to be initialized
- * @tokens: tokens
- *
- * Return: command
- */
-void initCmd(char **cmd, char *const *tokens)
-{
-	if (tokens[0][0] != '/' && tokens[0][0] != '.') /* if input isn't a path */
-		*cmd = findPath(tokens[0]);
-	else /* if user's input is a path */
-		*cmd = strdup(tokens[0]); /* initialize cmd to the input path */
-}
-
 /**
  * executeIfValid - check if a command is a valid custom or built-in command;
  * run the command if it is valid; if child process fails,stop it
