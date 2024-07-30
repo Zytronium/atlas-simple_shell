@@ -61,10 +61,8 @@ void shellLoop(int isAtty, char *argv[])
 		}
 		initCmd(&cmd, tokens);
 		executeIfValid(isAtty, argv, input, tokens, cmd, cmd_token, paths);
-		/*
-		 * if (cmd == NULL)
-		 *	free(input);
-		 */
+		/*if (cmd == NULL)
+			free(input);*/
 	}
 }
 
