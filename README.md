@@ -14,6 +14,12 @@ the internet using a shell. A couple examples of a shell are Bash and
 PowerShell. Examples of things that may be confused with a shell, but
 are **not** are: the terminal/console, Vim, Ubuntu, or the Sandbox/VM.
 
+### Compiling
+Compiling gcc -Wall -Werror -Wextra -pedantic -std=gnu89 *.c -o simple_shell
+
+### Testing Script
+Testing Script found at /Miscellaneous/TestRunScript.bash
+
 ### Examples of this concept:
 
 Example input/output:
