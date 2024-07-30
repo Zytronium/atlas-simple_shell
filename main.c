@@ -63,8 +63,8 @@ void executeIfValid(int isAtty, char *const *argv, char *input, char **tokens,
 			if (run_cmd_rtn == 127)
 				fprintf(stderr, "%s: 1: %s: %s\n", argv[0], cmd,
 					"not found");
-			/* else if (run_cmd_rtn == 13) */
-			/*	perror(cmd); */
+			else if (run_cmd_rtn == 2)
+				perror(cmd);
 			else
 				fprintf(stderr, "%s: 1: %s: %s\n", argv[0], cmd,
 						strerror(run_cmd_rtn));
