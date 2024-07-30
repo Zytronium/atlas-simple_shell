@@ -33,7 +33,7 @@ char *_getenv(const char *name) /* gets an environmental variable */
 /**
  * buildListPath - builds a singly linked list off the environ variable PATH
  *
- * Returns: singly linked list of PATH variables, NULL if failed
+ * Return: singly linked list of PATH variables, NULL if failed
  */
 path_t *buildListPath(void)
 {
