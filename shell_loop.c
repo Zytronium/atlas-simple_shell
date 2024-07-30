@@ -110,6 +110,7 @@ void saveInput(int isAtty, char **tokens, size_t *size, char **input)
 			printf("\n%sCtrl-D Entered. %s\nThe %sGates Of Shell%s have closed."
 				   " Goodbye.\n%s\n", CLR_DEFAULT_BOLD, CLR_YELLOW_BOLD,
 				   CLR_RED_BOLD, CLR_YELLOW_BOLD, CLR_DEFAULT);
+
 		freeAll(tokens, (*input), NULL);
 		exit(EXIT_SUCCESS);
 	}

@@ -6,7 +6,7 @@
 
 ---
 A shell is a program that interprets and executes system commands,
-like `ls`, `git commit`, or `rm -rf`. (Tip: ***never*** run `rm -rf`)
+like `ls`, `git commit`, or `rm -rf /*`. (Tip: ***never*** run `rm -rf /*   `)
 A shell should take text input; read and parse it; execute the command,
 if valid; print output, if there is any; and repeat. You can navigate
 a file system; create, edit, delete, and run files; and maybe even access
@@ -18,49 +18,75 @@ are **not** are: the terminal/console, Vim, Ubuntu, or the Sandbox/VM.
 
 Example input/output:
 ```
-Welcome to the Gates Of Shell. Type "help" for a list of commands. Type "exit" to quit.
+Welcome to the Gates Of Shell. Type "exit" to quit.
 
-/mnt/c/Users/Owner/CLionProjects/atlas-simple_shell$ ls la 
-ls: cannot access 'la': No such file or directory
-/mnt/c/Users/Owner/CLionProjects/atlas-simple_shell$ ls -la  
-total 44
-drwxrwxrwx 1 zytronium zytronium  4096 Jul 18 20:25 .
-drwxrwxrwx 1 zytronium zytronium  4096 Jul 18 14:18 ..
-drwxrwxrwx 1 zytronium zytronium  4096 Jul 18 20:17 .git
--rwxrwxrwx 1 zytronium zytronium    71 Jul 18 18:43 .gitignore
--rwxrwxrwx 1 zytronium zytronium  3687 Jul 18 14:18 README.md
--rwxrwxrwx 1 zytronium zytronium   218 Jul 18 19:51 TestRunScript.bash
--rwxrwxrwx 1 zytronium zytronium  3228 Jul 18 18:42 colors.h
--rwxrwxrwx 1 zytronium zytronium   632 Jul 18 18:44 main.c
--rwxrwxrwx 1 zytronium zytronium   509 Jul 18 18:46 main.h
--rwxrwxrwx 1 zytronium zytronium  4696 Jul 18 20:00 shell_loop.c
--rwxrwxrwx 1 zytronium zytronium   955 Jul 18 20:20 shellf_destruct.c
--rwxrwxrwx 1 zytronium zytronium 17048 Jul 18 20:25 testRun
-/mnt/c/Users/Owner/CLionProjects/atlas-simple_shell$ touch grass
-/mnt/c/Users/Owner/CLionProjects/atlas-simple_shell$ ls
-CMakeLists.txt  TestRunScript.bash  colors.h  main.c  shell_loop.c       testRun
-README.md       cmake-build-debug   grass     main.h  shellf_destruct.c
-/mnt/c/Users/Owner/CLionProjects/atlas-simple_shell$ echo Hello, World! This is a simple shell
-Hello, World! This is a simple shell
-/mnt/c/Users/Owner/CLionProjects/atlas-simple_shell$ pwd 
-/mnt/c/Users/Owner/CLionProjects/atlas-simple_shell
-/mnt/c/Users/Owner/CLionProjects/atlas-simple_shell$ whoami
-zytronium
-/mnt/c/Users/Owner/CLionProjects/atlas-simple_shell$ █
+[Go$H] | SmartFridge@fedora:/home/SmartFridge/CLionProjects/atlas-simple_shell$ invalidfji1j
+./OpenShellGates: 1: invalidfji1j: not found
+[Go$H] | SmartFridge@fedora:/home/SmartFridge/CLionProjects/atlas-simple_shell$ ls -a
+.           AUTHORS             bashlist           env2.c              shell_loop.c
+..          CMakeLists.txt      cmake-build-debug  front_lawn          shellf_destruct.c
+.git        OpenShellGates      colors.h           main.c              super-simple_shell
+.gitignore  README.md           custom_commands.c  main.h
+.idea       TestRunScript.bash  env.c              man_3_simple_shell
+[Go$H] | SmartFridge@fedora:/home/SmartFridge/CLionProjects/atlas-simple_shell$ ls ../..
+Applications   Desktop    Downloads      Music     Public     Videos
+CLionProjects  Documents  Miscellaneous  Pictures  Templates
+[Go$H] | SmartFridge@fedora:/home/SmartFridge/CLionProjects/atlas-simple_shell$ echo Hello, World! This is a simple $hell
+Hello, World! This is a simple $hell
+[Go$H] | SmartFridge@fedora:/home/SmartFridge/CLionProjects/atlas-simple_shell$ pwd
+/home/SmartFridge/CLionProjects/atlas-simple_shell
+[Go$H] | SmartFridge@fedora:/home/SmartFridge/CLionProjects/atlas-simple_shell$ whoami
+SmartFridge
+[Go$H] | SmartFridge@fedora:/home/SmartFridge/CLionProjects/atlas-simple_shell$ ./OpenShellGates
+Welcome to the Gates Of Shell. Type "exit" to quit.
+
+[Go$H] | unknown@unknown:/home/SmartFridge/CLionProjects/atlas-simple_shell$ touch grass
+[Go$H] | unknown@unknown:/home/SmartFridge/CLionProjects/atlas-simple_shell$ exit
+
+The Gates Of Shell have closed. Goodbye.
+[Go$H] | SmartFridge@fedora:/home/SmartFridge/CLionProjects/atlas-simple_shell$ ls   
+AUTHORS            colors.h           front_lawn  man_3_simple_shell  super-simple_shell
+bashlist           custom_commands.c  grass       README.md           TestRunScript.bash
+cmake-build-debug  env2.c             main.c      shellf_destruct.c
+CMakeLists.txt     env.c              main.h      shell_loop.c
+[Go$H] | SmartFridge@fedora:/home/SmartFridge/CLionProjects/atlas-simple_shell$ self-destruct
+Segmentation fault
+Shellf destruct mode activated.
+
+5
+4
+3
+2
+1
+
+The Gates Of Shell have closed. Goodbye.
+
+SmartFridge@fedora:~/CLionProjects/atlas-simple_shell$ █
 ```
 
-###### Everything below (except the last two lines) is a placeholder.
+This shell is called the Gates of Shell. The prompt, `[Go$H] | SmartFridge@fedora:/home/SmartFridge/CLionProjects/atlas-simple_shell$ `,
+consists of:
+- `[Go$H]` (which stands for Gates of Shell) - helps differentiate the shell
+from the real shell, as the rest of the prompt looks
+identical to an Ubuntu prompt;
+- `User` - the user's username or log name, taken from the environment variables
+- `Hostname` or PC name - usually the user's Linux distro or the user's PC name
+- `Path` - the current working directory 
+- `$` - end of prompt (not sure what to call this, but some shells may use
+`:` or `#` instead)
 
-```c
-float primary(NULL)
-{
-	writef("Goodbye, user. I must terminate now."
-		   "It's been a fun 3 milliseconds!\n");
-	exit(RETURN_SUCCESS);
-}
+**Custom Commands**
+- exit - exits the shell
+- quit - exits the shell
+- selfdestr - activates self-destruct sequence, counts down from a
+user-specified number, or 5 if unspecified, and then exits the shell
+- self-destruct - activates self-destruct sequence, counts down from a
+user-specified number, or 5 if unspecified, and then exits the shell
+- env - prints the environment variables
+- setenv - sets an environment variable
+- unsetenv - deletes an environment variable
 
-```
-
+---
 
 Back to Atlas Low Level Programming Readme:
 
