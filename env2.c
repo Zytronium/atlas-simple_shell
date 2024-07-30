@@ -41,6 +41,7 @@ char *findPath(char *name)
 void destroyListPath(path_t *h)
 {
 	path_t *temp = NULL;
+
 	while (h != NULL)
 	{
 		temp = h;
@@ -80,7 +81,7 @@ char *getUser(void)
 {
 	char *user = _getenv("USER");
 
-	if(!user)
+	if (!user)
 		user = _getenv("LOGNAME");
 	if (!user)
 	{
