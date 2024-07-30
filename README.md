@@ -86,6 +86,8 @@ user-specified number, or 5 if unspecified, and then exits the shell
 - setenv - sets an environment variable
 - unsetenv - deletes an environment variable
 
+## NOTE: Please, if possible, check with an older commit. Something broke and idk what.
+
 ---
 ![FlowChart.jpg](FlowChart.jpg)
 
