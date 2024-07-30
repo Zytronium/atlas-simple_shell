@@ -74,9 +74,9 @@ This shell is called the Gates of Shell. The prompt, `[Go$H] | SmartFridge@fedor
 consists of:
 - `[Go$H]` (which stands for Gates of Shell) - helps differentiate the shell
 from the real shell, as the rest of the prompt looks
-identical to an Ubuntu prompt;
+identical to an Ubuntu prompt
 - `User` - the user's username or log name, taken from the environment variables
-- `Hostname` or PC name - usually the user's Linux distro or the user's PC name
+- `Hostname` - hostname or PC name - usually the user's Linux distro or the user's PC name
 - `Path` - the current working directory
 - `$` - end of prompt (not sure what to call this, but some shells may use
 `:` or `#` instead)
