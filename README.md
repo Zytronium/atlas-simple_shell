@@ -18,7 +18,7 @@ are **not** are: the terminal/console, Vim, Ubuntu, or the Sandbox/VM.
 
 Example input/output:
 ```
-Welcome to the Gates Of Shell. Type "exit" to quit.
+Welcome to the Gates Of Shell. Type 'exit' to quit.
 
 [Go$H] | SmartFridge@fedora:/home/SmartFridge/CLionProjects/atlas-simple_shell$ invalidfji1j
 ./OpenShellGates: 1: invalidfji1j: not found
