@@ -27,11 +27,7 @@ int main(int argc, char *argv[])
 
 	return (EXIT_SUCCESS);
 	/* -------------------------------------------------------------------- */
-	/*
-	 * note: 'On exit' code will probably never run unless something goes wrong.
-	 * TODO: We should consider returning EXIT_FAILURE
-	 *  or using break instead of exit(EXIT_SUCCESS)
-	 */
+	/*note: On Exit code should never run unless something unexpected happens*/
 }
 
 /**
