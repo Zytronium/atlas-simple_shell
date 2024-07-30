@@ -112,7 +112,7 @@ void saveInput(int isAtty, char **tokens, size_t *size, char **input)
 			printf("Goodbye.\n%s\n", CLR_DEFAULT);
 		}
 
-		freeAll(tokens, *input, NULL);
+		freeAll(tokens, (*input), NULL);
 		exit(EXIT_SUCCESS);
 	}
 }
@@ -137,10 +137,7 @@ int parseInput(char *input, char ***tokens, char **cmd_token,
 	}
 
 	if (populateTokens(input, tokens, cmd_token, tokens_count) == -1)
-	{
-		freeAll((*tokens), input, NULL);
 		return (-1);
-	}
 
 	if ((*tokens) == NULL)
 	{
