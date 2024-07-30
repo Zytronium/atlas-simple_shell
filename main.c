@@ -14,7 +14,7 @@ int main(int argc, char *argv[])
 	/* ------------------- On entry - one time execution ------------------- */
 	(void) argc;
 	/* if argc == 1, meaning no args given, meaning it's in interactive mode */
-	if (isInteractive && stylePrints == 1)
+	if (isInteractive && stylePrints)
 		printf("%sWelcome to the %sGates Of Shell%s. Type 'exit' to quit.\n\n",
 			   CLR_YELLOW_BOLD, CLR_RED_BOLD, CLR_YELLOW_BOLD);
 	/* --------------------------------------------------------------------- */
@@ -22,7 +22,7 @@ int main(int argc, char *argv[])
 	shellLoop(isInteractive, argv); /* main shell loop */
 
 	/* ------------------- On exit - one time execution ------------------- */
-	if (isInteractive && stylePrints == 1)
+	if (isInteractive && stylePrints)
 		printf("%s\nThe %sGates Of Shell%s have closed. Goodbye.\n%s",
 		   CLR_YELLOW_BOLD, CLR_RED_BOLD, CLR_YELLOW_BOLD, CLR_DEFAULT);
 
