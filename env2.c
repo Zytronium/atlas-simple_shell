@@ -27,6 +27,9 @@ char *findPath(char *name)
 			destroyListPath(head);
 			return (temp_path);
 		}
+		else
+			destroyListPath(head);
+
 		free(temp_path);
 		temp = temp->next;
 	}

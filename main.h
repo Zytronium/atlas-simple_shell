@@ -44,7 +44,7 @@ void selfDestruct(int countdown);
 void saveInput(int isAtty, char **tokens, size_t *size, char **input);
 
 int parseInput(char *input, char ***tokens, char **cmd_token,
-					int *tokens_count);
+			   int *tokens_count);
 
 void executeIfValid(int isAtty, char *const *argv, char *input, char **tokens,
 					char *cmd, char *cmd_token, char **paths);
