@@ -135,11 +135,7 @@ int isNumber(char *number)
  */
 int _atoi(const char *s)
 {
-	int i = 0;
-	int numberStarted = 0;
-	int numberEnded = 0;
-	int neg = 1;
-	int size;
+	int i = 0, numberStarted = 0, numberEnded = 0, neg = 1, size;
 
 	for (size = 0; s[size] != '\0'; size++)
 	{
