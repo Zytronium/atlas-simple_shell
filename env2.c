@@ -12,31 +12,32 @@ char *findPath(char *name)
 	path_t *head = NULL;
 	char *temp_path;
 
-	head = buildListPath();
-	temp = head;
+	head = buildListPath(); /* populates list and points at head */
+	temp = head; /* iterator initialization */
 	if (temp == NULL)
 	{
 		destroyListPath(head);
 		return (NULL);
 	}
+	while (temp != NULL) /* run until list is empty */
+	{	/* malloc space for path/name\0 */
 	while (temp != NULL)
 	{
 		temp_path = malloc(strlen(temp->directory) + strlen(name) + 2);
 		strcpy(temp_path, temp->directory);
 		strcat(temp_path, "/");
 		strcat(temp_path, name);
-		if (access(temp_path, F_OK) == 0)
+		if (access(temp_path, F_OK) == 0) /* checks if command at path exists */
 		{
-			destroyListPath(head);
-			return (temp_path);
+			destroyListPath(head); /* frees list of paths */
+			return (temp_path); /* returns found path + name */
 		}
-
-		free(temp_path);
-		temp = temp->next;
+		free(temp_path); /* frees temp_path */
+		temp = temp->next; /* go to next location */
 	}
-	destroyListPath(head);
-	temp_path = strdup(name);
-	return (temp_path);
+	destroyListPath(head); /* frees list of paths */
+	temp_path = strdup(name); /* mallocs command name */
+	return (temp_path); /* returns malloced command name without a path */
 }
 /**
  * destroyListPath - frees the ListPath
