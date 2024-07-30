@@ -61,8 +61,10 @@ void shellLoop(int isAtty, char *argv[])
 		}
 		initCmd(&cmd, tokens);
 		executeIfValid(isAtty, argv, input, tokens, cmd, cmd_token, paths);
-		if (cmd == NULL)
-			free(input);
+		/*
+		 * if (cmd == NULL)
+		 *	free(input);
+		 */
 	}
 }
 
@@ -146,7 +148,7 @@ int parseInput(char *input, char ***tokens, char **cmd_token,
 
 	if (*tokens == NULL)
 	{ /* if tokens isn't set, free memory and indicate a failure */
-		freeAll(*tokens, input, NULL);
+		freeAll((*tokens), input, NULL);
 		return (-1);
 	}
 	(*tokens)[*tokens_count] = NULL; /* null terminate */
@@ -173,7 +175,7 @@ int populateTokens(const char *input, char ***tokens, char **cmd_token,
 
 		if (*tokens == NULL) /* malloc fail check */
 		{
-			freeAll((*tokens), input, NULL);
+				freeAll((*tokens), input, NULL);
 			return (-1); /* indicate a failure */
 		}
 
