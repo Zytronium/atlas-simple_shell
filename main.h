@@ -40,6 +40,8 @@ extern char **environ;
 /* ↓ FUNCTIONS ↓ */
 int isNumber(char *number);
 
+int _atoi(const char *s);
+
 void shellLoop(int isAtty, char *argv[]);
 
 void selfDestruct(int countdown);
