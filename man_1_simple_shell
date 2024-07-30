@@ -46,7 +46,7 @@ quit - same as exit
 "./simple_shell selfdestr"
 
 .SH FUTURE IMPROVEMENTS
-Increased functionality to handle complex handlers such as: ';', '&&', '||' and '|'.
+Increased functionality to handle complex handlers such as: ';', '&&', '||' and '|'. Also increase stability of _setenv and _unsetenv.
 
 .SH AUTHORS
 Daniel Stelljes & Stephen Newby
