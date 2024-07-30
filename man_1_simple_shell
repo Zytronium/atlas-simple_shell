@@ -1,5 +1,5 @@
 ./" simple_shell
-.TH simple_shell (3) USER MANUAL
+.TH simple_shell (1) USER MANUAL
 
 .SH NAME
 simple_shell - provides a simplified command line interpreter
