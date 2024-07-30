@@ -189,19 +189,12 @@ int runCommand(char *commandPath, char **args, char **envPaths)
 	{
 		if (isatty(STDIN_FILENO))
 			return (0);
-		else
-			exit(0);
+		exit(0);
 	}
 
 	if (access(commandPath, F_OK) != 0) /* checks if cmd doesn't exist */
 	{
 		return (127);
-		/* if (isatty(STDIN_FILENO))
-			return (127);
-		else
-			errno = 127;
-			exit(127);
-		*/
 	}
 
 	fork_rtn = fork(); /* split process into 2 processes */
@@ -218,8 +211,8 @@ int runCommand(char *commandPath, char **args, char **envPaths)
 		}
 	} else /* parent process; fork_rtn contains pid of child process */
 	{
-		wait_rtn = waitpid(fork_rtn, &child_status, WUNTRACED); /* waits until
-		child process terminates */
+		wait_rtn = waitpid(fork_rtn, &child_status, WUNTRACED);
+		/* waits until child process terminates */
 		if (WIFEXITED(child_status))
 		{
 			wexitstat = WEXITSTATUS(child_status);

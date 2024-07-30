@@ -63,7 +63,6 @@ void initCmd(char **cmd, char *const *tokens)
  * @cmd: first argument of user-input prefixed with found filepath
  * @cmd_token:last arguments from strtok'd input
  * @paths:array of strings of filepaths
- * @run_cmd_rtn: return value of run_command function
  */
 void executeIfValid(int isAtty, char *const *argv, char *input, char **tokens,
 					char *cmd, char *cmd_token, char **paths)
@@ -98,7 +97,7 @@ void executeIfValid(int isAtty, char *const *argv, char *input, char **tokens,
 }
 
 /**
- * free_all - frees all dynamically allotted memory
+ * freeAll - frees all dynamically allotted memory
  * @tokens: array of strings needing free()
  * ...: list of variables to free
  */
