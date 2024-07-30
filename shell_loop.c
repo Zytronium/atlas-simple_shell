@@ -175,11 +175,11 @@ int populateTokens(const char *input, char ***tokens, char **cmd_token,
 
 		if (*tokens == NULL) /* malloc fail check */
 		{
-				freeAll((*tokens), input, NULL);
+			freeAll(*tokens, input, NULL);
 			return (-1); /* indicate a failure */
 		}
 
-		(*tokens)[*tokens_count] = strdup(*cmd_token); /* set this token */
+		*tokens[*tokens_count] = strdup(*cmd_token); /* set this token */
 		*cmd_token = strtok(NULL, " \n\t\r"); /* tokenize */
 		(*tokens_count)++; /* increment */
 	}
