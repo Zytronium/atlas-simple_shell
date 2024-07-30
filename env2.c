@@ -15,14 +15,9 @@ char *findPath(char *name)
 	head = buildListPath(); /* populates list and points at head */
 	temp = head; /* iterator initialization */
 	if (temp == NULL)
-	{
-		destroyListPath(head);
 		return (NULL);
-	}
 	while (temp != NULL) /* run until list is empty */
 	{	/* malloc space for path/name\0 */
-	while (temp != NULL)
-	{
 		temp_path = malloc(strlen(temp->directory) + strlen(name) + 2);
 		strcpy(temp_path, temp->directory);
 		strcat(temp_path, "/");
