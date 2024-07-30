@@ -117,8 +117,6 @@ void saveInput(int isAtty, char **tokens, size_t *size, char **input)
 		freeAll(tokens, (*input), NULL);
 		exit(EXIT_SUCCESS);
 	}
-	/* (*input)[strlen((*input)) - 1] = '\0'; */
-	/* delete newline at end of string */
 }
 
 /**

@@ -13,7 +13,6 @@ int main(int argc, char *argv[])
 
 	/* ------------------- On entry - one time execution ------------------- */
 	(void) argc;
-	/* if argc == 1, meaning no args given, meaning it's in interactive mode */
 	if (isInteractive && stylePrints)
 		printf("%sWelcome to the %sGates Of Shell%s. Type 'exit' to quit.\n\n",
 			   CLR_YELLOW_BOLD, CLR_RED_BOLD, CLR_YELLOW_BOLD);
@@ -45,8 +44,8 @@ int main(int argc, char *argv[])
  * @input: user-input
  * @tokens: array of strings of user inputs delimited by spaces
  * @cmd: first argument of user-input prefixed with found filepath
- * @cmd_token:last arguments from strtok'd input
- * @paths:array of strings of filepaths
+ * @cmd_token: last arguments from strtok'd input
+ * @paths: array of strings of filepaths
  */
 void executeIfValid(int isAtty, char *const *argv, char *input, char **tokens,
 					char *cmd, char *cmd_token, char **paths)
@@ -91,7 +90,6 @@ void freeAll(char **tokens, ...)
 	int i;
 	char *free_me;
 
-	/*fflush(NULL);*/
 	if (tokens != NULL)
 	{
 		for (i = 0; tokens[i] != NULL; i++)
