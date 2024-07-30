@@ -11,8 +11,8 @@
 void selfDestruct(int countdown)
 {
 	char *paths[1] = {NULL}; /* environment for execve */
-	char **sleep1args = malloc(sizeof(char *) * 3); /* sleep command args for execve */
-	char **sleep2args = malloc(sizeof(char *) * 3); /* sleep command args for execve */
+	char **sleep1args = malloc(sizeof(char *) * 3); /* sleep args for execve */
+	char **sleep2args = malloc(sizeof(char *) * 3); /* sleep args for execve */
 
 	/* execve sleep command arguments setup */
 	sleep1args[0] = "sleep"; /* command to pass to execve */

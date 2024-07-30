@@ -98,7 +98,6 @@ void printPrompt(int isAtty, char *user, char *hostname, char *path)
  *
  * @isAtty: isatty() return. if 1 interactive, 0 otherwise
  * @tokens: empty container for tokenized inputs
- * @getline_rtn: return value of getline() function
  * @size: size of input
  * @input: user-input
  */
@@ -107,14 +106,17 @@ void saveInput(int isAtty, char **tokens, size_t *size, char **input)
 	if (getline(input, size, stdin) == -1) /* gets input; plus EOF (^D) check */
 	{
 		if (isAtty && stylePrints)
-			printf("\n%sCtrl-D Entered. %s\nThe %sGates Of Shell%s have closed."
-				   " Goodbye.\n%s\n", CLR_DEFAULT_BOLD, CLR_YELLOW_BOLD,
-				   CLR_RED_BOLD, CLR_YELLOW_BOLD, CLR_DEFAULT);
+			printf("\n%sCtrl-D Entered. %s\n",
+					CLR_DEFAULT_BOLD, CLR_YELLOW_BOLD);
+			printf("The %sGates Of Shell%s have closed.",
+					CLR_RED_BOLD, CLR_YELLOW_BOLD);
+			printf("Goodbye.\n%s\n", CLR_DEFAULT);
 
 		freeAll(tokens, (*input), NULL);
 		exit(EXIT_SUCCESS);
 	}
-	/* (*input)[strlen((*input)) - 1] = '\0'; */ /* delete newline at end of string */
+	/* (*input)[strlen((*input)) - 1] = '\0'; */
+	/* delete newline at end of string */
 }
 
 /**
@@ -126,7 +128,8 @@ void saveInput(int isAtty, char **tokens, size_t *size, char **input)
  *
  * Return: 1 if successful, -1 if failed
  */
-int parseInput(char *input, char ***tokens, char **cmd_token, int *tokens_count)
+int parseInput(char *input, char ***tokens, char **cmd_token,
+				int *tokens_count)
 {
 	(*cmd_token) = strtok(input, " \n\t\r"); /* first token */
 	if ((*cmd_token) == NULL) /* blank command - only spaces or newline */

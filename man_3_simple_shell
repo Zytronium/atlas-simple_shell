@@ -18,9 +18,9 @@ the first argument in a commandline entry and follow up with commands to use in
 non interactive.
 
 .SS Built-In Commands
-.TP 
+.TP
 env - prints the local environment
-.TP 
+.TP
 exit - exits the program
 .TP
 self-destruct - exits the program stylistically

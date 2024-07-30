@@ -11,8 +11,8 @@ A shell should take text input; read and parse it; execute the command,
 if valid; print output, if there is any; and repeat. You can navigate
 a file system; create, edit, delete, and run files; and maybe even access
 the internet using a shell. A couple examples of a shell are Bash and
-PowerShell. Examples of things that may be confused with a shell, but 
-are **not** are: the terminal/console, Vim, Ubuntu, or the Sandbox/VM. 
+PowerShell. Examples of things that may be confused with a shell, but
+are **not** are: the terminal/console, Vim, Ubuntu, or the Sandbox/VM.
 
 ### Examples of this concept:
 
@@ -44,7 +44,7 @@ Welcome to the Gates Of Shell. Type "exit" to quit.
 [Go$H] | unknown@unknown:/home/SmartFridge/CLionProjects/atlas-simple_shell$ exit
 
 The Gates Of Shell have closed. Goodbye.
-[Go$H] | SmartFridge@fedora:/home/SmartFridge/CLionProjects/atlas-simple_shell$ ls   
+[Go$H] | SmartFridge@fedora:/home/SmartFridge/CLionProjects/atlas-simple_shell$ ls
 AUTHORS            colors.h           front_lawn  man_3_simple_shell  super-simple_shell
 bashlist           custom_commands.c  grass       README.md           TestRunScript.bash
 cmake-build-debug  env2.c             main.c      shellf_destruct.c
@@ -71,7 +71,7 @@ from the real shell, as the rest of the prompt looks
 identical to an Ubuntu prompt;
 - `User` - the user's username or log name, taken from the environment variables
 - `Hostname` or PC name - usually the user's Linux distro or the user's PC name
-- `Path` - the current working directory 
+- `Path` - the current working directory
 - `$` - end of prompt (not sure what to call this, but some shells may use
 `:` or `#` instead)
 
